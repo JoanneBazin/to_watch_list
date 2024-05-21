@@ -1,17 +1,23 @@
-import Categories from "@/components/Categories";
-import AddCategory from "@/components/actions/AddCategory";
+import CategorieList from "@/components/CategorieList";
+import { prisma } from "@/lib/script";
+import { CategoryProps } from "@/lib/types";
 
-export default function Home() {
+async function fetchCategories(): Promise<CategoryProps[]> {
+  const categories = await prisma.category.findMany();
+  return categories;
+}
+
+export default async function Home() {
+  const categories: CategoryProps[] = await fetchCategories();
   return (
-    <section className="m-10 columns-2">
+    <section className="m-10">
       <div>
         <div>Add Film</div>
         <div>Add Serie</div>
       </div>
       <div>
         <h1>Add new category</h1>
-        <AddCategory />
-        <Categories />
+        <CategorieList initialCategories={categories} />
       </div>
     </section>
   );
