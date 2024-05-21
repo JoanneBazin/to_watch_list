@@ -1,18 +1,22 @@
+import CategorieList from "@/components/CategorieList";
 import { prisma } from "@/lib/script";
-import React from "react";
+import { CategoryProps } from "@/lib/types";
+
+async function fetchCategories(): Promise<CategoryProps[]> {
+  const categories = await prisma.category.findMany();
+  return categories;
+}
 
 const Overview = async () => {
-  const displayCategories = await prisma.category.findMany();
+  const categories: CategoryProps[] = await fetchCategories();
 
   return (
-    <div>
-      <h1>Overview</h1>
-      <p>
-        {displayCategories.map((category) => (
-          <li key={category.id}>{category.name}</li>
-        ))}
-      </p>
-    </div>
+    <section className="m-10">
+      <div>
+        <h1>Add new category</h1>
+        <CategorieList initialCategories={categories} />
+      </div>
+    </section>
   );
 };
 
