@@ -1,10 +1,13 @@
 import FilmList from "@/components/FilmLists";
-import { prisma } from "@/lib/script";
 import { CategoryProps, Item } from "@/lib/types";
 
 async function fetchFilms(): Promise<Item[]> {
-  const films = await prisma.films.findMany();
-  return films;
+  const response = await fetch("http://localhost:3000/api/films");
+
+  if (!response.ok) {
+    throw new Error(`HTTP error ! ${response.status}`);
+  }
+  return response.json();
 }
 
 async function fetchCategories(): Promise<CategoryProps[]> {
@@ -21,9 +24,11 @@ const FilmsPage = async () => {
   const films: Item[] = await fetchFilms();
 
   return (
-    <section>
-      <FilmList initialFilms={films} categories={categories} />
-    </section>
+    <div>
+      <section>
+        <FilmList initialFilms={films} />
+      </section>
+    </div>
   );
 };
 

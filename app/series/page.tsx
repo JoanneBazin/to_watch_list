@@ -1,11 +1,14 @@
 import SerieList from "@/components/SerieList";
-import { prisma } from "@/lib/script";
 import { CategoryProps, Item } from "@/lib/types";
 import React from "react";
 
 async function fetchSeries(): Promise<Item[]> {
-  const series = await prisma.series.findMany();
-  return series;
+  const response = await fetch("http://localhost:3000/api/series");
+
+  if (!response.ok) {
+    throw new Error(`HTTP error ! ${response.status}`);
+  }
+  return response.json();
 }
 
 async function fetchCategories(): Promise<CategoryProps[]> {
@@ -23,7 +26,7 @@ const SeriesPage = async () => {
 
   return (
     <section>
-      <SerieList initialSeries={series} categories={categories} />
+      <SerieList initialSeries={series} />
     </section>
   );
 };

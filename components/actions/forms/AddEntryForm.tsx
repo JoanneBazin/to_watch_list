@@ -14,26 +14,30 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const AddEntryForm = ({
   entry,
-  categories,
   onAdded,
 }: {
   entry: string;
-  categories: CategoryProps[];
   onAdded: () => void;
 }) => {
   const { handleSubmit, register, reset } = useForm<Item>();
-  const [responseMessage, setResponseMessage] = useState<string>("");
-  const [category, setCategory] = useState(categories);
+  const [responseMessage, setResponseMessage] = useState<string>(
+    "La to-watch-list a été mise à jour ! 😍"
+  );
+  const [category, setCategory] = useState<CategoryProps[]>();
 
   const fetchCategories = async () => {
     const response = await fetch("/api/category");
     const data = await response.json();
     setCategory(data);
   };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   const onSubmit: SubmitHandler<Item> = async (data) => {
     const reqData = {
@@ -51,15 +55,14 @@ const AddEntryForm = ({
       if (!response.ok) {
         throw new Error("HTTP error");
       }
+
       const result = await response.json();
       reset();
       setResponseMessage("La to-watch-list a été mise à jour ! 😍");
       onAdded();
     } catch (error) {
       console.log(error);
-      setResponseMessage(
-        "An error occurred while submitting the form. Please try again later 🫣"
-      );
+      setResponseMessage("An error occurred while submitting the form 🫣");
     }
   };
 
@@ -68,9 +71,7 @@ const AddEntryForm = ({
       <div>
         <Dialog>
           <DialogTrigger asChild>
-            <Button onClick={fetchCategories} variant="outline">
-              Ajouter {entry}
-            </Button>
+            <Button variant="outline">Ajouter {entry}</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
@@ -86,6 +87,7 @@ const AddEntryForm = ({
                     id="title"
                     {...register("title")}
                     className="col-span-3"
+                    required
                   />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
@@ -134,14 +136,16 @@ const AddEntryForm = ({
                   <select
                     id="category"
                     {...register("categoryName")}
+                    required
                     className="flex gap-2 h-10 w-full cursor-default items-center rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
                     <option value="">Catégorie</option>
-                    {category.map((item) => (
-                      <option key={item.id} value={item.name}>
-                        {item.name}
-                      </option>
-                    ))}
+                    {category &&
+                      category.map((item) => (
+                        <option key={item.id} value={item.name}>
+                          {item.name}
+                        </option>
+                      ))}
                   </select>
                 </div>
               </div>

@@ -1,10 +1,13 @@
 import CategorieList from "@/components/CategorieList";
-import { prisma } from "@/lib/script";
 import { CategoryProps } from "@/lib/types";
 
 async function fetchCategories(): Promise<CategoryProps[]> {
-  const categories = await prisma.category.findMany();
-  return categories;
+  const response = await fetch("http://localhost:3000/api/category");
+
+  if (!response.ok) {
+    throw new Error(`HTTP error ! ${response.status}`);
+  }
+  return response.json();
 }
 
 const Overview = async () => {

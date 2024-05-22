@@ -1,14 +1,14 @@
 "use client";
-import { CategoryProps, Item } from "@/lib/types";
+import { Item } from "@/lib/types";
 import React, { useEffect, useState } from "react";
 import AddEntryForm from "./actions/forms/AddEntryForm";
+import { DataTable } from "./tables/DataTable";
+import { columns } from "./tables/columns";
 
 export default function SerieList({
   initialSeries,
-  categories,
 }: {
   initialSeries: Item[];
-  categories: CategoryProps[];
 }) {
   const [series, setSeries] = useState(initialSeries);
   const typeEntry = "serie";
@@ -25,17 +25,12 @@ export default function SerieList({
 
   return (
     <div>
-      <AddEntryForm
-        entry={typeEntry}
-        categories={categories}
-        onAdded={fetchSeries}
-      />
-
-      {series.map((item, index) => (
-        <div className="bg-foreground text-background m-2 rounded" key={index}>
-          {item.title}
-        </div>
-      ))}
+      <div>
+        <AddEntryForm entry={typeEntry} onAdded={fetchSeries} />
+      </div>
+      <section className="container mx-auto py-10">
+        <DataTable columns={columns} data={series} />
+      </section>
     </div>
   );
 }

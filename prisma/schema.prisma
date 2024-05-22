@@ -16,6 +16,8 @@ model Films {
   platform     String?
   categoryName String
   category     Category @relation(fields: [categoryName], references: [name])
+  addedAt     DateTime  @default(now()) @db.Date
+  watched     Boolean   @default(false) 
 }
 
 model Series {
@@ -27,6 +29,8 @@ model Series {
   platform     String?
   categoryName String
   category     Category @relation(fields: [categoryName], references: [name])
+  addedAt     DateTime  @default(now()) @db.Date
+  watched     Boolean   @default(false)
 }
 
 model Category {

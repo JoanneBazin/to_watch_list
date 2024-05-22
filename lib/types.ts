@@ -5,6 +5,8 @@ export interface Item {
   real: string | null;
   platform: string | null;
   categoryName: string;
+  addedAt: Date;
+  watched: boolean;
   id: number;
 }
 
