@@ -12,11 +12,13 @@ export default function SerieList({
 }) {
   const [series, setSeries] = useState(initialSeries);
   const typeEntry = "serie";
+  const [loading, setLoading] = useState<boolean>(true);
 
   const fetchSeries = async () => {
     const response = await fetch("/api/series");
     const data = await response.json();
     setSeries(data);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -29,7 +31,11 @@ export default function SerieList({
         <AddEntryForm entry={typeEntry} onAdded={fetchSeries} />
       </div>
       <section className="container mx-auto py-10">
-        <DataTable columns={columns} data={series} />
+        {loading ? (
+          <p>Loading data...</p>
+        ) : (
+          <DataTable columns={columns} data={series} />
+        )}
       </section>
     </div>
   );

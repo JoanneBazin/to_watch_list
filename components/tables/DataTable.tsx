@@ -21,7 +21,7 @@ import {
   HoverCardTrigger,
 } from "../ui/hover-card";
 import { Item } from "@/lib/types";
-import { useState } from "react";
+import { Dispatch, useState } from "react";
 
 interface DataTableProps {
   columns: ColumnDef<Item>[];

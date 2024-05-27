@@ -3,6 +3,24 @@ import { Item } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "../ui/checkbox";
 
+// const handleView = async (row: Item) => {
+//   try {
+//     const response = await fetch(`/api/films/${row.id}`, {
+//       method: "PUT",
+//       headers: { "Content-type": "application/json" },
+//       body: JSON.stringify({ watched: true }),
+//     });
+
+//     if (!response.ok) {
+//       throw new Error("Network response crashed");
+//     }
+//     const result = await response.json();
+//     console.log("Data updated :", result);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
+
 export const columns: ColumnDef<Item>[] = [
   {
     accessorKey: "title",
@@ -16,6 +34,7 @@ export const columns: ColumnDef<Item>[] = [
     accessorKey: "categoryName",
     header: "Catégorie",
   },
+
   {
     id: "select",
     header: ({ table }) => (
