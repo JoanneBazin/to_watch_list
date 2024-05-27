@@ -1,7 +1,7 @@
 "use client";
 
 import { SubmitHandler, useForm } from "react-hook-form";
-import { CategoryProps, Item } from "@/lib/types";
+import { Item } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,7 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useFetchCategories } from "@/components/hooks/useFetchCategories";
 
 const AddEntryForm = ({
   entry,
@@ -27,17 +28,8 @@ const AddEntryForm = ({
   const [responseMessage, setResponseMessage] = useState<string>(
     "La to-watch-list a été mise à jour ! 😍"
   );
-  const [category, setCategory] = useState<CategoryProps[]>();
 
-  const fetchCategories = async () => {
-    const response = await fetch("/api/category");
-    const data = await response.json();
-    setCategory(data);
-  };
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+  const { categories } = useFetchCategories();
 
   const onSubmit: SubmitHandler<Item> = async (data) => {
     const reqData = {
@@ -140,8 +132,8 @@ const AddEntryForm = ({
                     className="flex gap-2 h-10 w-full cursor-default items-center rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
                     <option value="">Catégorie</option>
-                    {category &&
-                      category.map((item) => (
+                    {categories &&
+                      categories.map((item) => (
                         <option key={item.id} value={item.name}>
                           {item.name}
                         </option>

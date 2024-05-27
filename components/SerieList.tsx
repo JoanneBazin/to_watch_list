@@ -1,40 +1,24 @@
 "use client";
-import { Item } from "@/lib/types";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import AddEntryForm from "./actions/forms/AddEntryForm";
 import { DataTable } from "./tables/DataTable";
-import { columns } from "./tables/columns";
+import { useFetchSeries } from "./hooks/useFetchSeries";
+import { Loader } from "./layout/Loader";
 
-export default function SerieList({
-  initialSeries,
-}: {
-  initialSeries: Item[];
-}) {
-  const [series, setSeries] = useState(initialSeries);
+export default function SerieList() {
   const typeEntry = "serie";
-  const [loading, setLoading] = useState<boolean>(true);
-
-  const fetchSeries = async () => {
-    const response = await fetch("/api/series");
-    const data = await response.json();
-    setSeries(data);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchSeries();
-  }, []);
+  const { series, loading, error, refetch } = useFetchSeries();
 
   return (
     <div>
       <div>
-        <AddEntryForm entry={typeEntry} onAdded={fetchSeries} />
+        <AddEntryForm entry={typeEntry} onAdded={refetch} />
       </div>
       <section className="container mx-auto py-10">
         {loading ? (
-          <p>Loading data...</p>
+          <Loader />
         ) : (
-          <DataTable columns={columns} data={series} />
+          <DataTable data={series} onModify={refetch} entry={typeEntry} />
         )}
       </section>
     </div>

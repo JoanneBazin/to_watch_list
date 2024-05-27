@@ -1,36 +1,24 @@
 "use client";
-import { Item } from "@/lib/types";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import AddEntryForm from "./actions/forms/AddEntryForm";
 import { DataTable } from "./tables/DataTable";
-import { columns } from "./tables/columns";
+import { useFetchFilms } from "./hooks/useFetchFilms";
+import { Loader } from "./layout/Loader";
 
-export default function FilmList({ initialFilms }: { initialFilms: Item[] }) {
-  const [films, setFilms] = useState(initialFilms);
+export default function FilmList() {
   const typeEntry = "film";
-  const [loading, setLoading] = useState<boolean>(true);
-
-  const fetchFilms = async () => {
-    const response = await fetch("/api/films");
-    const data = await response.json();
-    setFilms(data);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchFilms();
-  }, []);
+  const { films, loading, error, refetch } = useFetchFilms();
 
   return (
     <div>
       <div className="flex">
-        <AddEntryForm entry={typeEntry} onAdded={fetchFilms} />
+        <AddEntryForm entry={typeEntry} onAdded={refetch} />
       </div>
       <section className="container mx-auto py-10">
         {loading ? (
-          <p>Loading data...</p>
+          <Loader />
         ) : (
-          <DataTable columns={columns} data={films} />
+          <DataTable data={films} onModify={refetch} entry={typeEntry} />
         )}
       </section>
     </div>

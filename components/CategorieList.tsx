@@ -1,38 +1,19 @@
 "use client";
-import { CategoryProps } from "@/lib/types";
-import { useEffect, useState } from "react";
 import AddCategory from "./actions/forms/AddCategory";
 import { Card, CardTitle } from "./ui/card";
-import { DataTable } from "./tables/DataTable";
-import { columns } from "./tables/columns";
+import { useFetchCategories } from "./hooks/useFetchCategories";
+import { Loader } from "./layout/Loader";
 
-export default function CategorieList({
-  initialCategories,
-}: {
-  initialCategories: CategoryProps[];
-}) {
-  const [categories, setCategories] = useState(initialCategories);
-  const [selection, setSelection] = useState([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  const fetchCategories = async () => {
-    const response = await fetch("/api/category");
-    const data = await response.json();
-    setCategories(data);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+export default function CategorieList() {
+  const { categories, loading, error, refetch } = useFetchCategories();
 
   return (
     <div>
-      <AddCategory onAdded={fetchCategories} />
+      <AddCategory onAdded={refetch} />
       <div className="flex">
         <div className="grid gap-3 m-4">
           {loading ? (
-            <p>Loading data...</p>
+            <Loader />
           ) : (
             categories.map((category) => (
               <Card className="p-4" key={category.id}>
@@ -40,9 +21,6 @@ export default function CategorieList({
               </Card>
             ))
           )}
-        </div>
-        <div>
-          <DataTable columns={columns} data={selection} />
         </div>
       </div>
     </div>

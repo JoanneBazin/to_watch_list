@@ -11,7 +11,7 @@ model Films {
   id           Int      @id @default(autoincrement())
   title        String
   synopsis     String?
-  year         Int?
+  year         Int?     
   real         String?
   platform     String?
   categoryName String
@@ -24,7 +24,7 @@ model Series {
   id           Int      @id @default(autoincrement())
   title        String
   synopsis     String?
-  year         Int?
+  year         Int?     
   real         String?
   platform     String?
   categoryName String
