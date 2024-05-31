@@ -8,7 +8,7 @@ import {
   navigationMenuTriggerStyle,
 } from "../ui/navigation-menu";
 import Link from "next/link";
-import LogoIcon from "./LogoIcon";
+import LogoIcon from "./Icons/LogoIcon";
 
 type Props = {};
 

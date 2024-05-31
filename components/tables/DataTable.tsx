@@ -1,7 +1,5 @@
 "use client";
-import { Checkbox } from "../ui/checkbox";
-import { Button } from "../ui/button";
-import DeleteLogo from "../layout/DeleteLogo";
+
 import {
   ColumnDef,
   flexRender,
@@ -22,67 +20,18 @@ import {
   HoverCardTrigger,
 } from "../ui/hover-card";
 import { Item } from "@/lib/types";
-import { useState } from "react";
+import { Button } from "../ui/button";
+import DeleteLogo from "../layout/Icons/DeleteLogo";
+import { format } from "date-fns";
+import CheckmarkLogo from "../layout/Icons/CheckmarkLogo";
 
 interface DataTableProps {
   data: Item[];
-  onModify: () => void;
   entry: string;
+  onModify: () => void;
 }
 
-export function DataTable({ data, onModify, entry }: DataTableProps) {
-  const [rowSelection, setRowSelection] = useState({});
-
-  const columns: ColumnDef<Item>[] = [
-    {
-      accessorKey: "title",
-      header: "Titre",
-    },
-    {
-      accessorKey: "addedAt",
-      header: "Ajouté le",
-    },
-    {
-      accessorKey: "categoryName",
-      header: "Catégorie",
-    },
-
-    {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsAllPageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-          className="opacity-0 group-hover:opacity-50"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-          className="opacity-0 group-hover:opacity-50"
-        />
-      ),
-    },
-    {
-      id: "delete",
-      cell: ({ row }) => (
-        <Button
-          variant="outline"
-          className="bg-zinc-500"
-          onClick={() => handleDelete(row.original)}
-        >
-          <DeleteLogo />
-        </Button>
-      ),
-    },
-  ];
-
+export function DataTable({ data, entry, onModify }: DataTableProps) {
   const handleDelete = async (row: Item) => {
     try {
       const response = await fetch(`/api/${entry}s/${row.id}`, {
@@ -98,14 +47,81 @@ export function DataTable({ data, onModify, entry }: DataTableProps) {
     }
   };
 
+  const handleWatched = async (row: Item) => {
+    const toggleWatched = !row.watched;
+
+    try {
+      const response = await fetch(`/api/${entry}s/${row.id}`, {
+        method: "PUT",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({ watched: toggleWatched }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update");
+      }
+      onModify();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const columns: ColumnDef<Item>[] = [
+    {
+      accessorKey: "title",
+      header: "Titre",
+    },
+    {
+      accessorKey: "addedAt",
+      header: "Ajouté le",
+      cell: ({ getValue }) =>
+        format(new Date(getValue() as Date), "dd-MM-yyyy"),
+    },
+    {
+      accessorKey: "categoryName",
+      header: "Catégorie",
+    },
+
+    {
+      accessorKey: "watched",
+      header: "",
+      cell: ({ row }) => (
+        <Button
+          variant="outline"
+          onClick={() => handleWatched(row.original)}
+          className={
+            row.original.watched
+              ? "bg-zinc-900 hover:bg-zinc-800 border-black"
+              : ""
+          }
+        >
+          <CheckmarkLogo />
+        </Button>
+      ),
+    },
+
+    {
+      id: "delete",
+      cell: ({ row }) => (
+        <Button
+          variant="outline"
+          onClick={() => handleDelete(row.original)}
+          className={
+            row.original.watched
+              ? "bg-zinc-900 hover:bg-zinc-800 border-black"
+              : ""
+          }
+        >
+          <DeleteLogo />
+        </Button>
+      ),
+    },
+  ];
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    onRowSelectionChange: setRowSelection,
-    state: {
-      rowSelection,
-    },
   });
 
   return (
@@ -136,7 +152,11 @@ export function DataTable({ data, onModify, entry }: DataTableProps) {
                 <HoverCardTrigger asChild>
                   <TableRow
                     key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
+                    className={
+                      row.original.watched
+                        ? "bg-zinc-900 text-zinc-700 italic"
+                        : "hover:bg-muted/50"
+                    }
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>

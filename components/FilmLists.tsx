@@ -18,7 +18,7 @@ export default function FilmList() {
         {loading ? (
           <Loader />
         ) : (
-          <DataTable data={films} onModify={refetch} entry={typeEntry} />
+          <DataTable data={films} entry={typeEntry} onModify={refetch} />
         )}
       </section>
     </div>

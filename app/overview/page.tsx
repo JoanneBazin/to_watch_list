@@ -1,7 +1,5 @@
 import CategorieList from "@/components/CategorieList";
 
-import React from "react";
-
 const Overview = () => {
   return (
     <section className="m-10">

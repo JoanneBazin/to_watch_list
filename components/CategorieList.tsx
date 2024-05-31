@@ -5,6 +5,9 @@ import { useFetchCategories } from "./hooks/useFetchCategories";
 import { Loader } from "./layout/Loader";
 import { CategoryProps, Item } from "@/lib/types";
 import { useState } from "react";
+import { DataTable } from "./tables/DataTable";
+import { useFetchFilms } from "./hooks/useFetchFilms";
+import { useFetchSeries } from "./hooks/useFetchSeries";
 
 export default function CategorieList() {
   const { categories, loading, error, refetch } = useFetchCategories();
@@ -12,10 +15,11 @@ export default function CategorieList() {
     Films: Item[];
     Series: Item[];
   } | null>();
+  const [selectedCategory, setSelectedCategory] = useState<string>();
+  const { refetch: filmsRefetch } = useFetchFilms();
+  const { refetch: seriesRefetch } = useFetchSeries();
 
   const handleSelection = async (category: CategoryProps) => {
-    console.log(category);
-
     try {
       const response = await fetch(`/api/category/${category.id}`, {
         method: "GET",
@@ -28,8 +32,8 @@ export default function CategorieList() {
 
       const result = await response.json();
 
+      setSelectedCategory(category.name);
       setSelection(result);
-      console.log(selection);
     } catch (error) {
       console.log(error);
     }
@@ -54,22 +58,35 @@ export default function CategorieList() {
             ))
           )}
         </div>
-        <div>
-          <ul>
-            {selection
-              ? selection.Films.map((film, index) => (
-                  <li key={index}>{film.title}</li>
-                ))
-              : null}
-          </ul>
-          <ul>
-            {selection
-              ? selection.Series.map((serie, index) => (
-                  <li key={index}>{serie.title}</li>
-                ))
-              : null}
-          </ul>
-        </div>
+        {selection && (
+          <div>
+            <h1>{selectedCategory}</h1>
+            <div className="m-4">
+              <h3>Films</h3>
+              {selection.Films.length > 0 ? (
+                <DataTable
+                  data={selection.Films}
+                  entry="film"
+                  onModify={filmsRefetch}
+                />
+              ) : (
+                <p>Pas de films disponibles 😶</p>
+              )}
+            </div>
+            <div className="m-4">
+              <h3>Séries</h3>
+              {selection.Series.length > 0 ? (
+                <DataTable
+                  data={selection.Series}
+                  entry="serie"
+                  onModify={seriesRefetch}
+                />
+              ) : (
+                <p>Pas de séries disponibles 😶</p>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

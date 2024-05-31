@@ -18,7 +18,7 @@ export default function SerieList() {
         {loading ? (
           <Loader />
         ) : (
-          <DataTable data={series} onModify={refetch} entry={typeEntry} />
+          <DataTable data={series} entry={typeEntry} onModify={refetch} />
         )}
       </section>
     </div>
