@@ -35,10 +35,11 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   const id = params.id;
-  const deleteFilm = await prisma.films.delete({
+  const deleteUserFilm = await prisma.films.delete({
     where: {
       id: parseInt(id, 10),
     },
   });
-  return NextResponse.json(deleteFilm);
+
+  return NextResponse.json(deleteUserFilm);
 }

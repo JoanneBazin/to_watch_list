@@ -10,7 +10,7 @@ import { useFetchFilms } from "./hooks/useFetchFilms";
 import { useFetchSeries } from "./hooks/useFetchSeries";
 
 export default function CategorieList() {
-  const { categories, loading, error, refetch } = useFetchCategories();
+  const { categories, loading, refetch } = useFetchCategories();
   const [selection, setSelection] = useState<{
     Films: Item[];
     Series: Item[];

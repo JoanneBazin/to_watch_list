@@ -171,20 +171,20 @@ export function DataTable({ data, entry, onModify }: DataTableProps) {
                 <HoverCardContent className="w-80">
                   <div className="space-y-1">
                     <h5 className="font-bold my-1">{row.original.title}</h5>
-                    {row.original.real && (
+                    {row.original.real ? (
                       <p className="font-semibold">{row.original.real}</p>
-                    )}
-                    {row.original.year && (
+                    ) : null}
+                    {row.original.year ? (
                       <p className="text-xs">{row.original.year}</p>
-                    )}
-                    {row.original.synopsis && (
+                    ) : null}
+                    {row.original.synopsis ? (
                       <p className="text-gray-500">{row.original.synopsis}</p>
-                    )}
-                    {row.original.platform && (
+                    ) : null}
+                    {row.original.platform ? (
                       <p className="italic">
                         Disponible sur {row.original.platform}
                       </p>
-                    )}
+                    ) : null}
                   </div>
                 </HoverCardContent>
               </HoverCard>

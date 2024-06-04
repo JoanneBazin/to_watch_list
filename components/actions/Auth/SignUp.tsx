@@ -87,7 +87,8 @@ const SignUp = () => {
             </Label>
             <Input
               id="password"
-              {...register("password", { required: "Password is required" })}
+              {...register("password")}
+              type="password"
               className="col-span-3"
               required
             />

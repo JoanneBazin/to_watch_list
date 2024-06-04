@@ -8,16 +8,17 @@ datasource db {
 }
 
 model Films {
-  id           Int      @id @default(autoincrement())
+  id           Int         @id @default(autoincrement())
   title        String
   synopsis     String?
   year         Int?
   real         String?
   platform     String?
   categoryName String
-  category     Category @relation(fields: [categoryName], references: [name])
-  addedAt      DateTime @default(now()) @db.Date
-  watched      Boolean  @default(false)
+  category     Category    @relation(fields: [categoryName], references: [name])
+  addedAt      DateTime    @default(now()) @db.Date
+  watched      Boolean     @default(false)
+  users    UserFilms[]
 }
 
 model Series {
@@ -31,6 +32,8 @@ model Series {
   category     Category @relation(fields: [categoryName], references: [name])
   addedAt      DateTime @default(now()) @db.Date
   watched      Boolean  @default(false)
+
+  users UserSeries[]
 }
 
 model Category {
@@ -41,9 +44,31 @@ model Category {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String
-  password  String
-  createdAt DateTime @default(now())
+  id         Int          @id @default(autoincrement())
+  email      String       @unique
+  name       String
+  password   String
+  createdAt  DateTime     @default(now())
+  admin      Boolean      @default(false)
+  
+  films  UserFilms[]
+  series UserSeries[]
+}
+
+model UserFilms {
+  user    User  @relation(fields: [userId], references: [id])
+  userId Int
+  film   Films @relation(fields: [filmId], references: [id], onDelete: Cascade)
+  filmId Int
+
+  @@id([userId, filmId])
+}
+
+model UserSeries {
+  userId  Int
+  serieId Int
+  user    User   @relation(fields: [userId], references: [id])
+  serie   Series @relation(fields: [serieId], references: [id], onDelete: Cascade)
+
+  @@id([userId, serieId])
 }

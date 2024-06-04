@@ -4,31 +4,36 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import bcrypt from "bcrypt";
 
-export const options: NextAuthOptions = {
+export const AuthOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: "email",
       credentials: {
-        name: { label: "Name", type: "text" },
+        // name: { label: "Name", type: "text" },
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         if (!credentials) return null;
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
 
+        if (!user) {
+          return null;
+        }
+
         if (user && bcrypt.compareSync(credentials.password, user.password)) {
           return {
             id: user.id.toString(),
             name: user.name,
             email: user.email,
+            admin: user.admin,
           };
         } else {
-          throw new Error("Erreur d'authentification");
+          return null;
         }
       },
     }),
@@ -50,7 +55,7 @@ export const options: NextAuthOptions = {
   },
 
   pages: {
-    signIn: "/signin",
+    signIn: "/auth",
     error: "/signinError",
   },
 

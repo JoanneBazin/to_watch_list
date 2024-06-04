@@ -29,7 +29,7 @@ const SignIn = () => {
     });
 
     if (result?.error) {
-      setError("Problème de connexion");
+      setError("Email ou mot de passe incorrect ");
     } else {
       router.push("/overview");
     }
@@ -57,12 +57,15 @@ const SignIn = () => {
             <Input
               id="password"
               {...register("password")}
+              type="password"
               className="col-span-3"
               required
             />
           </div>
         </div>
-        <Button type="submit">Se connecter</Button>
+        <Button className="my-4" type="submit">
+          Se connecter
+        </Button>
       </form>
       {error && <p>{error}</p>}
     </div>

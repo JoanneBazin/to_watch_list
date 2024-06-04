@@ -6,6 +6,7 @@ declare module "next-auth" {
       id: string;
       email: string;
       name: string;
+      admin: boolean;
     };
   }
 
@@ -14,5 +15,6 @@ declare module "next-auth" {
     email: string;
     name: string;
     password?: string;
+    admin: boolean;
   }
 }

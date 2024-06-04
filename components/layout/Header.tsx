@@ -22,63 +22,63 @@ import { signOut, useSession } from "next-auth/react";
 type Props = {};
 
 const Header = (props: Props) => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   return (
-    <NavigationMenu>
-      <NavigationMenuList>
-        <NavigationMenuItem>
-          <Link href="/">TO WATCH LIST</Link>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <LogoIcon />
-        </NavigationMenuItem>
-        <NavigationMenuItem>
+    <nav className="flex my-4 items-center">
+      <div className="flex mx-4">
+        <Link href="/" className="text-3xl font-bold m-4">
+          Watchers
+        </Link>
+        <LogoIcon />
+      </div>
+
+      {session ? (
+        <div className="flex gap-4">
           <Link href="/films">Films</Link>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
+
           <Link href="/series">Series</Link>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
+
           <Link href="/overview">Overview</Link>
-        </NavigationMenuItem>
-        {session ? (
-          <NavigationMenuItem className="flex items-center px-16">
-            <p>Hello {session.user.name}</p>
-            <Button className="mx-4" onClick={() => signOut()}>
-              Sign out
-            </Button>
-          </NavigationMenuItem>
-        ) : (
-          <NavigationMenuItem>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button>Inscription</Button>
-              </DialogTrigger>
+        </div>
+      ) : null}
 
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Incription</DialogTitle>
-                </DialogHeader>
+      {session ? (
+        <div className="flex px-16 items-center">
+          <p>Hello {session.user.name}</p>
+          <Button className="mx-4" onClick={() => signOut()}>
+            Sign out
+          </Button>
+        </div>
+      ) : (
+        <div>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="mx-4">Inscription</Button>
+            </DialogTrigger>
 
-                <SignUp />
-              </DialogContent>
-            </Dialog>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Incription</DialogTitle>
+              </DialogHeader>
 
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button>Connexion</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Connexion</DialogTitle>
-                </DialogHeader>
-                <SignIn />
-              </DialogContent>
-            </Dialog>
-          </NavigationMenuItem>
-        )}
-      </NavigationMenuList>
-    </NavigationMenu>
+              <SignUp />
+            </DialogContent>
+          </Dialog>
+
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>Connexion</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Connexion</DialogTitle>
+              </DialogHeader>
+              <SignIn />
+            </DialogContent>
+          </Dialog>
+        </div>
+      )}
+    </nav>
   );
 };
 
