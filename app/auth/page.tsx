@@ -1,5 +1,5 @@
-import SignIn from "@/components/actions/Auth/SignIn";
-import SignUp from "@/components/actions/Auth/SignUp";
+import SignIn from "@/components/actions/auth/SignIn";
+import SignUp from "@/components/actions/auth/SignUp";
 import {
   Carousel,
   CarouselContent,

@@ -48,6 +48,7 @@ model User {
   email      String       @unique
   name       String
   password   String
+  avatar    String        @default("/avatar.svg")
   createdAt  DateTime     @default(now())
   admin      Boolean      @default(false)
   

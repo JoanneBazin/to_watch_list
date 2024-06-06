@@ -30,6 +30,7 @@ export const AuthOptions: NextAuthOptions = {
             id: user.id.toString(),
             name: user.name,
             email: user.email,
+            avatar: user.avatar,
             admin: user.admin,
           };
         } else {

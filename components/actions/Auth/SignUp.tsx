@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
@@ -21,7 +20,6 @@ const SignUp = () => {
     formState: { errors },
   } = useForm<SignUpForm>();
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
 
   const onSubmit: SubmitHandler<SignUpForm> = async (data) => {
     const { name, email, password } = data;
@@ -34,15 +32,14 @@ const SignUp = () => {
       });
       if (response.ok) {
         const result = await signIn("credentials", {
-          redirect: false,
+          callbackUrl: "/",
+          redirect: true,
           email,
           password,
         });
 
         if (result?.error) {
           setError("Problème de connexion");
-        } else {
-          router.push("/overview");
         }
       } else {
         const errorData = await response.json();
@@ -77,6 +74,7 @@ const SignUp = () => {
               id="email"
               {...register("email", { required: "Email is required" })}
               className="col-span-3"
+              type="email"
               required
             />
             {errors.email && <p>{errors.email.message}</p>}

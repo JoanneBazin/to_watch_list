@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -17,21 +16,19 @@ type SignInForm = {
 const SignIn = () => {
   const { handleSubmit, register } = useForm<SignInForm>();
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
 
   const onSubmit: SubmitHandler<SignInForm> = async (data) => {
     const { email, password } = data;
 
     const result = await signIn("credentials", {
-      redirect: false,
+      callbackUrl: "/",
+      redirect: true,
       email,
       password,
     });
 
     if (result?.error) {
       setError("Email ou mot de passe incorrect ");
-    } else {
-      router.push("/overview");
     }
   };
 

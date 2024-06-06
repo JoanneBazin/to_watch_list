@@ -14,3 +14,10 @@ export interface CategoryProps {
   name: string;
   id: number;
 }
+
+export interface UserProps {
+  id: string;
+  email: string;
+  name: string;
+  avatar: string;
+}

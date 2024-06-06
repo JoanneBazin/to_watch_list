@@ -1,25 +1,27 @@
-// "use client";
+"use client";
 
-import { AuthOptions } from "@/app/api/auth/[...nextauth]/options";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getServerSession } from "next-auth";
-import { useSession } from "next-auth/react";
+import UserAvatar from "@/components/layout/Icons/Avatar";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { UserProps } from "@/lib/types";
 
-export const User = async () => {
-  //   Return ==> Client call
-  //   const { data: session } = useSession();
-
-  const session = await getServerSession(AuthOptions);
-
-  if (!session) {
-    return null;
-  }
+export const User = ({ name, email, avatar, id }: UserProps) => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{session.user.name}</CardTitle>
-      </CardHeader>
-      <CardContent>{session.user.email}</CardContent>
-    </Card>
+    <div className="flex flex-col gap-10 items-center ">
+      <Card className=" flex flex-col w-1/2 items-center justify-center">
+        <CardHeader>
+          <CardTitle>{name}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <UserAvatar />
+        </CardContent>
+        <CardFooter>{email}</CardFooter>
+      </Card>
+    </div>
   );
 };
