@@ -3,7 +3,14 @@ import React from "react";
 import logo from "../../../public/logo.svg";
 
 const LogoIcon = () => {
-  return <Image priority src={logo} alt="logo" />;
+  return (
+    <Image
+      priority
+      src={logo}
+      alt="logo"
+      style={{ width: "50px", height: "auto" }}
+    />
+  );
 };
 
 export default LogoIcon;
