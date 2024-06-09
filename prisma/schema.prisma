@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Films {
-  id           Int         @id @default(autoincrement())
+  id           String         @id @default(cuid())
   title        String
   synopsis     String?
   year         Int?
@@ -22,7 +22,7 @@ model Films {
 }
 
 model Series {
-  id           Int      @id @default(autoincrement())
+  id           String      @id @default(cuid())
   title        String
   synopsis     String?
   year         Int?
@@ -37,14 +37,14 @@ model Series {
 }
 
 model Category {
-  id     Int      @id @default(autoincrement())
+  id     String      @id @default(cuid())
   name   String   @unique
   Films  Films[]
   Series Series[]
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String      @id @default(cuid())
   email     String   @unique
   name      String
   password  String
@@ -60,9 +60,9 @@ model User {
 }
 
 model FriendRequest {
-  id         Int           @id @default(autoincrement())
-  senderId   Int
-  receiverId Int
+  id         String           @id @default(cuid())
+  senderId   String
+  receiverId String
   status     RequestStatus @default(PENDING)
   sender     User          @relation("sentRequests", fields: [senderId], references: [id])
   receiver   User          @relation("receivedRequests", fields: [receiverId], references: [id])
@@ -71,21 +71,21 @@ model FriendRequest {
 enum RequestStatus {
   PENDING
   ACCEPTED
-  REJECTED
+  
 }
 
 model UserFilms {
   user   User  @relation(fields: [userId], references: [id])
-  userId Int
+  userId String
   film   Films @relation(fields: [filmId], references: [id], onDelete: Cascade)
-  filmId Int
+  filmId String
 
   @@id([userId, filmId])
 }
 
 model UserSeries {
-  userId  Int
-  serieId Int
+  userId  String
+  serieId String
   user    User   @relation(fields: [userId], references: [id])
   serie   Series @relation(fields: [serieId], references: [id], onDelete: Cascade)
 

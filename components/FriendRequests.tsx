@@ -1,11 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardTitle } from "./ui/card";
 import { getSession } from "next-auth/react";
 import { UserProps } from "@/lib/types";
-import Image from "next/image";
-import { Button } from "./ui/button";
 
 interface FriendRequest {
   id: number;
@@ -30,48 +27,20 @@ const FriendRequests = () => {
     fetchRequests();
   }, []);
 
-  const validateRequest = async (requestId: number, status: string) => {
-    try {
-      const response = await fetch(`/api/social/respond/${requestId}`, {
-        method: "PUT",
-        headers: { "Content-type": "application/json" },
-        body: JSON.stringify({ status: status }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to accept invitation");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  if (requests.length < 1) {
+    return <p>Pas de demandes en attente</p>;
+  }
 
   return (
     <div>
-      {requests.map((request) => (
-        <Card className="my-4" key={request.id}>
-          <CardContent className=" grid grid-cols-2 m-2 p-2 items-center gap-4">
-            <div className="flex gap-4 items-center">
-              <Image
-                src={request.sender.avatar}
-                alt="avatar"
-                height={40}
-                width={40}
-              />
-              <h5>{request.sender.name}</h5>
-            </div>
-
-            <div className="flex gap-4">
-              <Button onClick={() => validateRequest(request.id, "ACCEPTED")}>
-                Ajouter
-              </Button>
-              <Button onClick={() => validateRequest(request.id, "REJECTED")}>
-                Supprimer
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+      {/* {requests.map((request, index) => (
+        <User
+          key={index}
+          id={String(request.id)}
+          name={request.sender.name}
+          avatar={request.sender.avatar}
+        />
+      ))} */}
     </div>
   );
 };

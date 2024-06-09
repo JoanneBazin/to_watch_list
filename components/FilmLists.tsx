@@ -2,8 +2,8 @@
 import React from "react";
 import AddEntryForm from "./actions/forms/AddEntryForm";
 import { DataTable } from "./tables/DataTable";
-import { useFetchFilms } from "./hooks/useFetchFilms";
 import { Loader } from "./layout/Loader";
+import { useFetchFilms } from "./hooks/useFetchFilms";
 
 export default function FilmList() {
   const typeEntry = "film";

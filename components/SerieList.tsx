@@ -2,8 +2,8 @@
 import React from "react";
 import AddEntryForm from "./actions/forms/AddEntryForm";
 import { DataTable } from "./tables/DataTable";
-import { useFetchSeries } from "./hooks/useFetchSeries";
 import { Loader } from "./layout/Loader";
+import { useFetchSeries } from "./hooks/useFetchSeries";
 
 export default function SerieList() {
   const typeEntry = "serie";

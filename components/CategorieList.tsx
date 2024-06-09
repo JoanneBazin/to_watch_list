@@ -1,12 +1,9 @@
 "use client";
 import AddCategory from "./actions/forms/AddCategory";
-import { useFetchCategories } from "./hooks/useFetchCategories";
 import { Loader } from "./layout/Loader";
 import { Item } from "@/lib/types";
 import { useState } from "react";
 import { DataTable } from "./tables/DataTable";
-import { useFetchFilms } from "./hooks/useFetchFilms";
-import { useFetchSeries } from "./hooks/useFetchSeries";
 import {
   Select,
   SelectGroup,
@@ -16,6 +13,9 @@ import {
 } from "./ui/select";
 import { SelectContent } from "@radix-ui/react-select";
 import { ScrollArea } from "./ui/scroll-area";
+import { useFetchCategories } from "./hooks/useFetchCategories";
+import { useFetchFilms } from "./hooks/useFetchFilms";
+import { useFetchSeries } from "./hooks/useFetchSeries";
 
 export default function CategorieList() {
   const { categories, refetch } = useFetchCategories();

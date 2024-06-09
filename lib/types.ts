@@ -7,12 +7,12 @@ export interface Item {
   categoryName: string;
   addedAt: Date;
   watched: boolean;
-  id: number;
+  id: string;
 }
 
 export interface CategoryProps {
   name: string;
-  id: number;
+  id: string;
 }
 
 export interface UserProps {
@@ -20,4 +20,13 @@ export interface UserProps {
   email: string;
   name: string;
   avatar: string;
+}
+export interface FriendsProps {
+  id: string;
+  name: string;
+  avatar: string;
+}
+
+export interface FriendRequestsProps {
+  receiverId: string;
 }

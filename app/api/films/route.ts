@@ -10,7 +10,7 @@ export async function GET(req: Request) {
     return null;
   }
 
-  const userId = Number(session.user.id);
+  const userId = session.user.id;
   const films = await prisma.films.findMany({
     where: {
       users: {
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
     return null;
   }
 
-  const userId = Number(session.user.id);
+  const userId = session.user.id;
 
   const data = await req.json();
 

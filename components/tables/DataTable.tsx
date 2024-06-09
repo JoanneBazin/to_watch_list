@@ -21,9 +21,9 @@ import {
 } from "../ui/hover-card";
 import { Item } from "@/lib/types";
 import { Button } from "../ui/button";
-import DeleteLogo from "../layout/Icons/DeleteLogo";
 import { format } from "date-fns";
-import CheckmarkLogo from "../layout/Icons/CheckmarkLogo";
+import { RxCross1 } from "react-icons/rx";
+import { FaCheck } from "react-icons/fa6";
 
 interface DataTableProps {
   data: Item[];
@@ -95,7 +95,7 @@ export function DataTable({ data, entry, onModify }: DataTableProps) {
               : ""
           }
         >
-          <CheckmarkLogo />
+          <FaCheck />
         </Button>
       ),
     },
@@ -112,7 +112,7 @@ export function DataTable({ data, entry, onModify }: DataTableProps) {
               : ""
           }
         >
-          <DeleteLogo />
+          <RxCross1 />
         </Button>
       ),
     },

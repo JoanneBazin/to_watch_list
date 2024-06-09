@@ -8,7 +8,7 @@ export async function GET(
   const id = params.id;
   const category = await prisma.category.findUnique({
     where: {
-      id: parseInt(id, 10),
+      id: id,
     },
     select: {
       Films: true,

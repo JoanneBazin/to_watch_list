@@ -8,7 +8,7 @@ export async function GET(
   const id = params.id;
   const film = await prisma.films.findUnique({
     where: {
-      id: parseInt(id, 10),
+      id: id,
     },
   });
   return NextResponse.json(film);
@@ -23,7 +23,7 @@ export async function PUT(
 
   const updateFilm = await prisma.films.update({
     where: {
-      id: parseInt(id, 10),
+      id: id,
     },
     data: json,
   });
@@ -37,7 +37,7 @@ export async function DELETE(
   const id = params.id;
   const deleteUserFilm = await prisma.films.delete({
     where: {
-      id: parseInt(id, 10),
+      id: id,
     },
   });
 

@@ -8,7 +8,7 @@ export async function GET(
   const id = params.id;
   const serie = await prisma.series.findUnique({
     where: {
-      id: parseInt(id, 10),
+      id: id,
     },
   });
   return NextResponse.json(serie);
@@ -23,7 +23,7 @@ export async function PUT(
 
   const updateSerie = await prisma.series.update({
     where: {
-      id: parseInt(id, 10),
+      id: id,
     },
     data: json,
   });
@@ -37,7 +37,7 @@ export async function DELETE(
   const id = params.id;
   const deleteSerie = await prisma.series.delete({
     where: {
-      id: parseInt(id, 10),
+      id: id,
     },
   });
   return NextResponse.json(deleteSerie);
