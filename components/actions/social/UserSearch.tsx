@@ -37,20 +37,22 @@ const UserSearch = () => {
   }, [query]);
 
   return (
-    <div>
-      <div>
+    <div className="m-4">
+      <h2 className="m-6 text-2xl font-semibold">Rechercher</h2>
+      <div className="m-6">
         <Input
+          className="w-2/3"
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Chercher par nom"
+          placeholder="Rechercher un contact"
         />
       </div>
 
-      <div className=" grid grid-cols-3 gap-4 m-6">
+      <div className=" grid grid-cols-2 gap-4 m-6">
         {loading ? (
           <Loader />
-        ) : result ? (
+        ) : result.length > 0 ? (
           result?.map((result) => (
             <UserCard
               key={result.id}
@@ -59,6 +61,8 @@ const UserSearch = () => {
               avatar={result.avatar}
             />
           ))
+        ) : query && result.length < 1 ? (
+          <p className="italic">Pas de résultats</p>
         ) : null}
       </div>
     </div>

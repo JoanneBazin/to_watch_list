@@ -52,8 +52,8 @@ model User {
   createdAt DateTime @default(now())
   admin     Boolean  @default(false)
 
-  friendRequestSent     FriendRequest[] @relation("sentRequests")
-  friendRequestReceived FriendRequest[] @relation("receivedRequests")
+  friendRequestSent     FriendRequest[] @relation("Sender")
+  friendRequestReceived FriendRequest[] @relation("Receiver")
 
   films  UserFilms[]
   series UserSeries[]
@@ -64,8 +64,8 @@ model FriendRequest {
   senderId   String
   receiverId String
   status     RequestStatus @default(PENDING)
-  sender     User          @relation("sentRequests", fields: [senderId], references: [id])
-  receiver   User          @relation("receivedRequests", fields: [receiverId], references: [id])
+  sender     User          @relation("Sender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver   User          @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
 }
 
 enum RequestStatus {

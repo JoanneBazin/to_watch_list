@@ -1,46 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getSession } from "next-auth/react";
-import { UserProps } from "@/lib/types";
-
-interface FriendRequest {
-  id: number;
-  sender: UserProps;
-}
+import Image from "next/image";
+import { useFetchRequests } from "./hooks/useFetchRequests";
+import { Loader } from "./layout/Loader";
+import ValidateRequest from "./actions/social/ValidateRequest";
 
 const FriendRequests = () => {
-  const [requests, setRequests] = useState<FriendRequest[]>([]);
-
-  useEffect(() => {
-    const fetchRequests = async () => {
-      const session = await getSession();
-      if (!session) {
-        return null;
-      }
-      const userId = session.user.id;
-
-      const response = await fetch(`/api/social/request/${userId}`);
-      const data = await response.json();
-      setRequests(data);
-    };
-    fetchRequests();
-  }, []);
-
-  if (requests.length < 1) {
-    return <p>Pas de demandes en attente</p>;
-  }
-
+  const { receivedRequests, loading } = useFetchRequests();
   return (
-    <div>
-      {/* {requests.map((request, index) => (
-        <User
-          key={index}
-          id={String(request.id)}
-          name={request.sender.name}
-          avatar={request.sender.avatar}
-        />
-      ))} */}
+    <div className="m-4">
+      <h2 className="m-6 text-2xl font-semibold">Invitation reçues</h2>
+
+      {loading ? (
+        <Loader />
+      ) : receivedRequests.length > 0 ? (
+        receivedRequests.map((request, index) => (
+          <div key={index} className="flex gap-4 items-center">
+            <Image
+              src={request.sender.avatar}
+              alt="avatar"
+              width={40}
+              height={40}
+            />
+            <span className="mr-20">{request.sender.name}</span>
+            <ValidateRequest
+              requestId={request.id}
+              senderId={request.sender.id}
+            />
+          </div>
+        ))
+      ) : (
+        <p className="mx-10 italic">Pas de demandes en attente</p>
+      )}
     </div>
   );
 };

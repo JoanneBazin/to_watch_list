@@ -27,6 +27,11 @@ export interface FriendsProps {
   avatar: string;
 }
 
-export interface FriendRequestsProps {
-  receiverId: string;
+export interface ReceiverRequestsProps {
+  id: string;
+  receiver: FriendsProps;
+}
+export interface SenderRequestsProps {
+  id: string;
+  sender: FriendsProps;
 }

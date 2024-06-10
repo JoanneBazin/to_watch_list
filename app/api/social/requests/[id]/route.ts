@@ -3,41 +3,81 @@ import { prisma } from "@/lib/script";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
-export async function GET(
+export async function POST(
   req: Request,
   { params }: { params: { id: string } }
 ) {
   const session = await getServerSession(AuthOptions);
-  const user2Id = params.id;
 
   if (!session) {
-    return NextResponse.json({ error: "Lost session" }, { status: 400 });
+    return NextResponse.json({ error: "Missing session" }, { status: 400 });
   }
 
-  const userId = session.user.name;
+  const sender = await prisma.user.findUnique({
+    where: { id: session.user.id },
+  });
+  const receiver = await prisma.user.findUnique({ where: { id: params.id } });
 
-  const request = await prisma.friendRequest.findFirst({
-    where: {
-      OR: [
-        {
-          senderId: userId,
-          receiverId: user2Id,
-        },
-        {
-          receiverId: userId,
-          senderId: user2Id,
-        },
-      ],
-    },
-    select: {
-      id: true,
-      sender: {
-        select: {
-          id: true,
-        },
-      },
+  if (!sender) {
+    console.log(sender);
+
+    throw new Error("Sender not found");
+  }
+  if (!receiver) {
+    throw new Error("Sender not found");
+  }
+
+  const newRequest = await prisma.friendRequest.create({
+    data: {
+      senderId: sender.id,
+      receiverId: receiver.id,
+      status: "PENDING",
     },
   });
 
-  return NextResponse.json(request);
+  return NextResponse.json(newRequest);
+}
+
+export async function PUT(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  const requestId = await prisma.friendRequest.findUnique({
+    where: { id: params.id },
+  });
+  const json = await req.json();
+
+  if (!requestId) {
+    throw new Error("No request found");
+  }
+
+  const updateRequest = await prisma.friendRequest.update({
+    where: {
+      id: requestId.id,
+    },
+    data: json,
+  });
+
+  return NextResponse.json(updateRequest);
+}
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  const requestId = await prisma.friendRequest.findUnique({
+    where: { id: params.id },
+  });
+
+  if (!requestId) {
+    throw new Error("No request found");
+  }
+
+  const deleteRequest = await prisma.friendRequest.delete({
+    where: {
+      id: requestId.id,
+    },
+  });
+
+  return NextResponse.json(deleteRequest);
 }

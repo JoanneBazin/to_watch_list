@@ -12,17 +12,26 @@ import { FriendsProps } from "@/lib/types";
 import { useFetchFriends } from "../hooks/useFetchFriends";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { UserLinkBtn } from "../actions/social/UserLinkBtn";
-
-import { useSession } from "next-auth/react";
+import { useFetchRequests } from "../hooks/useFetchRequests";
+import SendRequest from "../actions/social/SendRequest";
+import { Loader2 } from "lucide-react";
+import ValidateRequest from "../actions/social/ValidateRequest";
 
 const UserCard = ({ name, id, avatar }: FriendsProps) => {
-  const { data: session } = useSession();
   const { friends } = useFetchFriends();
+  const { sentRequests, receivedRequests, loading } = useFetchRequests();
+
   const userFriend = friends.find((friend) => friend.id === id);
 
+  const receiverRequest = sentRequests.find((user) => user.receiver.id === id);
+
+  const senderRequest = receivedRequests.find((user) => user.sender.id === id);
+
   return (
-    <Card className="p-4 mx-auto" key={id}>
+    <Card
+      className="flex flex-col p-2 mx-auto items-center justify-center"
+      key={id}
+    >
       <CardHeader>
         <CardTitle className="text-center">{name}</CardTitle>
       </CardHeader>
@@ -30,12 +39,18 @@ const UserCard = ({ name, id, avatar }: FriendsProps) => {
         <Image src={avatar} alt="avatar" width={100} height={100} />
       </CardContent>
       <CardFooter className="flex justify-center">
-        {userFriend ? (
+        {loading ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : userFriend ? (
           <Button variant="outline">
             <Link href={`/communauty/${id}`}>Profil</Link>
           </Button>
+        ) : receiverRequest ? (
+          <span className="text-sm italic">Demande en attente</span>
+        ) : senderRequest ? (
+          <ValidateRequest requestId={senderRequest.id} senderId={id} />
         ) : (
-          <UserLinkBtn userId={id} selfId={session?.user.id} />
+          <SendRequest receiverId={id} />
         )}
       </CardFooter>
     </Card>
