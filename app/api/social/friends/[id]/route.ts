@@ -16,12 +16,12 @@ export async function GET(
       avatar: true,
       films: {
         select: {
-          filmId: true,
+          film: true,
         },
       },
       series: {
         select: {
-          serieId: true,
+          serie: true,
         },
       },
     },

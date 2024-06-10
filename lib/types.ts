@@ -25,6 +25,12 @@ export interface FriendsProps {
   id: string;
   name: string;
   avatar: string;
+  films: {
+    film: Item[];
+  };
+  series: {
+    serie: Item[];
+  };
 }
 
 export interface ReceiverRequestsProps {
