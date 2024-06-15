@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "../ui/card";
 import Image from "next/image";
-import { FriendsProps } from "@/lib/types";
+import { UserProps } from "@/lib/types";
 import { useFetchFriends } from "../hooks/useFetchFriends";
 import { Button } from "../ui/button";
 import Link from "next/link";
@@ -17,7 +17,7 @@ import SendRequest from "../actions/social/SendRequest";
 import { Loader2 } from "lucide-react";
 import ValidateRequest from "../actions/social/ValidateRequest";
 
-const UserCard = ({ name, id, avatar }: FriendsProps) => {
+const UserCard = ({ name, id, avatar }: UserProps) => {
   const { friends } = useFetchFriends();
   const { sentRequests, receivedRequests, loading } = useFetchRequests();
 

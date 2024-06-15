@@ -8,21 +8,22 @@ datasource db {
 }
 
 model Films {
-  id           String         @id @default(cuid())
-  title        String
-  synopsis     String?
-  year         Int?
-  real         String?
-  platform     String?
-  categoryName String
-  category     Category    @relation(fields: [categoryName], references: [name])
-  addedAt      DateTime    @default(now()) @db.Date
-  watched      Boolean     @default(false)
-  users        UserFilms[]
+  id             String           @id @default(cuid())
+  title          String
+  synopsis       String?
+  year           Int?
+  real           String?
+  platform       String?
+  categoryName   String
+  category       Category         @relation(fields: [categoryName], references: [name])
+  addedAt        DateTime         @default(now()) @db.Date
+  watched        Boolean          @default(false)
+  users          UserFilms[]
+  FilmSuggestion FilmSuggestion[]
 }
 
 model Series {
-  id           String      @id @default(cuid())
+  id           String   @id @default(cuid())
   title        String
   synopsis     String?
   year         Int?
@@ -33,18 +34,19 @@ model Series {
   addedAt      DateTime @default(now()) @db.Date
   watched      Boolean  @default(false)
 
-  users UserSeries[]
+  users           UserSeries[]
+  SerieSuggestion SerieSuggestion[]
 }
 
 model Category {
-  id     String      @id @default(cuid())
+  id     String   @id @default(cuid())
   name   String   @unique
   Films  Films[]
   Series Series[]
 }
 
 model User {
-  id        String      @id @default(cuid())
+  id        String   @id @default(cuid())
   email     String   @unique
   name      String
   password  String
@@ -55,12 +57,17 @@ model User {
   friendRequestSent     FriendRequest[] @relation("Sender")
   friendRequestReceived FriendRequest[] @relation("Receiver")
 
+  FilmSuggestionSent      FilmSuggestion[]  @relation("Sender")
+  FilmSuggestionReceived  FilmSuggestion[]  @relation("Receiver")
+  SerieSuggestionSent     SerieSuggestion[] @relation("Sender")
+  SerieSuggestionReceived SerieSuggestion[] @relation("Receiver")
+
   films  UserFilms[]
   series UserSeries[]
 }
 
 model FriendRequest {
-  id         String           @id @default(cuid())
+  id         String        @id @default(cuid())
   senderId   String
   receiverId String
   status     RequestStatus @default(PENDING)
@@ -68,16 +75,41 @@ model FriendRequest {
   receiver   User          @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
 }
 
+model FilmSuggestion {
+  id         String        @id @default(cuid())
+  senderId   String
+  receiverId String
+  filmId     String
+  status     RequestStatus @default(PENDING)
+
+  film Films @relation(fields: [filmId], references: [id], onDelete: Cascade)
+
+  sender   User @relation("Sender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+}
+
+model SerieSuggestion {
+  id         String        @id @default(cuid())
+  senderId   String
+  receiverId String
+  serieId    String
+  status     RequestStatus @default(PENDING)
+
+  serie Series @relation(fields: [serieId], references: [id], onDelete: Cascade)
+
+  sender   User @relation("Sender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+}
+
 enum RequestStatus {
   PENDING
   ACCEPTED
-  
 }
 
 model UserFilms {
-  user   User  @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
   userId String
-  film   Films @relation(fields: [filmId], references: [id], onDelete: Cascade)
+  film   Films  @relation(fields: [filmId], references: [id], onDelete: Cascade)
   filmId String
 
   @@id([userId, filmId])

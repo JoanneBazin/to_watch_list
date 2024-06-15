@@ -11,7 +11,7 @@ const Account = async () => {
     return <div>No session connected</div>;
   }
 
-  const { id, name, email, avatar }: UserProps = session.user;
+  const { id, name, avatar }: UserProps = session.user;
 
   return <div>Welcome back {name}</div>;
 };

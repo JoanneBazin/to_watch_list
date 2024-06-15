@@ -1,4 +1,5 @@
 import FilmList from "@/components/FilmLists";
+import FilmSearch from "@/components/actions/forms/FilmSearch";
 
 const FilmsPage = () => {
   return (

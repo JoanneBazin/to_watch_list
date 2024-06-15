@@ -24,6 +24,8 @@ import { Button } from "../ui/button";
 import { format } from "date-fns";
 import { RxCross1 } from "react-icons/rx";
 import { FaCheck } from "react-icons/fa6";
+import { useFetchFriends } from "../hooks/useFetchFriends";
+import ShareEntry from "../actions/suggestions/ShareEntry";
 
 interface DataTableProps {
   data: Item[];
@@ -32,6 +34,8 @@ interface DataTableProps {
 }
 
 export function DataTable({ data, entry, onModify }: DataTableProps) {
+  const { friends } = useFetchFriends();
+
   const handleDelete = async (row: Item) => {
     try {
       const response = await fetch(`/api/${entry}s/${row.id}`, {
@@ -114,6 +118,12 @@ export function DataTable({ data, entry, onModify }: DataTableProps) {
         >
           <RxCross1 />
         </Button>
+      ),
+    },
+    {
+      id: "suggest",
+      cell: ({ row }) => (
+        <ShareEntry row={row.original} entry={entry} friends={friends} />
       ),
     },
   ];
