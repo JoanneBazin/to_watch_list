@@ -19,9 +19,7 @@ const Header = async () => {
 
       {session ? (
         <div className="flex gap-4 ml-8">
-          <Link href="/films">Films</Link>
-
-          <Link href="/series">Séries</Link>
+          <Link href="/watchlist">Watch List</Link>
 
           <Link href="/communauty">Communauté</Link>
         </div>

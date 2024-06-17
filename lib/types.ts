@@ -8,6 +8,7 @@ export interface Item {
   addedAt: Date;
   watched: boolean;
   id: string;
+  type: string;
 }
 
 export interface CategoryProps {
@@ -39,4 +40,16 @@ export interface ReceiverRequestsProps {
 export interface SenderRequestsProps {
   id: string;
   sender: FriendsProps;
+}
+
+export interface SuggestionsProps {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  mediaId: string;
+  senderComment: string;
+  receiverComment: string;
+  media: Item;
+  sender: UserProps;
+  receiver: UserProps;
 }

@@ -11,20 +11,42 @@ export async function GET(req: Request) {
   }
 
   const userId = session.user.id;
-  const films = await prisma.films.findMany({
-    where: {
-      users: {
-        every: {
-          userId: userId,
+
+  const medias = await Promise.allSettled([
+    prisma.watchList.findMany({
+      where: {
+        type: "FILM",
+        users: {
+          some: {},
+          every: {
+            userId: userId,
+          },
         },
       },
-    },
-    orderBy: {
-      watched: "asc",
-    },
-  });
+      orderBy: {
+        watched: "asc",
+      },
+    }),
+    prisma.watchList.findMany({
+      where: {
+        type: "SERIE",
+        users: {
+          some: {},
+          every: {
+            userId: userId,
+          },
+        },
+      },
+      orderBy: {
+        watched: "asc",
+      },
+    }),
+  ]);
 
-  return NextResponse.json(films);
+  const films = medias[0].status === "fulfilled" ? medias[0].value : [];
+  const series = medias[1].status === "fulfilled" ? medias[1].value : [];
+
+  return NextResponse.json({ films, series });
 }
 
 export async function POST(req: Request) {
@@ -38,9 +60,10 @@ export async function POST(req: Request) {
 
   const data = await req.json();
 
-  const addFilm = await prisma.films.create({
+  const addEntry = await prisma.watchList.create({
     data: {
       title: data.title,
+      type: data.type,
       synopsis: data.synopsis,
       year: data.year,
       real: data.real,
@@ -59,5 +82,6 @@ export async function POST(req: Request) {
       },
     },
   });
-  return new NextResponse(JSON.stringify(addFilm), { status: 201 });
+
+  return new NextResponse(JSON.stringify(addEntry), { status: 201 });
 }

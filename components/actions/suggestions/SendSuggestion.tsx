@@ -2,53 +2,91 @@
 
 import { Button } from "@/components/ui/button";
 import { CiCirclePlus } from "react-icons/ci";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { FriendsProps, Item } from "@/lib/types";
+import { Textarea } from "@/components/ui/textarea";
+import { Loader2 } from "lucide-react";
 
 interface SendSuggestProps {
   friendId: FriendsProps["id"];
   rowId: Item["id"];
-  entry: string;
 }
 
-const SendSuggestion = ({ friendId, rowId, entry }: SendSuggestProps) => {
-  const [sentSuggestion, setSentSuggestion] = useState<boolean>(false);
+const SendSuggestion = ({ friendId, rowId }: SendSuggestProps) => {
+  const [isSuggestion, setIsSuggestion] = useState<boolean>();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [senderComment, setSenderComment] = useState<string>("");
+
+  useEffect(() => {
+    const fetchSentSuggestions = async () => {
+      try {
+        const response = await fetch(
+          `/api/suggestions/${rowId}/user/${friendId}`
+        );
+
+        if (!response.ok) {
+          throw new Error("HTTP error");
+        }
+
+        const result = await response.json();
+        setIsSuggestion(result);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSentSuggestions();
+  }, [rowId, friendId]);
 
   const handleSendSuggestion = async () => {
-    const reqData = {
-      receiverId: friendId,
-      mediaId: rowId,
-    };
-
     try {
-      const response = await fetch(`/api/suggestions/${entry}s`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(reqData),
-      });
+      const response = await fetch(
+        `/api/suggestions/${rowId}/user/${friendId}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ comment: senderComment }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("HTTP error");
       }
 
       const result = await response.json();
-      setSentSuggestion(true);
+      setIsSuggestion(true);
     } catch (error) {
       console.log(error);
     }
   };
   return (
     <>
-      {sentSuggestion ? (
-        <Button variant="outline">
-          <FaCheck />
-        </Button>
+      {loading ? (
+        <Loader2 />
+      ) : isSuggestion ? (
+        <div className="flex gap-4 items-center">
+          <FaCheck className="italic text-sm" />
+          <span className="italic text-sm">Suggestion envoyée</span>
+        </div>
       ) : (
-        <Button onClick={() => handleSendSuggestion()} variant="outline">
-          <CiCirclePlus className="text-lg mr-2" />
-          Envoyer ce titre
-        </Button>
+        <div>
+          <Textarea
+            onChange={(e) => setSenderComment(e.target.value)}
+            name="comment"
+            placeholder="Laisser un commentaire ?"
+          />
+
+          <Button
+            className="mt-2"
+            onClick={() => handleSendSuggestion()}
+            variant="outline"
+          >
+            <CiCirclePlus className="text-lg mr-2" />
+            Envoyer ce titre
+          </Button>
+        </div>
       )}
     </>
   );

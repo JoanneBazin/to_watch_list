@@ -29,16 +29,16 @@ import ShareEntry from "../actions/suggestions/ShareEntry";
 
 interface DataTableProps {
   data: Item[];
-  entry: string;
+
   onModify: () => void;
 }
 
-export function DataTable({ data, entry, onModify }: DataTableProps) {
+export function DataTable({ data, onModify }: DataTableProps) {
   const { friends } = useFetchFriends();
 
   const handleDelete = async (row: Item) => {
     try {
-      const response = await fetch(`/api/${entry}s/${row.id}`, {
+      const response = await fetch(`/api/media/${row.id}`, {
         method: "DELETE",
       });
 
@@ -55,7 +55,7 @@ export function DataTable({ data, entry, onModify }: DataTableProps) {
     const toggleWatched = !row.watched;
 
     try {
-      const response = await fetch(`/api/${entry}s/${row.id}`, {
+      const response = await fetch(`/api/media/${row.id}`, {
         method: "PUT",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({ watched: toggleWatched }),
@@ -122,9 +122,7 @@ export function DataTable({ data, entry, onModify }: DataTableProps) {
     },
     {
       id: "suggest",
-      cell: ({ row }) => (
-        <ShareEntry row={row.original} entry={entry} friends={friends} />
-      ),
+      cell: ({ row }) => <ShareEntry row={row.original} friends={friends} />,
     },
   ];
 

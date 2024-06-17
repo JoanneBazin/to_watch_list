@@ -1,5 +1,4 @@
 "use client";
-import AddCategory from "./actions/forms/AddCategory";
 import { Loader } from "./layout/Loader";
 import { Item } from "@/lib/types";
 import { useState } from "react";
@@ -14,8 +13,7 @@ import {
 import { SelectContent } from "@radix-ui/react-select";
 import { ScrollArea } from "./ui/scroll-area";
 import { useFetchCategories } from "./hooks/useFetchCategories";
-import { useFetchFilms } from "./hooks/useFetchFilms";
-import { useFetchSeries } from "./hooks/useFetchSeries";
+import { useFetchWatchList } from "./hooks/useFetchWatchList";
 
 export default function CategorieList() {
   const { categories, refetch } = useFetchCategories();
@@ -24,8 +22,7 @@ export default function CategorieList() {
     Series: Item[];
   } | null>();
   const [selectedCategory, setSelectedCategory] = useState<string>();
-  const { refetch: filmsRefetch, loading: loadingFilms } = useFetchFilms();
-  const { refetch: seriesRefetch, loading: loadingSeries } = useFetchSeries();
+  const { refetch: refetchList, loading } = useFetchWatchList();
 
   const handleSelection = async (value: string) => {
     const category = categories.find((category) => category.name === value);
@@ -53,8 +50,6 @@ export default function CategorieList() {
 
   return (
     <div>
-      <AddCategory onAdded={refetch} />
-
       <div className="flex gap-8 my-10">
         <div className="my-6">
           <Select onValueChange={handleSelection}>
@@ -77,7 +72,7 @@ export default function CategorieList() {
 
         <div>
           {selection &&
-            (loadingFilms || loadingSeries ? (
+            (loading ? (
               <Loader />
             ) : (
               <div>
@@ -85,11 +80,7 @@ export default function CategorieList() {
                 <div className="m-4">
                   <h3 className="mx-6 my-4 text-lg">Films</h3>
                   {selection.Films.length > 0 ? (
-                    <DataTable
-                      data={selection.Films}
-                      entry="film"
-                      onModify={filmsRefetch}
-                    />
+                    <DataTable data={selection.Films} onModify={refetchList} />
                   ) : (
                     <p>Pas de films disponibles 😶</p>
                   )}
@@ -97,11 +88,7 @@ export default function CategorieList() {
                 <div className="m-4">
                   <h3 className="mx-6 my-4 text-lg">Séries</h3>
                   {selection.Series.length > 0 ? (
-                    <DataTable
-                      data={selection.Series}
-                      entry="serie"
-                      onModify={seriesRefetch}
-                    />
+                    <DataTable data={selection.Series} onModify={refetchList} />
                   ) : (
                     <p>Pas de séries disponibles 😶</p>
                   )}

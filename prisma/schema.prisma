@@ -7,42 +7,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Films {
-  id             String           @id @default(cuid())
-  title          String
-  synopsis       String?
-  year           Int?
-  real           String?
-  platform       String?
-  categoryName   String
-  category       Category         @relation(fields: [categoryName], references: [name])
-  addedAt        DateTime         @default(now()) @db.Date
-  watched        Boolean          @default(false)
-  users          UserFilms[]
-  FilmSuggestion FilmSuggestion[]
-}
-
-model Series {
-  id           String   @id @default(cuid())
+model WatchList {
+  id           String           @id @default(cuid())
   title        String
+  type         MediaType
   synopsis     String?
   year         Int?
   real         String?
   platform     String?
   categoryName String
-  category     Category @relation(fields: [categoryName], references: [name])
-  addedAt      DateTime @default(now()) @db.Date
-  watched      Boolean  @default(false)
+  category     Category         @relation(fields: [categoryName], references: [name])
+  addedAt      DateTime         @default(now()) @db.Date
+  watched      Boolean          @default(false)
+  users        UsersWatchList[]
+  suggestions  Suggestion[]
+}
 
-  users           UserSeries[]
-  SerieSuggestion SerieSuggestion[]
+enum MediaType {
+  FILM
+  SERIE
 }
 
 model Category {
-  id     String   @id @default(cuid())
-  name   String   @unique
-  Films  Films[]
-  Series Series[]
+  id     String      @id @default(cuid())
+  name   String      @unique
+  medias WatchList[]
 }
 
 model User {
@@ -57,13 +46,10 @@ model User {
   friendRequestSent     FriendRequest[] @relation("Sender")
   friendRequestReceived FriendRequest[] @relation("Receiver")
 
-  FilmSuggestionSent      FilmSuggestion[]  @relation("Sender")
-  FilmSuggestionReceived  FilmSuggestion[]  @relation("Receiver")
-  SerieSuggestionSent     SerieSuggestion[] @relation("Sender")
-  SerieSuggestionReceived SerieSuggestion[] @relation("Receiver")
+  suggestionsSent     Suggestion[] @relation("Sender")
+  suggestionsReceived Suggestion[] @relation("Receiver")
 
-  films  UserFilms[]
-  series UserSeries[]
+  watchList UsersWatchList[]
 }
 
 model FriendRequest {
@@ -75,27 +61,16 @@ model FriendRequest {
   receiver   User          @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
 }
 
-model FilmSuggestion {
-  id         String        @id @default(cuid())
-  senderId   String
-  receiverId String
-  filmId     String
-  status     RequestStatus @default(PENDING)
+model Suggestion {
+  id              String        @id @default(cuid())
+  senderId        String
+  receiverId      String
+  mediaId         String
+  senderComment   String?
+  receiverComment String?
+  status          RequestStatus @default(PENDING)
 
-  film Films @relation(fields: [filmId], references: [id], onDelete: Cascade)
-
-  sender   User @relation("Sender", fields: [senderId], references: [id], onDelete: Cascade)
-  receiver User @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
-}
-
-model SerieSuggestion {
-  id         String        @id @default(cuid())
-  senderId   String
-  receiverId String
-  serieId    String
-  status     RequestStatus @default(PENDING)
-
-  serie Series @relation(fields: [serieId], references: [id], onDelete: Cascade)
+  media WatchList @relation(fields: [mediaId], references: [id], onDelete: Cascade)
 
   sender   User @relation("Sender", fields: [senderId], references: [id], onDelete: Cascade)
   receiver User @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
@@ -106,20 +81,11 @@ enum RequestStatus {
   ACCEPTED
 }
 
-model UserFilms {
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
-  film   Films  @relation(fields: [filmId], references: [id], onDelete: Cascade)
-  filmId String
-
-  @@id([userId, filmId])
-}
-
-model UserSeries {
+model UsersWatchList {
+  user    User      @relation(fields: [userId], references: [id])
   userId  String
-  serieId String
-  user    User   @relation(fields: [userId], references: [id])
-  serie   Series @relation(fields: [serieId], references: [id], onDelete: Cascade)
+  media   WatchList @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  mediaId String
 
-  @@id([userId, serieId])
+  @@id([userId, mediaId])
 }

@@ -2,19 +2,24 @@
 import { Item } from "@/lib/types";
 import { useEffect, useState } from "react";
 
-export const useFetchSeries = () => {
+export const useFetchWatchList = () => {
+  const [films, setFilms] = useState<Item[]>([]);
   const [series, setSeries] = useState<Item[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchSeries = async () => {
+  const fetchWatchList = async () => {
     try {
-      const response = await fetch("/api/series");
+      const response = await fetch("/api/media");
       if (!response.ok) {
         throw new Error("Error network");
       }
       const result = await response.json();
-      setSeries(result);
+
+      const { films, series } = result;
+
+      setFilms(films);
+      setSeries(series);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -27,14 +32,14 @@ export const useFetchSeries = () => {
   };
 
   useEffect(() => {
-    fetchSeries();
+    fetchWatchList();
   }, []);
 
   const refetch = () => {
     setLoading(true);
     setError(null);
-    fetchSeries();
+    fetchWatchList();
   };
 
-  return { series, loading, error, refetch };
+  return { films, series, loading, error, refetch };
 };
