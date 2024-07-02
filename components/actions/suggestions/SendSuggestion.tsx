@@ -22,7 +22,7 @@ const SendSuggestion = ({ friendId, rowId }: SendSuggestProps) => {
     const fetchSentSuggestions = async () => {
       try {
         const response = await fetch(
-          `/api/suggestions/${rowId}/user/${friendId}`
+          `/api/suggestions/share/${rowId}/user/${friendId}`
         );
 
         if (!response.ok) {
@@ -43,7 +43,7 @@ const SendSuggestion = ({ friendId, rowId }: SendSuggestProps) => {
   const handleSendSuggestion = async () => {
     try {
       const response = await fetch(
-        `/api/suggestions/${rowId}/user/${friendId}`,
+        `/api/suggestions/share/${rowId}/user/${friendId}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -27,10 +27,6 @@ export default async function Home() {
       <div className="m-10">
         <CategorieList />
       </div>
-
-      <div>
-        <SuggestionsList />
-      </div>
     </section>
   );
 }

@@ -3,7 +3,8 @@ import WatchList from "@/components/WatchList";
 const WatchListPage = () => {
   return (
     <div>
-      <h2>Watch List</h2>
+      <h2 className="font-semibold text-center text-2xl">Watch List</h2>
+
       <WatchList />
     </div>
   );

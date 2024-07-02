@@ -17,8 +17,7 @@ model WatchList {
   platform     String?
   categoryName String
   category     Category         @relation(fields: [categoryName], references: [name])
-  addedAt      DateTime         @default(now()) @db.Date
-  watched      Boolean          @default(false)
+  
   users        UsersWatchList[]
   suggestions  Suggestion[]
 }
@@ -86,6 +85,8 @@ model UsersWatchList {
   userId  String
   media   WatchList @relation(fields: [mediaId], references: [id], onDelete: Cascade)
   mediaId String
+  addedAt      DateTime         @default(now()) @db.Date
+  watched      Boolean          @default(false)
 
   @@id([userId, mediaId])
 }

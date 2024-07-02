@@ -55,7 +55,7 @@ export function DataTable({ data, onModify }: DataTableProps) {
     const toggleWatched = !row.watched;
 
     try {
-      const response = await fetch(`/api/media/${row.id}`, {
+      const response = await fetch(`/api/media/${row.id}/user`, {
         method: "PUT",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({ watched: toggleWatched }),

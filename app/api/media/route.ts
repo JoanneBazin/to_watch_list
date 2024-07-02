@@ -13,29 +13,41 @@ export async function GET(req: Request) {
   const userId = session.user.id;
 
   const medias = await Promise.allSettled([
-    prisma.watchList.findMany({
+    prisma.usersWatchList.findMany({
       where: {
-        type: "FILM",
-        users: {
-          some: {},
-          every: {
-            userId: userId,
+        AND: [
+          { userId: userId },
+          {
+            media: {
+              type: "FILM",
+            },
           },
-        },
+        ],
+      },
+      select: {
+        media: true,
+        addedAt: true,
+        watched: true,
       },
       orderBy: {
         watched: "asc",
       },
     }),
-    prisma.watchList.findMany({
+    prisma.usersWatchList.findMany({
       where: {
-        type: "SERIE",
-        users: {
-          some: {},
-          every: {
-            userId: userId,
+        AND: [
+          { userId: userId },
+          {
+            media: {
+              type: "SERIE",
+            },
           },
-        },
+        ],
+      },
+      select: {
+        media: true,
+        addedAt: true,
+        watched: true,
       },
       orderBy: {
         watched: "asc",
@@ -43,8 +55,19 @@ export async function GET(req: Request) {
     }),
   ]);
 
-  const films = medias[0].status === "fulfilled" ? medias[0].value : [];
-  const series = medias[1].status === "fulfilled" ? medias[1].value : [];
+  const filmsList = medias[0].status === "fulfilled" ? medias[0].value : [];
+  const seriesList = medias[1].status === "fulfilled" ? medias[1].value : [];
+
+  const films = filmsList.map((film) => ({
+    ...film,
+    ...film.media,
+    media: undefined,
+  }));
+  const series = seriesList.map((serie) => ({
+    ...serie,
+    ...serie.media,
+    media: undefined,
+  }));
 
   return NextResponse.json({ films, series });
 }

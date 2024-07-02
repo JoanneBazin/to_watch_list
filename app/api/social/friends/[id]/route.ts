@@ -14,16 +14,6 @@ export async function GET(
       id: true,
       name: true,
       avatar: true,
-      films: {
-        select: {
-          film: true,
-        },
-      },
-      series: {
-        select: {
-          serie: true,
-        },
-      },
     },
   });
   return NextResponse.json(friend);

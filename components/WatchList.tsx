@@ -12,47 +12,70 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import SuggestionsList from "./SuggestionsList";
 
-export default function SerieList() {
+export default function WatchList() {
   const { films, series, loading, refetch } = useFetchWatchList();
 
   return (
     <div>
-      <div className="flex gap-10 m-4 w-full justify-center">
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="outline">Ajouter un film</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Nouveau Film</DialogTitle>
-            </DialogHeader>
-            <AddEntryForm entry="FILM" onAdded={refetch} />
-          </DialogContent>
-        </Dialog>
-
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="outline">Ajouter une série</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Nouvelle Série</DialogTitle>
-            </DialogHeader>
-            <AddEntryForm entry="SERIE" onAdded={refetch} />
-          </DialogContent>
-        </Dialog>
-      </div>
-      <section className="container mx-auto py-10">
-        {loading ? (
-          <Loader />
-        ) : (
-          <div className="flex gap-6">
-            <DataTable data={films} onModify={refetch} />
-            <DataTable data={series} onModify={refetch} />
+      <Tabs defaultValue="films" className=" m-8">
+        <TabsList>
+          <TabsTrigger value="films">Films</TabsTrigger>
+          <TabsTrigger value="series">Séries</TabsTrigger>
+          <TabsTrigger value="suggestions">Suggestions</TabsTrigger>
+        </TabsList>
+        <TabsContent value="films">
+          <div className="my-6">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline">Ajouter un film</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Nouveau Film</DialogTitle>
+                </DialogHeader>
+                <AddEntryForm entry="FILM" onAdded={refetch} />
+              </DialogContent>
+            </Dialog>
+            <section className="container mx-auto py-10">
+              {loading ? (
+                <Loader />
+              ) : (
+                <DataTable data={films} onModify={refetch} />
+              )}
+            </section>
           </div>
-        )}
-      </section>
+        </TabsContent>
+
+        <TabsContent value="series">
+          <div className="my-6">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline">Ajouter une série</Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Nouvelle Série</DialogTitle>
+                </DialogHeader>
+                <AddEntryForm entry="SERIE" onAdded={refetch} />
+              </DialogContent>
+            </Dialog>
+            <section className="container mx-auto py-10">
+              {loading ? (
+                <Loader />
+              ) : (
+                <DataTable data={series} onModify={refetch} />
+              )}
+            </section>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="suggestions">
+          <SuggestionsList />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

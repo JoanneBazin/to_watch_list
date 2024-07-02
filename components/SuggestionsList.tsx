@@ -5,6 +5,7 @@ import { SuggestionsProps } from "@/lib/types";
 import { Loader } from "./layout/Loader";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import SuggestionResponse from "./actions/suggestions/SuggestionResponse";
+import { Badge } from "./ui/badge";
 
 const SuggestionsList = () => {
   const [suggestions, setSuggestions] = useState<SuggestionsProps[]>([]);
@@ -21,7 +22,6 @@ const SuggestionsList = () => {
 
         const result = await response.json();
         setSuggestions(result);
-        console.log(result);
       } catch (error) {
         console.log(error);
       } finally {
@@ -36,16 +36,23 @@ const SuggestionsList = () => {
       {loading ? (
         <Loader />
       ) : suggestions ? (
-        <div className="grid grid-cols-2 gap-4 m-4">
+        <div className="grid grid-cols-2 gap-4 mx-4 my-10">
           {suggestions.map((suggest) => (
             <Card key={suggest.id}>
               <CardHeader>
-                <CardTitle>{suggest.media.title}</CardTitle>
+                <CardTitle className="flex justify-between items-center">
+                  <span>{suggest.media.title}</span>
+
+                  <Badge>{suggest.media.type}</Badge>
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <p>envoyé par {suggest.sender.name}</p>
                 <p className="italic mt-2">{suggest.senderComment}</p>
-                <SuggestionResponse />
+                <SuggestionResponse
+                  suggestId={suggest.id}
+                  mediaId={suggest.media.id}
+                />
               </CardContent>
             </Card>
           ))}
