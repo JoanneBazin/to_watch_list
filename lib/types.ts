@@ -10,6 +10,20 @@ export interface Item {
   id: string;
   type: string;
 }
+export interface SuggestionItem {
+  title: string;
+  synopsis: string | null;
+  year: number | null;
+  real: string | null;
+  platform: string | null;
+  categoryName: string;
+  addedAt: Date;
+  watched: boolean;
+  id: string;
+  type: string;
+  receiverId: string;
+  comment: string | null;
+}
 
 export interface CategoryProps {
   name: string;

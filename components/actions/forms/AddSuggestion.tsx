@@ -1,7 +1,7 @@
 "use client";
 
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Item } from "@/lib/types";
+import { Item, SuggestionItem } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -9,17 +9,16 @@ import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { useFetchCategories } from "@/components/hooks/useFetchCategories";
+import { Textarea } from "@/components/ui/textarea";
 
-const AddEntryForm = ({
-  onAdded,
-  entry,
-}: {
+interface EntryProps {
   entry: string;
-  onAdded: () => void;
-}) => {
-  const { handleSubmit, register, reset } = useForm<Item>();
+  receiverId: string;
+}
+const AddSuggestion = ({ entry, receiverId }: EntryProps) => {
+  const { handleSubmit, register, reset } = useForm<SuggestionItem>();
   const [responseMessage, setResponseMessage] = useState<string>(
-    "La to-watch-list a été mise à jour ! 😍"
+    "Suggestion envoyée 👍"
   );
 
   const { categories } = useFetchCategories();
@@ -29,10 +28,11 @@ const AddEntryForm = ({
       ...data,
       year: Number(data.year),
       type: entry,
+      receiverId: receiverId,
     };
 
     try {
-      const response = await fetch(`/api/media`, {
+      const response = await fetch(`/api/suggestions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(reqData),
@@ -44,8 +44,7 @@ const AddEntryForm = ({
 
       const result = await response.json();
       reset();
-      setResponseMessage("La to-watch-list a été mise à jour ! 😍");
-      onAdded();
+      setResponseMessage("Suggestion envoyée 👍");
     } catch (error) {
       console.log(error);
       setResponseMessage("An error occurred while submitting the form 🫣");
@@ -70,7 +69,7 @@ const AddEntryForm = ({
           <Label htmlFor="synopsis" className="text-right">
             Synopsis
           </Label>
-          <Input
+          <Textarea
             id="synopsis"
             {...register("synopsis")}
             className="col-span-3"
@@ -121,6 +120,16 @@ const AddEntryForm = ({
           </select>
         </div>
       </div>
+      <div className="grid grid-cols-4 items-center gap-4 my-6">
+        <Label htmlFor="comment" className="text-right">
+          Ajouter un commentaire
+        </Label>
+        <Textarea
+          id="comment"
+          {...register("comment")}
+          className="col-span-3"
+        />
+      </div>
       <DialogFooter>
         <Button
           type="submit"
@@ -130,11 +139,11 @@ const AddEntryForm = ({
             });
           }}
         >
-          Ajouter
+          Envoyer
         </Button>
       </DialogFooter>
     </form>
   );
 };
 
-export default AddEntryForm;
+export default AddSuggestion;
