@@ -49,10 +49,7 @@ const SuggestionsList = () => {
               <CardContent>
                 <p>envoyé par {suggest.sender.name}</p>
                 <p className="italic mt-2">{suggest.senderComment}</p>
-                <SuggestionResponse
-                  suggestId={suggest.id}
-                  mediaId={suggest.media.id}
-                />
+                <SuggestionResponse suggestId={suggest.id} />
               </CardContent>
             </Card>
           ))}

@@ -7,13 +7,9 @@ import { Loader2 } from "lucide-react";
 
 interface SuggestionResponseProps {
   suggestId: string;
-  mediaId: string;
 }
 
-const SuggestionResponse = ({
-  suggestId,
-  mediaId,
-}: SuggestionResponseProps) => {
+const SuggestionResponse = ({ suggestId }: SuggestionResponseProps) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [acceptedSuggestion, setAcceptedSuggestion] = useState<boolean>(false);
   const [deletedSuggestion, setDeletedSuggestion] = useState<boolean>(false);
@@ -23,11 +19,13 @@ const SuggestionResponse = ({
 
     try {
       const response = await fetch(`/api/suggestions/${suggestId}`, {
-        method: "DELETE",
+        method: "PUT",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({ status: "REFUSED" }),
       });
 
       if (!response.ok) {
-        throw new Error("Failed to delete");
+        throw new Error("Failed to update status");
       }
 
       setDeletedSuggestion(true);
@@ -45,7 +43,7 @@ const SuggestionResponse = ({
       const response = await fetch(`/api/suggestions/${suggestId}`, {
         method: "PUT",
         headers: { "Content-type": "application/json" },
-        body: JSON.stringify({ id: mediaId }),
+        body: JSON.stringify({ status: "ACCEPTED" }),
       });
 
       if (!response.ok) {

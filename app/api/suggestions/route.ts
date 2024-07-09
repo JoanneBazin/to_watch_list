@@ -46,15 +46,26 @@ export async function POST(req: Request) {
       real: data.real,
       platform: data.platform,
       categoryName: data.categoryName,
-      suggestions: {
+      users: {
         create: [
           {
-            senderId: userId,
-            receiverId: data.receiverId,
-            senderComment: data.comment,
+            user: {
+              connect: {
+                id: data.receiverId,
+              },
+            },
           },
         ],
       },
+    },
+  });
+
+  const addNewSuggestion = await prisma.suggestion.create({
+    data: {
+      senderId: userId,
+      receiverId: data.receiverId,
+      mediaId: addSuggestion.id,
+      senderComment: data.comment,
     },
   });
   return NextResponse.json(addSuggestion);

@@ -20,13 +20,7 @@ export const useFetchWatchList = () => {
 
       setFilms(films);
       setSeries(series);
-
-      const suggestionResponse = await fetch("/api/suggestions/media");
-      if (!response.ok) {
-        throw new Error("Error network");
-      }
-      const suggestionResult = await suggestionResponse.json();
-      console.log(suggestionResult);
+      console.log(result);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

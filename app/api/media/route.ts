@@ -22,16 +22,48 @@ export async function GET(req: Request) {
               type: "FILM",
             },
           },
+          {
+            OR: [
+              {
+                suggestions: {
+                  none: {},
+                },
+              },
+              {
+                suggestions: {
+                  some: {
+                    status: "ACCEPTED",
+                  },
+                },
+              },
+            ],
+          },
         ],
       },
       select: {
         media: true,
         addedAt: true,
         watched: true,
+        suggestions: {
+          select: {
+            id: true,
+            senderComment: true,
+            sender: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
       },
-      orderBy: {
-        watched: "asc",
-      },
+      orderBy: [
+        {
+          watched: "asc",
+        },
+        {
+          addedAt: "desc",
+        },
+      ],
     }),
     prisma.usersWatchList.findMany({
       where: {
@@ -42,16 +74,48 @@ export async function GET(req: Request) {
               type: "SERIE",
             },
           },
+          {
+            OR: [
+              {
+                suggestions: {
+                  none: {},
+                },
+              },
+              {
+                suggestions: {
+                  some: {
+                    status: "ACCEPTED",
+                  },
+                },
+              },
+            ],
+          },
         ],
       },
       select: {
         media: true,
         addedAt: true,
         watched: true,
+        suggestions: {
+          select: {
+            id: true,
+            senderComment: true,
+            sender: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
       },
-      orderBy: {
-        watched: "asc",
-      },
+      orderBy: [
+        {
+          watched: "asc",
+        },
+        {
+          addedAt: "desc",
+        },
+      ],
     }),
   ]);
 

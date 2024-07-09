@@ -9,6 +9,7 @@ export interface Item {
   watched: boolean;
   id: string;
   type: string;
+  suggestions: SuggestionsProps[];
 }
 export interface SuggestionItem {
   title: string;

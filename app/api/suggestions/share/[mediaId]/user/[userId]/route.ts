@@ -1,5 +1,6 @@
 import { AuthOptions } from "@/app/api/auth/[...nextauth]/options";
 import { prisma } from "@/lib/script";
+import { connect } from "http2";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
@@ -48,6 +49,24 @@ export async function POST(req: Request, { params }: SuggestionsParamsProps) {
   const { mediaId, userId } = params;
   const data = await req.json();
 
+  let userMedia = await prisma.usersWatchList.findUnique({
+    where: {
+      userId_mediaId: {
+        userId: userId,
+        mediaId: mediaId,
+      },
+    },
+  });
+
+  if (!userMedia) {
+    userMedia = await prisma.usersWatchList.create({
+      data: {
+        userId: userId,
+        mediaId: mediaId,
+      },
+    });
+  }
+
   const addSuggestionExistantMedia = await prisma.suggestion.create({
     data: {
       senderId: senderId,
@@ -56,5 +75,6 @@ export async function POST(req: Request, { params }: SuggestionsParamsProps) {
       senderComment: data.comment,
     },
   });
+
   return NextResponse.json(addSuggestionExistantMedia);
 }

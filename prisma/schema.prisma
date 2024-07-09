@@ -8,7 +8,7 @@ datasource db {
 }
 
 model WatchList {
-  id           String           @id @default(cuid())
+  id           String    @id @default(cuid())
   title        String
   type         MediaType
   synopsis     String?
@@ -16,10 +16,10 @@ model WatchList {
   real         String?
   platform     String?
   categoryName String
-  category     Category         @relation(fields: [categoryName], references: [name])
-  
-  users        UsersWatchList[]
-  suggestions  Suggestion[]
+  category     Category  @relation(fields: [categoryName], references: [name])
+
+  users       UsersWatchList[]
+  suggestions Suggestion[]
 }
 
 enum MediaType {
@@ -73,11 +73,14 @@ model Suggestion {
 
   sender   User @relation("Sender", fields: [senderId], references: [id], onDelete: Cascade)
   receiver User @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  userMedia UsersWatchList? @relation(fields: [receiverId, mediaId], references: [userId, mediaId], onDelete: Cascade)
 }
 
 enum RequestStatus {
   PENDING
   ACCEPTED
+  REFUSED
 }
 
 model UsersWatchList {
@@ -85,8 +88,13 @@ model UsersWatchList {
   userId  String
   media   WatchList @relation(fields: [mediaId], references: [id], onDelete: Cascade)
   mediaId String
-  addedAt      DateTime         @default(now()) @db.Date
-  watched      Boolean          @default(false)
+
+  suggestions Suggestion[]
+
+  addedAt DateTime @default(now()) @db.Date
+  watched Boolean  @default(false)
 
   @@id([userId, mediaId])
+  @@unique([userId, mediaId])
+  
 }

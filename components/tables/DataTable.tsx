@@ -26,6 +26,7 @@ import { RxCross1 } from "react-icons/rx";
 import { FaCheck } from "react-icons/fa6";
 import { useFetchFriends } from "../hooks/useFetchFriends";
 import ShareEntry from "../actions/suggestions/ShareEntry";
+import MediaHoverCard from "../layout/MediaHoverCard";
 
 interface DataTableProps {
   data: Item[];
@@ -176,25 +177,7 @@ export function DataTable({ data, onModify }: DataTableProps) {
                     ))}
                   </TableRow>
                 </HoverCardTrigger>
-                <HoverCardContent className="w-80">
-                  <div className="space-y-1">
-                    <h5 className="font-bold my-1">{row.original.title}</h5>
-                    {row.original.real ? (
-                      <p className="font-semibold">{row.original.real}</p>
-                    ) : null}
-                    {row.original.year ? (
-                      <p className="text-xs">{row.original.year}</p>
-                    ) : null}
-                    {row.original.synopsis ? (
-                      <p className="text-gray-500">{row.original.synopsis}</p>
-                    ) : null}
-                    {row.original.platform ? (
-                      <p className="italic">
-                        Disponible sur {row.original.platform}
-                      </p>
-                    ) : null}
-                  </div>
-                </HoverCardContent>
+                <MediaHoverCard row={row.original} />
               </HoverCard>
             ))
           ) : (

@@ -44,7 +44,7 @@ const AddSuggestion = ({ entry, receiverId }: EntryProps) => {
 
       const result = await response.json();
       reset();
-      setResponseMessage("Suggestion envoyée 👍");
+      setResponseMessage(`Suggestion ${result.title} envoyée 👍`);
     } catch (error) {
       console.log(error);
       setResponseMessage("An error occurred while submitting the form 🫣");
