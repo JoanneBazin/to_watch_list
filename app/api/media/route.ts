@@ -48,6 +48,7 @@ export async function GET(req: Request) {
           select: {
             id: true,
             senderComment: true,
+            receiverComment: true,
             sender: {
               select: {
                 name: true,
@@ -100,6 +101,7 @@ export async function GET(req: Request) {
           select: {
             id: true,
             senderComment: true,
+            receiverComment: true,
             sender: {
               select: {
                 name: true,

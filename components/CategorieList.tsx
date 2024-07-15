@@ -16,18 +16,18 @@ import { useFetchCategories } from "./hooks/useFetchCategories";
 import { useFetchWatchList } from "./hooks/useFetchWatchList";
 
 export default function CategorieList() {
-  const { categories, refetch } = useFetchCategories();
-  const [selection, setSelection] = useState<{
-    Films: Item[];
-    Series: Item[];
-  } | null>();
+  const { categories } = useFetchCategories();
+  const [filmsSelection, setFilmsSelection] = useState<Item[]>();
+  const [seriesSelection, setSeriesSelection] = useState<Item[]>();
   const [selectedCategory, setSelectedCategory] = useState<string>();
-  const { refetch: refetchList, loading } = useFetchWatchList();
+  const [loading, setLoading] = useState<boolean>();
+  const { refetch } = useFetchWatchList();
 
   const handleSelection = async (value: string) => {
     const category = categories.find((category) => category.name === value);
 
     if (category) {
+      setLoading(true);
       try {
         const response = await fetch(`/api/category/${category.id}`, {
           method: "GET",
@@ -41,9 +41,12 @@ export default function CategorieList() {
         const result = await response.json();
 
         setSelectedCategory(category.name);
-        setSelection(result);
+        setFilmsSelection(result.films);
+        setSeriesSelection(result.series);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -71,30 +74,29 @@ export default function CategorieList() {
         </div>
 
         <div>
-          {selection &&
-            (loading ? (
-              <Loader />
-            ) : (
-              <div>
-                <h1 className="mx-10 text-2xl font-bold">{selectedCategory}</h1>
-                <div className="m-4">
-                  <h3 className="mx-6 my-4 text-lg">Films</h3>
-                  {selection.Films.length > 0 ? (
-                    <DataTable data={selection.Films} onModify={refetchList} />
-                  ) : (
-                    <p>Pas de films disponibles 😶</p>
-                  )}
-                </div>
-                <div className="m-4">
-                  <h3 className="mx-6 my-4 text-lg">Séries</h3>
-                  {selection.Series.length > 0 ? (
-                    <DataTable data={selection.Series} onModify={refetchList} />
-                  ) : (
-                    <p>Pas de séries disponibles 😶</p>
-                  )}
-                </div>
+          {loading ? (
+            <Loader />
+          ) : (
+            <div>
+              <h1 className="mx-10 text-2xl font-bold">{selectedCategory}</h1>
+              <div className="m-4">
+                <h3 className="mx-6 my-4 text-lg">Films</h3>
+                {filmsSelection && filmsSelection.length > 0 ? (
+                  <DataTable data={filmsSelection} onModify={refetch} />
+                ) : (
+                  <p>Pas de films disponibles 😶</p>
+                )}
               </div>
-            ))}
+              <div className="m-4">
+                <h3 className="mx-6 my-4 text-lg">Séries</h3>
+                {seriesSelection && seriesSelection.length > 0 ? (
+                  <DataTable data={seriesSelection} onModify={refetch} />
+                ) : (
+                  <p>Pas de séries disponibles 😶</p>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

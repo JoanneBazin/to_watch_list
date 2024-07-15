@@ -21,7 +21,12 @@ export async function GET(req: Request) {
       id: true,
       senderComment: true,
       media: true,
-      sender: true,
+      sender: {
+        select: {
+          name: true,
+          avatar: true,
+        },
+      },
     },
   });
   return NextResponse.json(suggestion);

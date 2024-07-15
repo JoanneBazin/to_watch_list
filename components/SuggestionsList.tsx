@@ -35,7 +35,7 @@ const SuggestionsList = () => {
     <div>
       {loading ? (
         <Loader />
-      ) : suggestions ? (
+      ) : suggestions.length > 0 ? (
         <div className="grid grid-cols-2 gap-4 mx-4 my-10">
           {suggestions.map((suggest) => (
             <Card key={suggest.id}>
@@ -55,7 +55,7 @@ const SuggestionsList = () => {
           ))}
         </div>
       ) : (
-        <div className="italic">Pas de suggestions</div>
+        <div className="italic my-6">Pas de suggestions</div>
       )}
     </div>
   );

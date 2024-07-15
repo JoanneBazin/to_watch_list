@@ -14,19 +14,18 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "../ui/hover-card";
 import { Item } from "@/lib/types";
 import { Button } from "../ui/button";
 import { format } from "date-fns";
 import { RxCross1 } from "react-icons/rx";
 import { FaCheck } from "react-icons/fa6";
+import { BiSolidEditAlt } from "react-icons/bi";
+
 import { useFetchFriends } from "../hooks/useFetchFriends";
 import ShareEntry from "../actions/suggestions/ShareEntry";
 import MediaHoverCard from "../layout/MediaHoverCard";
+import EditMedia from "../actions/forms/EditMedia";
+import { Dialog, DialogTrigger } from "../ui/dialog";
 
 interface DataTableProps {
   data: Item[];
@@ -75,6 +74,18 @@ export function DataTable({ data, onModify }: DataTableProps) {
     {
       accessorKey: "title",
       header: "Titre",
+      cell: ({ row }) => {
+        return (
+          <Dialog key={row.id}>
+            <DialogTrigger asChild>
+              <div className="cursor-pointer font-bold">
+                {row.original.title}
+              </div>
+            </DialogTrigger>
+            <MediaHoverCard row={row.original} />
+          </Dialog>
+        );
+      },
     },
     {
       accessorKey: "addedAt",
@@ -121,6 +132,22 @@ export function DataTable({ data, onModify }: DataTableProps) {
         </Button>
       ),
     },
+
+    {
+      id: "edit",
+      cell: ({ row }) => (
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline">
+              <BiSolidEditAlt />
+            </Button>
+          </DialogTrigger>
+
+          <EditMedia row={row.original} />
+        </Dialog>
+      ),
+    },
+
     {
       id: "suggest",
       cell: ({ row }) => <ShareEntry row={row.original} friends={friends} />,
@@ -157,28 +184,20 @@ export function DataTable({ data, onModify }: DataTableProps) {
         <TableBody>
           {table.getCoreRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <HoverCard key={row.id}>
-                <HoverCardTrigger asChild>
-                  <TableRow
-                    key={row.id}
-                    className={
-                      row.original.watched
-                        ? "bg-zinc-900 text-zinc-700 italic"
-                        : "hover:bg-muted/50"
-                    }
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </HoverCardTrigger>
-                <MediaHoverCard row={row.original} />
-              </HoverCard>
+              <TableRow
+                key={row.id}
+                className={
+                  row.original.watched
+                    ? "bg-zinc-900 text-zinc-700 italic"
+                    : "hover:bg-muted/50"
+                }
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
             ))
           ) : (
             <TableRow>

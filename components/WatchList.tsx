@@ -13,7 +13,7 @@ import {
 } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import SuggestionsList from "./SuggestionsList";
+import CategorieList from "./CategorieList";
 
 export default function WatchList() {
   const { films, series, loading, refetch } = useFetchWatchList();
@@ -24,7 +24,7 @@ export default function WatchList() {
         <TabsList>
           <TabsTrigger value="films">Films</TabsTrigger>
           <TabsTrigger value="series">Séries</TabsTrigger>
-          <TabsTrigger value="suggestions">Suggestions</TabsTrigger>
+          <TabsTrigger value="categories">Catégories</TabsTrigger>
         </TabsList>
         <TabsContent value="films">
           <div className="my-6">
@@ -72,8 +72,8 @@ export default function WatchList() {
           </div>
         </TabsContent>
 
-        <TabsContent value="suggestions">
-          <SuggestionsList />
+        <TabsContent value="categories">
+          <CategorieList />
         </TabsContent>
       </Tabs>
     </div>

@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { AuthOptions } from "./api/auth/[...nextauth]/options";
-import CategorieList from "@/components/CategorieList";
 import SuggestionsList from "@/components/SuggestionsList";
+import ReceivedMessages from "@/components/ReceivedMessages";
 
 export default async function Home() {
   // Return ==> Server Session
@@ -25,7 +25,12 @@ export default async function Home() {
       </div>
 
       <div className="m-10">
-        <CategorieList />
+        <ReceivedMessages />
+      </div>
+
+      <div className="m-10">
+        <h2 className="font-bold text-xl">Suggestions reçues</h2>
+        <SuggestionsList />
       </div>
     </section>
   );
