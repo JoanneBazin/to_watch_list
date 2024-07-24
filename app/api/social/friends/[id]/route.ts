@@ -1,4 +1,6 @@
+import { AuthOptions } from "@/app/api/auth/[...nextauth]/options";
 import { prisma } from "@/lib/script";
+import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -112,4 +114,33 @@ export async function GET(
   });
 
   return NextResponse.json({ profile, friendFilms, friendSeries, userFriends });
+}
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  const session = await getServerSession(AuthOptions);
+
+  if (!session) {
+    return null;
+  }
+
+  const userId = session.user.id;
+  const friendId = params.id;
+
+  const deleteContact = await prisma.friendRequest.deleteMany({
+    where: {
+      OR: [
+        {
+          AND: [{ senderId: userId }, { receiverId: friendId }],
+        },
+        {
+          AND: [{ senderId: friendId }, { receiverId: userId }],
+        },
+      ],
+    },
+  });
+
+  return NextResponse.json(deleteContact);
 }

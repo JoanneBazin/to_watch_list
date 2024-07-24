@@ -143,7 +143,7 @@ export function DataTable({ data, onModify }: DataTableProps) {
             </Button>
           </DialogTrigger>
 
-          <EditMedia row={row.original} />
+          <EditMedia row={row.original} onModify={onModify} />
         </Dialog>
       ),
     },

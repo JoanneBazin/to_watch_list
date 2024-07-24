@@ -1,6 +1,5 @@
 "use client";
 
-import { useFetchWatchList } from "@/components/hooks/useFetchWatchList";
 import { Button } from "@/components/ui/button";
 import {
   DialogContent,
@@ -12,15 +11,23 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Item } from "@/lib/types";
-import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 interface EditProps {
   row: Item;
+  onModify: () => void;
 }
 
-const EditMedia = ({ row }: EditProps) => {
-  const { handleSubmit, register } = useForm<Item>();
+const EditMedia = ({ row, onModify }: EditProps) => {
+  const { handleSubmit, register, setValue } = useForm<Item>();
+
+  setValue("synopsis", row.synopsis);
+  setValue("real", row.real);
+  setValue("platform", row.platform);
+
+  if (row.year) {
+    setValue("year", row.year);
+  }
 
   const onSubmit: SubmitHandler<Item> = async (data) => {
     const reqData = {
@@ -41,6 +48,7 @@ const EditMedia = ({ row }: EditProps) => {
       }
 
       const result = await response.json();
+      onModify();
     } catch (error) {
       console.log(error);
     }

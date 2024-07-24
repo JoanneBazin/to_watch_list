@@ -84,7 +84,7 @@ enum RequestStatus {
 }
 
 model UsersWatchList {
-  user    User      @relation(fields: [userId], references: [id])
+  user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  String
   media   WatchList @relation(fields: [mediaId], references: [id], onDelete: Cascade)
   mediaId String

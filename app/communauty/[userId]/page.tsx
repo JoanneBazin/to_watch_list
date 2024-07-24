@@ -1,6 +1,8 @@
 "use client";
 import AddSuggestion from "@/components/actions/forms/AddSuggestion";
+import DeleteFriend from "@/components/actions/social/DeleteFriend";
 import { Loader } from "@/components/layout/Loader";
+import FriendsWatchlist from "@/components/tables/FriendsWatchlist";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -79,45 +81,7 @@ const FriendProfile = ({ params }: { params: { userId: string } }) => {
                     </DialogContent>
                   </Dialog>
                 </div>
-                <ul className="ml-6 mb-6">
-                  {userFilms.length > 0 ? (
-                    userFilms.map((film) => (
-                      <HoverCard key={film.id}>
-                        <HoverCardTrigger asChild>
-                          <li className="my-3">{film.title}</li>
-                        </HoverCardTrigger>
-                        <HoverCardContent className="w-80">
-                          <div className="space-y-1">
-                            <h5 className="font-bold my-1 relative">
-                              {film.title}
-                            </h5>
-                            <span className="bg-zinc-700 p-2 rounded absolute right-2 top-2">
-                              {film.categoryName}
-                            </span>
-                            {film.real ? (
-                              <p className="font-semibold">{film.real}</p>
-                            ) : null}
-                            {film.year ? (
-                              <p className="text-xs">{film.year}</p>
-                            ) : null}
-                            {film.synopsis ? (
-                              <p className="text-gray-500">{film.synopsis}</p>
-                            ) : null}
-                            {film.platform ? (
-                              <p className="mt-2 italic">
-                                Disponible sur {film.platform}
-                              </p>
-                            ) : null}
-                          </div>
-                        </HoverCardContent>
-                      </HoverCard>
-                    ))
-                  ) : (
-                    <span className="italic text-sm text-zinc-500">
-                      Pas de film dans la watch-list
-                    </span>
-                  )}
-                </ul>
+                <FriendsWatchlist medias={userFilms} />
               </div>
 
               <div>
@@ -137,45 +101,7 @@ const FriendProfile = ({ params }: { params: { userId: string } }) => {
                     </DialogContent>
                   </Dialog>
                 </div>
-                <ul className="ml-6">
-                  {userSeries.length > 0 ? (
-                    userSeries.map((serie) => (
-                      <HoverCard key={serie.id}>
-                        <HoverCardTrigger asChild>
-                          <li className="my-3">{serie.title}</li>
-                        </HoverCardTrigger>
-                        <HoverCardContent className="w-80">
-                          <div className="space-y-1">
-                            <h5 className="font-bold my-1">{serie.title}</h5>
-                            <span className="bg-zinc-700 p-2 rounded absolute right-2 top-2">
-                              {serie.categoryName}
-                            </span>
-                            {serie.real ? (
-                              <p className="text-sm font-semibold">
-                                {serie.real}
-                              </p>
-                            ) : null}
-                            {serie.year ? (
-                              <p className="text-xs">{serie.year}</p>
-                            ) : null}
-                            {serie.synopsis ? (
-                              <p className="text-gray-500">{serie.synopsis}</p>
-                            ) : null}
-                            {serie.platform ? (
-                              <p className="mt-2 italic">
-                                Disponible sur {serie.platform}
-                              </p>
-                            ) : null}
-                          </div>
-                        </HoverCardContent>
-                      </HoverCard>
-                    ))
-                  ) : (
-                    <span className="italic text-sm text-zinc-500">
-                      Pas de série dans la watch-list
-                    </span>
-                  )}
-                </ul>
+                <FriendsWatchlist medias={userSeries} />
               </div>
             </div>
             <div>
@@ -190,6 +116,10 @@ const FriendProfile = ({ params }: { params: { userId: string } }) => {
                 )}
               </ul>
             </div>
+          </div>
+
+          <div>
+            <DeleteFriend friendId={profile.id} />
           </div>
         </div>
       )}
