@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/script";
+import prisma from "@/lib/script";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -27,7 +27,7 @@ export async function PUT(
     },
     data: json,
   });
-  return NextResponse.json(updateUser);
+  return NextResponse.json({ success: true });
 }
 
 export async function DELETE(

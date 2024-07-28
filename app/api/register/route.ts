@@ -1,7 +1,7 @@
 import { NextApiResponse } from "next";
 import bcrypt from "bcrypt";
-import { prisma } from "@/lib/script";
 import { NextResponse } from "next/server";
+import prisma from "@/lib/script";
 
 export async function POST(req: Request, res: NextApiResponse) {
   const json = await req.json();

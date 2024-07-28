@@ -34,12 +34,12 @@ export interface CategoryProps {
 export interface UserProps {
   id: string;
   name: string;
-  avatar: string;
+  avatar: Blob | MediaSource;
 }
 export interface FriendsProps {
   id: string;
   name: string;
-  avatar: string;
+  avatar: Blob | MediaSource;
   films: {
     film: Item[];
   };
