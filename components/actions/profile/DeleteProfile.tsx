@@ -35,7 +35,9 @@ const DeleteProfile = ({ userId }: { userId: string }) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="outline">Supprimer mon compte</Button>
+        <Button variant="outline" className="bg-zinc-900">
+          Supprimer mon compte
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

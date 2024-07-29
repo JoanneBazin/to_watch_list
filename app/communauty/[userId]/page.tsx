@@ -1,6 +1,7 @@
 "use client";
 import AddSuggestion from "@/components/actions/forms/AddSuggestion";
 import DeleteFriend from "@/components/actions/social/DeleteFriend";
+import { Avatar } from "@/components/layout/Avatar";
 import { Loader } from "@/components/layout/Loader";
 import FriendsWatchlist from "@/components/tables/FriendsWatchlist";
 import { Button } from "@/components/ui/button";
@@ -11,11 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  HoverCard,
-  HoverCardTrigger,
-  HoverCardContent,
-} from "@/components/ui/hover-card";
+
 import { FriendsProps, Item, UserProps } from "@/lib/types";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -33,7 +30,7 @@ const FriendProfile = ({ params }: { params: { userId: string } }) => {
         const response = await fetch(`/api/social/friends/${params.userId}`);
 
         const result = await response.json();
-        setProfile(result.profile);
+        setProfile(result.friend);
         setUserFilms(result.friendFilms);
         setUserSeries(result.friendSeries);
         setUserFriends(result.userFriends);
@@ -58,7 +55,10 @@ const FriendProfile = ({ params }: { params: { userId: string } }) => {
       ) : (
         <div>
           <div className="flex gap-10 my-4 mx-20">
-            <Image src={profile.avatar} alt="avatar" width={130} height={80} />
+            <Avatar
+              img={`data:image/*;base64,${profile.avatar}`}
+              size="large"
+            />
             <h2 className="text-4xl text-center m-12">{profile.name}</h2>
           </div>
 

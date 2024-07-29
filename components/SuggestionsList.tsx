@@ -21,6 +21,7 @@ const SuggestionsList = () => {
         }
 
         const result = await response.json();
+
         setSuggestions(result);
       } catch (error) {
         console.log(error);

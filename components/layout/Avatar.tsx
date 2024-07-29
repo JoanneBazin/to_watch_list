@@ -3,7 +3,7 @@ import Image from "next/image";
 
 interface AvatarProps {
   size?: "small" | "medium" | "large";
-  img: string;
+  img: string | null;
 }
 
 export const Avatar = ({ size = "medium", img }: AvatarProps) => {
@@ -23,12 +23,21 @@ export const Avatar = ({ size = "medium", img }: AvatarProps) => {
 
   return (
     <div className={clsx(sizeAvatar, "bg-zinc-600 rounded-full relative")}>
-      <Image
-        src={img}
-        alt="user avatar"
-        fill
-        className="rounded-full object-cover object-center"
-      />
+      {img ? (
+        <Image
+          src={img}
+          alt="user avatar"
+          fill
+          className="rounded-full object-cover object-center"
+        />
+      ) : (
+        <Image
+          src="/avatar.svg"
+          alt="user avatar"
+          fill
+          className="rounded-full object-cover object-center"
+        />
+      )}
     </div>
   );
 };

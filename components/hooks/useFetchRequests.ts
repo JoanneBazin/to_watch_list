@@ -17,10 +17,10 @@ export const useFetchRequests = () => {
         throw new Error("Error network");
       }
       const result = await response.json();
-      const { sent, received } = result;
+      const { requestSent, requestReceived } = result;
 
-      setSentRequests(sent);
-      setReceivedRequests(received);
+      setSentRequests(requestSent);
+      setReceivedRequests(requestReceived);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

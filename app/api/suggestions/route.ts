@@ -29,7 +29,15 @@ export async function GET(req: Request) {
       },
     },
   });
-  return NextResponse.json(suggestion);
+
+  const receivedSuggestions = suggestion.map((suggest) => ({
+    ...suggest,
+    avatar: suggest.sender.avatar
+      ? suggest.sender.avatar.toString("base64")
+      : null,
+  }));
+
+  return NextResponse.json(receivedSuggestions);
 }
 
 export async function POST(req: Request) {

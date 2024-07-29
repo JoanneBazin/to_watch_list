@@ -39,13 +39,17 @@ export async function GET(req: Request) {
       return {
         id: request.receiver.id,
         name: request.receiver.name,
-        avatar: request.receiver.avatar,
+        avatar: request.receiver.avatar
+          ? (request.receiver.avatar.toString("base64") as any)
+          : null,
       };
     } else {
       return {
         id: request.sender.id,
         name: request.sender.name,
-        avatar: request.sender.avatar,
+        avatar: request.sender.avatar
+          ? (request.sender.avatar.toString("base64") as any)
+          : null,
       };
     }
   });

@@ -10,7 +10,17 @@ export async function GET(
     where: {
       id: id,
     },
+    select: {
+      id: true,
+      name: true,
+      avatar: true,
+    },
   });
+
+  if (user && user.avatar) {
+    user.avatar = user.avatar.toString("base64") as any;
+  }
+
   return NextResponse.json(user);
 }
 
@@ -19,13 +29,20 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   const id = params.id;
-  const json = await req.json();
+  const { file } = await req.json();
+  if (!file) {
+    return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
+  }
 
-  const updateUser = await prisma.user.update({
+  const avatarData = Buffer.from(file, "base64");
+
+  const updateUserAvatar = await prisma.user.update({
     where: {
       id: id,
     },
-    data: json,
+    data: {
+      avatar: avatarData,
+    },
   });
   return NextResponse.json({ success: true });
 }

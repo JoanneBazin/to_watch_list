@@ -10,7 +10,6 @@ export const AuthOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "email",
       credentials: {
-        // name: { label: "Name", type: "text" },
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
@@ -30,7 +29,7 @@ export const AuthOptions: NextAuthOptions = {
             id: user.id,
             name: user.name,
             email: user.email,
-            avatar: user.avatar,
+            avatar: user.avatar ? user.avatar.toString("base64") : null,
             admin: user.admin,
           };
         } else {

@@ -7,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import Image from "next/image";
 import { UserProps } from "@/lib/types";
 import { useFetchFriends } from "../hooks/useFetchFriends";
 import { Button } from "../ui/button";
@@ -16,6 +15,7 @@ import { useFetchRequests } from "../hooks/useFetchRequests";
 import SendRequest from "../actions/social/SendRequest";
 import { Loader2 } from "lucide-react";
 import ValidateRequest from "../actions/social/ValidateRequest";
+import { Avatar } from "./Avatar";
 
 const UserCard = ({ name, id, avatar }: UserProps) => {
   const { friends } = useFetchFriends();
@@ -36,7 +36,7 @@ const UserCard = ({ name, id, avatar }: UserProps) => {
         <CardTitle className="text-center">{name}</CardTitle>
       </CardHeader>
       <CardContent>
-        <Image src={avatar} alt="avatar" width={100} height={100} />
+        <Avatar img={`data:image/*;base64,${avatar}`} />
       </CardContent>
       <CardFooter className="flex justify-center">
         {loading ? (

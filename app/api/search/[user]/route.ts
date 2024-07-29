@@ -29,7 +29,6 @@ export async function GET(
     },
     select: {
       name: true,
-      email: true,
       avatar: true,
       id: true,
     },
@@ -38,5 +37,11 @@ export async function GET(
   const results = allUsers.filter((user) =>
     user.name.toLowerCase().includes(query.toLowerCase())
   );
-  return NextResponse.json(results);
+
+  const usersList = results.map((user) => ({
+    ...user,
+    avatar: user.avatar ? user.avatar.toString("base64") : null,
+  }));
+
+  return NextResponse.json(usersList);
 }

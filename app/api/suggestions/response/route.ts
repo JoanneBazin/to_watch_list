@@ -39,5 +39,13 @@ export async function GET(req: Request) {
       },
     },
   });
-  return NextResponse.json(receivedMessages);
+
+  const messages = receivedMessages.map((message) => ({
+    ...message,
+    avatar: message.receiver.avatar
+      ? message.receiver.avatar.toString("base64")
+      : null,
+  }));
+
+  return NextResponse.json(messages);
 }

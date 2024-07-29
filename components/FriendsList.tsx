@@ -3,6 +3,7 @@ import { useFetchFriends } from "./hooks/useFetchFriends";
 import Image from "next/image";
 import Link from "next/link";
 import { Loader } from "./layout/Loader";
+import { Avatar } from "./layout/Avatar";
 
 const FriendsList = () => {
   const { friends, loading } = useFetchFriends();
@@ -15,7 +16,7 @@ const FriendsList = () => {
       ) : friends.length > 0 ? (
         friends.map((friend) => (
           <div key={friend.id} className="flex gap-4 items-center m-6">
-            <Image src={friend.avatar} alt="avatar" height={40} width={40} />
+            <Avatar img={`data:image/*;base64,${friend.avatar}`} />
             <Link href={`/communauty/${friend.id}`}>{friend.name}</Link>
           </div>
         ))

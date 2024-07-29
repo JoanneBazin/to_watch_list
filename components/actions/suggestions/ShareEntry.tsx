@@ -18,6 +18,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Avatar } from "@/components/layout/Avatar";
 
 interface ShareProps {
   row: Item;
@@ -45,7 +46,10 @@ const ShareEntry = ({ row, friends }: ShareProps) => {
               key={friend.id}
               className="flex gap-4 items-center justify-start hover:bg-zinc-700 px-4"
             >
-              <Image src={friend.avatar} alt="avatar" width={40} height={20} />
+              <Avatar
+                img={`data:image/*;base64,${friend.avatar}`}
+                size="small"
+              />
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value={friend.id}>
                   <AccordionTrigger>

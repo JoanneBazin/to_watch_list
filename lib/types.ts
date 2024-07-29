@@ -9,7 +9,7 @@ export interface Item {
   watched: boolean;
   id: string;
   type: string;
-  suggestions: SuggestionsProps[];
+  suggestions?: SuggestionsProps[];
 }
 export interface SuggestionItem {
   title: string;
@@ -34,12 +34,13 @@ export interface CategoryProps {
 export interface UserProps {
   id: string;
   name: string;
-  avatar: Blob | MediaSource;
+  avatar: string | null;
+  email?: string;
 }
 export interface FriendsProps {
   id: string;
   name: string;
-  avatar: Blob | MediaSource;
+  avatar: string | null;
   films: {
     film: Item[];
   };
