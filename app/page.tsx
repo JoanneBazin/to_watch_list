@@ -10,7 +10,7 @@ export default async function Home() {
   if (!session) {
     return (
       <div className="flex flex-col items-center  h-full my-10">
-        <h2 className="text-2xl">Please sign in</h2>
+        <h2 className="text-2xl">No session</h2>
       </div>
     );
   }

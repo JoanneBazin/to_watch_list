@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/dialog";
 
 import { FriendsProps, Item, UserProps } from "@/lib/types";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 const FriendProfile = ({ params }: { params: { userId: string } }) => {
@@ -55,10 +54,14 @@ const FriendProfile = ({ params }: { params: { userId: string } }) => {
       ) : (
         <div>
           <div className="flex gap-10 my-4 mx-20">
-            <Avatar
-              img={`data:image/*;base64,${profile.avatar}`}
-              size="large"
-            />
+            {profile.avatar ? (
+              <Avatar
+                img={`data:image/*;base64,${profile.avatar}`}
+                size="large"
+              />
+            ) : (
+              <Avatar size="large" img="/avatar.svg" />
+            )}
             <h2 className="text-4xl text-center m-12">{profile.name}</h2>
           </div>
 

@@ -8,7 +8,7 @@ import { Dispatch, FormEvent, SetStateAction, useRef, useState } from "react";
 
 interface EditProfileProps {
   user: UserProps;
-  updateUser: Dispatch<SetStateAction<UserProps | null>>;
+  updateUser: Dispatch<SetStateAction<UserProps>>;
 }
 
 const EditProfile = ({ user, updateUser }: EditProfileProps) => {
@@ -33,13 +33,12 @@ const EditProfile = ({ user, updateUser }: EditProfileProps) => {
         throw new Error("HTTP error");
       }
 
-      updateUser((prev) => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          name: updatedName,
-        };
-      });
+      const updatedUserName = {
+        ...user,
+        name: updatedName,
+      };
+
+      updateUser(updatedUserName);
     } catch (error) {
       console.log(error);
     }
@@ -82,13 +81,12 @@ const EditProfile = ({ user, updateUser }: EditProfileProps) => {
         fileInput.current.value = "";
       }
 
-      updateUser((prev) => {
-        if (!prev) return null;
-        return {
-          ...prev,
-          avatar: image,
-        };
-      });
+      const updatedUserAvatar = {
+        ...user,
+        avatar: image,
+      };
+
+      updateUser(updatedUserAvatar);
     } catch (error) {
       console.log(error);
     }

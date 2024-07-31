@@ -36,7 +36,11 @@ const UserCard = ({ name, id, avatar }: UserProps) => {
         <CardTitle className="text-center">{name}</CardTitle>
       </CardHeader>
       <CardContent>
-        <Avatar img={`data:image/*;base64,${avatar}`} />
+        {avatar ? (
+          <Avatar img={`data:image/*;base64,${avatar}`} />
+        ) : (
+          <Avatar img="/avatar.svg" />
+        )}
       </CardContent>
       <CardFooter className="flex justify-center">
         {loading ? (

@@ -80,7 +80,7 @@ const SendSuggestion = ({ friendId, rowId }: SendSuggestProps) => {
 
           <Button
             className="mt-2"
-            onClick={() => handleSendSuggestion()}
+            onClick={handleSendSuggestion}
             variant="outline"
           >
             <CiCirclePlus className="text-lg mr-2" />
