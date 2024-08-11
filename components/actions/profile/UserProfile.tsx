@@ -8,38 +8,42 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 const UserProfile = () => {
-  const { user, setUser } = useUser();
+  const { user, loading, setUser } = useUser();
 
-  if (!user.isLoggedIn) {
-    return (
-      <div className="flex flex-col items-center justify-center gap-6">
-        <span>Pas de session connectée</span>
-        <Button variant="outline">
-          <Link href="/">Retour à l`&apos;`accueil</Link>
-        </Button>
-      </div>
-    );
+  if (loading) {
+    return <span className="italic">...loading</span>;
   }
 
   return (
-    <div>
-      <div className="flex flex-col gap-6 justify-center items-center">
-        <span className="text-3xl">Welcome back {user.name}</span>
-        {user.avatar ? (
-          <Avatar size="large" img={`data:image/*;base64,${user.avatar}`} />
-        ) : (
-          <Avatar size="large" img="/avatar.svg" />
-        )}
-
+    <>
+      {user ? (
         <div>
-          <EditProfile user={user} updateUser={setUser} />
-        </div>
+          <div className="flex flex-col gap-6 justify-center items-center">
+            <span className="text-3xl">Welcome back {user.name}</span>
+            {user.avatar ? (
+              <Avatar size="large" img={`data:image/*;base64,${user.avatar}`} />
+            ) : (
+              <Avatar size="large" img="/avatar.svg" />
+            )}
 
-        <div>
-          <DeleteProfile userId={user.id} />
+            <div>
+              <EditProfile user={user} updateUser={setUser} />
+            </div>
+
+            <div>
+              <DeleteProfile userId={user.id} />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center gap-6">
+          <span>Pas de session connectée</span>
+          <Button variant="outline">
+            <Link href="/">Retour à l&apos;accueil</Link>
+          </Button>
+        </div>
+      )}
+    </>
   );
 };
 

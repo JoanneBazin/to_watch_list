@@ -3,6 +3,48 @@ import prisma from "@/lib/script";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
+interface SuggestionsParamsProps {
+  params: {
+    mediaId: string;
+    userId: string;
+  };
+}
+
+export async function POST(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  const session = await getServerSession(AuthOptions);
+
+  if (!session) {
+    return null;
+  }
+
+  const userId = session.user.id;
+  const mediaId = params.id;
+
+  const checkExistantLink = await prisma.usersWatchList.findUnique({
+    where: {
+      userId_mediaId: {
+        userId: userId,
+        mediaId: mediaId,
+      },
+    },
+  });
+
+  if (!checkExistantLink) {
+    const addExistantMedia = await prisma.usersWatchList.create({
+      data: {
+        userId: userId,
+        mediaId: mediaId,
+      },
+    });
+    return NextResponse.json({ success: true });
+  } else {
+    return NextResponse.json({ success: false });
+  }
+}
+
 export async function PUT(
   req: Request,
   { params }: { params: { id: string } }

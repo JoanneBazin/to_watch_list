@@ -9,25 +9,10 @@ import { useUser } from "@/app/UserContext";
 import { Avatar } from "./Avatar";
 
 const Header = () => {
-  const { user } = useUser();
+  const { user, loading } = useUser();
 
-  if (!user.isLoggedIn) {
-    return (
-      <header className="flex justify-between items-center mx-2">
-        <div className="flex">
-          <Link href="/" className="text-3xl font-bold m-4">
-            Watchers
-          </Link>
-          <GiFilmStrip className="size-10 mt-3" />
-        </div>
-        <div className="mx-4">
-          <SignUpBtn />
-
-          <SignInBtn />
-          <SignOutBtn />
-        </div>
-      </header>
-    );
+  if (loading) {
+    return <p className="italic">...loading</p>;
   }
 
   return (
@@ -39,25 +24,34 @@ const Header = () => {
           </Link>
           <GiFilmStrip className="size-10 mt-3" />
         </div>
+        {user ? (
+          <div className="flex items-center gap-4">
+            <div className="flex gap-4 ml-8">
+              <Link href="/suggestions">Suggestions</Link>
 
-        <div className="flex gap-4 ml-8">
-          <Link href="/watchlist">Watch List</Link>
+              <Link href="/communauty">Communauté</Link>
+            </div>
 
-          <Link href="/communauty">Communauté</Link>
-        </div>
+            <div className="flex gap-4 pl-8 items-center">
+              <Avatar img={`data:image/*;base64,${user.avatar}`} size="small" />
 
-        <div className="flex gap-4 pl-8 items-center">
-          {user.avatar ? (
-            <Avatar img={`data:image/*;base64,${user.avatar}`} size="small" />
-          ) : (
-            <Avatar size="small" img="/avatar.svg" />
-          )}
-          <p>
-            Hello
-            <Link className="font-bold" href="/account">{` ${user.name}`}</Link>
-          </p>
-          <SignOutBtn />
-        </div>
+              <p>
+                Hello
+                <Link
+                  className="font-bold"
+                  href="/account"
+                >{` ${user.name}`}</Link>
+              </p>
+              <SignOutBtn />
+            </div>
+          </div>
+        ) : (
+          <div className="mx-4">
+            <SignUpBtn />
+
+            <SignInBtn />
+          </div>
+        )}
       </nav>
     </header>
   );

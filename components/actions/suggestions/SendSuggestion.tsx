@@ -65,12 +65,7 @@ const SendSuggestion = ({ friendId, rowId }: SendSuggestProps) => {
     <>
       {loading ? (
         <Loader2 />
-      ) : isSuggestion ? (
-        <div className="flex gap-4 items-center">
-          <FaCheck className="italic text-sm" />
-          <span className="italic text-sm">Suggestion envoyée</span>
-        </div>
-      ) : (
+      ) : isSuggestion ? null : (
         <div>
           <Textarea
             onChange={(e) => setSenderComment(e.target.value)}

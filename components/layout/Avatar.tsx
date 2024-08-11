@@ -23,21 +23,15 @@ export const Avatar = ({ size = "medium", img }: AvatarProps) => {
 
   return (
     <div className={clsx(sizeAvatar, "bg-zinc-600 rounded-full relative")}>
-      {img ? (
-        <Image
-          src={img}
-          alt="user avatar"
-          fill
-          className="rounded-full object-cover object-center"
-        />
-      ) : (
-        <Image
-          src="/avatar.svg"
-          alt="user avatar"
-          fill
-          className="rounded-full object-cover object-center"
-        />
-      )}
+      <Image
+        src={img || "/avatar.svg"}
+        alt="user avatar"
+        fill
+        className="rounded-full object-cover object-center"
+        onError={(e) => {
+          e.currentTarget.src = "/avatar.svg";
+        }}
+      />
     </div>
   );
 };

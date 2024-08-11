@@ -34,6 +34,7 @@ const SuggestionsList = () => {
 
   return (
     <div>
+      <h2 className="my-6 text-3xl">Suggestions</h2>
       {loading ? (
         <Loader />
       ) : suggestions.length > 0 ? (

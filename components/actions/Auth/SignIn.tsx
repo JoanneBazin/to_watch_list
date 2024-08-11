@@ -4,8 +4,7 @@ import { useUser } from "@/app/UserContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { getSession, signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -18,8 +17,6 @@ type SignInForm = {
 const SignIn = () => {
   const { handleSubmit, register } = useForm<SignInForm>();
   const [error, setError] = useState<string | null>(null);
-  const { setUser } = useUser();
-  const router = useRouter();
 
   const onSubmit: SubmitHandler<SignInForm> = async (data) => {
     const { email, password } = data;
@@ -27,28 +24,11 @@ const SignIn = () => {
     try {
       const result = await signIn("credentials", {
         callbackUrl: "/",
-        redirect: false,
+        redirect: true,
         email,
         password,
       });
 
-      if (result?.ok) {
-        const response = await fetch("/api/users");
-        if (!response.ok) {
-          throw new Error("Error network");
-        }
-        const userData = await response.json();
-
-        setUser({
-          name: userData.name,
-          avatar: userData.avatar,
-          id: userData.id,
-          email: userData.email,
-          isLoggedIn: true,
-        });
-
-        router.replace("/");
-      }
       if (result?.error) {
         setError("Email ou mot de passe incorrect ");
       }

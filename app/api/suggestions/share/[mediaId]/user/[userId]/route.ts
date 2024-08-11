@@ -31,7 +31,17 @@ export async function GET(req: Request, { params }: SuggestionsParamsProps) {
   });
 
   if (!findSuggest || findSuggest.length < 1) {
-    return NextResponse.json(false);
+    const existingUserMedia = await prisma.usersWatchList.findUnique({
+      where: {
+        userId_mediaId: {
+          userId: userId,
+          mediaId: mediaId,
+        },
+      },
+    });
+    if (!existingUserMedia) {
+      return NextResponse.json(false);
+    }
   }
 
   return NextResponse.json(true);

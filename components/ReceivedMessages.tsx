@@ -39,7 +39,7 @@ const ReceivedMessages = () => {
         <Loader />
       ) : messages ? (
         <div>
-          <h2 className="font-bold text-xl">Messages</h2>
+          <h2 className="my-6 text-3xl">Messages</h2>
           <div className="grid grid-cols-2 gap-4 mx-4 my-10">
             {messages.map((message) => (
               <Card key={message.id}>

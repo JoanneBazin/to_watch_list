@@ -1,11 +1,9 @@
 "use client";
 
-import { useUser } from "@/app/UserContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
@@ -22,8 +20,6 @@ const SignUp = () => {
     formState: { errors },
   } = useForm<SignUpForm>();
   const [error, setError] = useState<string | null>(null);
-  const { setUser } = useUser();
-  const router = useRouter();
 
   const onSubmit: SubmitHandler<SignUpForm> = async (data) => {
     const { name, email, password } = data;
@@ -38,21 +34,10 @@ const SignUp = () => {
       if (response.ok) {
         const result = await signIn("credentials", {
           callbackUrl: "/",
-          redirect: false,
+          redirect: true,
           email,
           password,
         });
-
-        const dataUser = await response.json();
-        setUser({
-          name: dataUser.name,
-          email: email,
-          id: dataUser.id,
-          avatar: "",
-          isLoggedIn: true,
-        });
-
-        router.replace("/");
 
         if (result?.error) {
           setError("Problème de connexion");

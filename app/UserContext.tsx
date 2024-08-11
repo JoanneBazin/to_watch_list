@@ -1,5 +1,6 @@
 "use client";
 import { UserProps } from "@/lib/types";
+import { useSession } from "next-auth/react";
 import {
   createContext,
   ReactNode,
@@ -10,49 +11,49 @@ import {
 } from "react";
 
 interface UserContextProps {
-  user: UserProps;
-  setUser: React.Dispatch<SetStateAction<UserProps>>;
+  user: UserProps | null;
+  setUser: React.Dispatch<SetStateAction<UserProps | null>>;
+  loading: boolean;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<UserProps>({
-    name: "",
-    avatar: "",
-    id: "",
-    email: "",
-    isLoggedIn: false,
-  });
+  const { data: session, status } = useSession();
+  const [user, setUser] = useState<UserProps | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch("/api/users");
+        const response = await fetch(`/api/users/${session?.user.id}`);
+
         if (!response.ok) {
           throw new Error("Error network");
         }
+
         const userData = await response.json();
 
         setUser({
           name: userData.name,
           avatar: userData.avatar,
           id: userData.id,
-          email: userData.email,
-          isLoggedIn: true,
         });
       } catch (err) {
         console.log(err);
       }
     };
 
-    if (user.isLoggedIn) {
+    if (status === "authenticated") {
       fetchUser();
+    } else {
+      setUser(null);
     }
-  }, [user.isLoggedIn]);
+    setLoading(false);
+  }, [status, session]);
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, loading }}>
       {children}
     </UserContext.Provider>
   );
@@ -60,7 +61,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
 export const useUser = () => {
   const context = useContext(UserContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error("useUser must be used within a UserProvider");
   }
   return context;

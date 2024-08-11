@@ -5,16 +5,9 @@ import { signOut } from "next-auth/react";
 
 const SignOutBtn = () => {
   const { setUser } = useUser();
-
   const handleLogOut = () => {
     signOut({ callbackUrl: "/", redirect: true });
-    setUser({
-      name: "",
-      avatar: "",
-      id: "",
-      email: "",
-      isLoggedIn: false,
-    });
+    setUser(null);
   };
 
   return (

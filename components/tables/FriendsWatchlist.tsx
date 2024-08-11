@@ -4,6 +4,8 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "../ui/hover-card";
+import { Button } from "../ui/button";
+import AddMedia from "../actions/media/AddMedia";
 
 interface FriendWatchlistProps {
   medias: Item[];
@@ -34,6 +36,7 @@ const FriendsWatchlist = ({ medias }: FriendWatchlistProps) => {
                 {media.platform ? (
                   <p className="mt-2 italic">Disponible sur {media.platform}</p>
                 ) : null}
+                <AddMedia mediaId={media.id} />
               </div>
             </HoverCardContent>
           </HoverCard>

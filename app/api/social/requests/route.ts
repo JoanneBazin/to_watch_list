@@ -51,14 +51,25 @@ export async function GET(req: Request) {
   const received = requests[1].status === "fulfilled" ? requests[1].value : [];
 
   const requestSent = sent.map((req) => ({
-    ...req,
-    avatar: req.receiver.avatar ? req.receiver.avatar.toString("base64") : null,
+    id: req.id,
+    sender: {
+      id: req.receiver.id,
+      name: req.receiver.name,
+      avatar: req.receiver.avatar
+        ? req.receiver.avatar.toString("base64")
+        : null,
+    },
   }));
 
   const requestReceived = received.map((req) => ({
-    ...req,
-    avatar: req.sender.avatar ? req.sender.avatar.toString("base64") : null,
+    id: req.id,
+    sender: {
+      id: req.sender.id,
+      name: req.sender.name,
+      avatar: req.sender.avatar ? req.sender.avatar.toString("base64") : null,
+    },
   }));
+  console.log(requestReceived);
 
   return NextResponse.json({ requestSent, requestReceived });
 }

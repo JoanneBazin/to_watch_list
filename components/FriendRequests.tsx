@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useFetchRequests } from "./hooks/useFetchRequests";
 import { Loader } from "./layout/Loader";
 import ValidateRequest from "./actions/social/ValidateRequest";
@@ -16,7 +15,7 @@ const FriendRequests = () => {
         <Loader />
       ) : receivedRequests.length > 0 ? (
         receivedRequests.map((request, index) => (
-          <div key={index} className="flex gap-4 items-center">
+          <div key={index} className="flex gap-4 items-center my-3">
             <Avatar img={`data:image/*;base64,${request.sender.avatar}`} />
             <span className="mr-20">{request.sender.name}</span>
             <ValidateRequest

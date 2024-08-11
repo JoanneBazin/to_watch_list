@@ -36,7 +36,6 @@ export interface UserProps {
   name: string;
   avatar: string | null;
   email?: string;
-  isLoggedIn?: boolean;
 }
 export interface FriendsProps {
   id: string;

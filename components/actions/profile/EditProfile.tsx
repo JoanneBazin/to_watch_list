@@ -8,7 +8,7 @@ import { Dispatch, FormEvent, SetStateAction, useRef, useState } from "react";
 
 interface EditProfileProps {
   user: UserProps;
-  updateUser: Dispatch<SetStateAction<UserProps>>;
+  updateUser: Dispatch<SetStateAction<UserProps | null>>;
 }
 
 const EditProfile = ({ user, updateUser }: EditProfileProps) => {
