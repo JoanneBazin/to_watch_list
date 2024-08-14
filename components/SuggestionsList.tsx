@@ -6,6 +6,7 @@ import { Loader } from "./layout/Loader";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import SuggestionResponse from "./actions/suggestions/SuggestionResponse";
 import { Badge } from "./ui/badge";
+import { Avatar } from "./layout/Avatar";
 
 const SuggestionsList = () => {
   const [suggestions, setSuggestions] = useState<SuggestionsProps[]>([]);
@@ -39,19 +40,30 @@ const SuggestionsList = () => {
         <Loader />
       ) : suggestions.length > 0 ? (
         <div className="grid grid-cols-2 gap-4 mx-4 my-10">
-          {suggestions.map((suggest) => (
-            <Card key={suggest.id}>
+          {suggestions.map((suggestion) => (
+            <Card key={suggestion.media.id}>
               <CardHeader>
                 <CardTitle className="flex justify-between items-center">
-                  <span>{suggest.media.title}</span>
+                  <span>{suggestion.media.title}</span>
 
-                  <Badge>{suggest.media.type}</Badge>
+                  <Badge>{suggestion.media.type}</Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p>envoyé par {suggest.sender.name}</p>
-                <p className="italic mt-2">{suggest.senderComment}</p>
-                <SuggestionResponse suggestId={suggest.id} />
+                {suggestion.suggestions.map((suggest) => (
+                  <div key={suggest.id} className="my-4">
+                    <div className="flex gap-3">
+                      <Avatar
+                        size="small"
+                        img={`data:image/*;base64,${suggest.sender.avatar}`}
+                      />
+                      <p>envoyé par {suggest.sender.name}</p>
+                    </div>
+                    <p className="italic mt-2">{suggest.senderComment}</p>
+                  </div>
+                ))}
+
+                <SuggestionResponse mediaId={suggestion.media.id} />
               </CardContent>
             </Card>
           ))}

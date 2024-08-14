@@ -37,6 +37,20 @@ export async function GET(req: Request, { params }: SuggestionsParamsProps) {
           userId: userId,
           mediaId: mediaId,
         },
+        OR: [
+          {
+            suggestions: {
+              some: {
+                status: "ACCEPTED",
+              },
+            },
+          },
+          {
+            suggestions: {
+              none: {},
+            },
+          },
+        ],
       },
     });
     if (!existingUserMedia) {
@@ -85,5 +99,5 @@ export async function POST(req: Request, { params }: SuggestionsParamsProps) {
     },
   });
 
-  return NextResponse.json(addSuggestionExistantMedia);
+  return NextResponse.json(true);
 }

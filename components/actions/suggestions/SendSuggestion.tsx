@@ -3,10 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { CiCirclePlus } from "react-icons/ci";
 import { useEffect, useState } from "react";
-import { FaCheck } from "react-icons/fa";
 import { FriendsProps, Item } from "@/lib/types";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
+import { FaUserCheck } from "react-icons/fa6";
 
 interface SendSuggestProps {
   friendId: FriendsProps["id"];
@@ -15,6 +15,8 @@ interface SendSuggestProps {
 
 const SendSuggestion = ({ friendId, rowId }: SendSuggestProps) => {
   const [isSuggestion, setIsSuggestion] = useState<boolean>();
+  const [sentSuggestion, setSentSuggestion] = useState<boolean>(false);
+
   const [loading, setLoading] = useState<boolean>(true);
   const [senderComment, setSenderComment] = useState<string>("");
 
@@ -56,7 +58,7 @@ const SendSuggestion = ({ friendId, rowId }: SendSuggestProps) => {
       }
 
       const result = await response.json();
-      setIsSuggestion(true);
+      setSentSuggestion(result);
     } catch (error) {
       console.log(error);
     }
@@ -65,7 +67,11 @@ const SendSuggestion = ({ friendId, rowId }: SendSuggestProps) => {
     <>
       {loading ? (
         <Loader2 />
-      ) : isSuggestion ? null : (
+      ) : isSuggestion ? (
+        <FaUserCheck />
+      ) : sentSuggestion ? (
+        <span className="italic">Suggestion envoyée</span>
+      ) : (
         <div>
           <Textarea
             onChange={(e) => setSenderComment(e.target.value)}

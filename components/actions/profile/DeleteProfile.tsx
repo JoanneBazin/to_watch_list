@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 const DeleteProfile = ({ userId }: { userId: string }) => {
   const handleDelete = async () => {

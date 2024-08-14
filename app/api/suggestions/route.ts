@@ -12,33 +12,82 @@ export async function GET(req: Request) {
 
   const userId = session.user.id;
 
-  const suggestion = await prisma.suggestion.findMany({
+  const suggestion = await prisma.usersWatchList.findMany({
     where: {
-      receiverId: userId,
-      status: "PENDING",
+      AND: [
+        {
+          userId: userId,
+        },
+        {
+          suggestions: {
+            some: {
+              status: "PENDING",
+            },
+          },
+        },
+      ],
     },
     select: {
-      id: true,
-      senderComment: true,
       media: true,
-      sender: {
+      suggestions: {
         select: {
-          name: true,
-          avatar: true,
+          id: true,
+          senderComment: true,
+
+          sender: {
+            select: {
+              name: true,
+              avatar: true,
+            },
+          },
         },
       },
     },
   });
 
-  const receivedSuggestions = suggestion.map((suggest) => ({
-    ...suggest,
-    avatar: suggest.sender.avatar
-      ? suggest.sender.avatar.toString("base64")
-      : null,
+  const receivedSuggestions = suggestion.map((result) => ({
+    media: result.media,
+    suggestions: result.suggestions.map((suggest) => ({
+      id: suggest.id,
+      senderComment: suggest.senderComment,
+      sender: {
+        name: suggest.sender.name,
+        avatar: suggest.sender.avatar
+          ? suggest.sender.avatar.toString("base64")
+          : null,
+      },
+    })),
   }));
-
   return NextResponse.json(receivedSuggestions);
 }
+
+// const suggestion = await prisma.suggestion.findMany({
+//   where: {
+//     receiverId: userId,
+//     status: "PENDING",
+//   },
+//   select: {
+//     id: true,
+//     senderComment: true,
+//     media: true,
+//     sender: {
+//       select: {
+//         name: true,
+//         avatar: true,
+//       },
+//     },
+//   },
+// });
+
+// const receivedSuggestions = suggestion.map((suggest) => ({
+//   ...suggest,
+//   sender: {
+//     name: suggest.sender.name,
+//     avatar: suggest.sender.avatar
+//       ? suggest.sender.avatar.toString("base64")
+//       : null,
+//   },
+// }));
 
 export async function POST(req: Request) {
   const session = await getServerSession(AuthOptions);

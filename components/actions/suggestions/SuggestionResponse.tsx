@@ -6,10 +6,10 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 
 interface SuggestionResponseProps {
-  suggestId: string;
+  mediaId: string;
 }
 
-const SuggestionResponse = ({ suggestId }: SuggestionResponseProps) => {
+const SuggestionResponse = ({ mediaId }: SuggestionResponseProps) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [acceptedSuggestion, setAcceptedSuggestion] = useState<boolean>(false);
   const [deletedSuggestion, setDeletedSuggestion] = useState<boolean>(false);
@@ -18,7 +18,7 @@ const SuggestionResponse = ({ suggestId }: SuggestionResponseProps) => {
     setLoading(true);
 
     try {
-      const response = await fetch(`/api/suggestions/${suggestId}`, {
+      const response = await fetch(`/api/suggestions/${mediaId}`, {
         method: "PUT",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({ status: "REFUSED" }),
@@ -40,7 +40,7 @@ const SuggestionResponse = ({ suggestId }: SuggestionResponseProps) => {
     setLoading(true);
 
     try {
-      const response = await fetch(`/api/suggestions/${suggestId}`, {
+      const response = await fetch(`/api/suggestions/${mediaId}`, {
         method: "PUT",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({ status: "ACCEPTED" }),

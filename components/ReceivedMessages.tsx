@@ -22,7 +22,6 @@ const ReceivedMessages = () => {
 
         const result = await response.json();
         setMessages(result);
-        console.log(result);
       } catch (error) {
         console.log(error);
       } finally {

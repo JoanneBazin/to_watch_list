@@ -172,5 +172,5 @@ export async function POST(req: Request) {
     },
   });
 
-  return new NextResponse(JSON.stringify(addEntry), { status: 201 });
+  return NextResponse.json(addEntry);
 }

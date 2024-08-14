@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface AddMediaProps {
   mediaId: string;
@@ -9,7 +9,26 @@ interface AddMediaProps {
 
 const AddMedia = ({ mediaId }: AddMediaProps) => {
   const [added, setAdded] = useState<boolean>(false);
-  const [existantMedia, setExistantMedia] = useState<boolean>(false);
+  const [existantMedia, setExistantMedia] = useState<boolean>();
+
+  useEffect(() => {
+    const fetchMedia = async () => {
+      try {
+        const response = await fetch(`/api/media/${mediaId}`);
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch watchlist");
+        }
+
+        const result = await response.json();
+        setExistantMedia(result);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchMedia();
+  }, [mediaId]);
 
   const handleAdd = async () => {
     try {
@@ -26,8 +45,6 @@ const AddMedia = ({ mediaId }: AddMediaProps) => {
 
       if (result.success) {
         setAdded(true);
-      } else {
-        setExistantMedia(true);
       }
     } catch (error) {
       console.log(error);
@@ -36,11 +53,9 @@ const AddMedia = ({ mediaId }: AddMediaProps) => {
   return (
     <>
       {added ? (
-        <span className="italic">Ajouté</span>
-      ) : existantMedia ? (
-        <span className="italic">Déjà dans ma liste</span>
-      ) : (
-        <Button onClick={handleAdd} variant="outline">
+        <span className="italic">Ajouté à ma liste</span>
+      ) : existantMedia ? null : (
+        <Button onClick={handleAdd} variant="outline" className="px-6 my-4">
           +
         </Button>
       )}

@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { FriendsProps, Item, UserProps } from "@/lib/types";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const FriendProfile = ({ params }: { params: { userId: string } }) => {
   const [profile, setProfile] = useState<FriendsProps>();

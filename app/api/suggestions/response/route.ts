@@ -42,9 +42,12 @@ export async function GET(req: Request) {
 
   const messages = receivedMessages.map((message) => ({
     ...message,
-    avatar: message.receiver.avatar
-      ? message.receiver.avatar.toString("base64")
-      : null,
+    receiver: {
+      name: message.receiver.name,
+      avatar: message.receiver.avatar
+        ? message.receiver.avatar.toString("base64")
+        : null,
+    },
   }));
 
   return NextResponse.json(messages);

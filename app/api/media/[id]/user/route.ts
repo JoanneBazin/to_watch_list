@@ -3,13 +3,6 @@ import prisma from "@/lib/script";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
-interface SuggestionsParamsProps {
-  params: {
-    mediaId: string;
-    userId: string;
-  };
-}
-
 export async function POST(
   req: Request,
   { params }: { params: { id: string } }
@@ -32,17 +25,25 @@ export async function POST(
     },
   });
 
-  if (!checkExistantLink) {
+  if (checkExistantLink) {
+    const updateStatus = await prisma.suggestion.updateMany({
+      where: {
+        AND: [{ receiverId: userId }, { mediaId: mediaId }],
+      },
+      data: {
+        status: "ACCEPTED",
+      },
+    });
+  } else {
     const addExistantMedia = await prisma.usersWatchList.create({
       data: {
         userId: userId,
         mediaId: mediaId,
       },
     });
-    return NextResponse.json({ success: true });
-  } else {
-    return NextResponse.json({ success: false });
   }
+
+  return NextResponse.json({ success: true });
 }
 
 export async function PUT(
@@ -68,5 +69,5 @@ export async function PUT(
     },
     data: json,
   });
-  return NextResponse.json(updateMedia);
+  return NextResponse.json({ success: true });
 }

@@ -1,6 +1,5 @@
 "use client";
 import { useFetchFriends } from "./hooks/useFetchFriends";
-import Image from "next/image";
 import Link from "next/link";
 import { Loader } from "./layout/Loader";
 import { Avatar } from "./layout/Avatar";

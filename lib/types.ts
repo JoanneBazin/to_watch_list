@@ -59,13 +59,18 @@ export interface SenderRequestsProps {
 }
 
 export interface SuggestionsProps {
-  id: string;
-  senderId: string;
-  receiverId: string;
-  mediaId: string;
-  senderComment: string;
-  receiverComment: string;
   media: Item;
-  sender: UserProps;
-  receiver: UserProps;
+  suggestions: [
+    {
+      id: string;
+      senderId: string;
+      receiverId: string;
+      mediaId: string;
+      senderComment: string;
+      receiverComment: string;
+
+      sender: UserProps;
+      receiver: UserProps;
+    }
+  ];
 }

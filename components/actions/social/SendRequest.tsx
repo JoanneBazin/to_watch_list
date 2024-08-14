@@ -27,7 +27,6 @@ const SendRequest = ({ receiverId }: ReceiverIdProps) => {
         throw new Error("HTTP error");
       }
 
-      const result = await response.json();
       setLoading(false);
       setAdded(true);
     } catch (error) {
@@ -49,13 +48,7 @@ const SendRequest = ({ receiverId }: ReceiverIdProps) => {
           <Loader2 className="h-4 w-4 animate-spin" />
         </Button>
       ) : (
-        <Button
-          onClick={() => {
-            handleAddContact();
-          }}
-        >
-          Ajouter
-        </Button>
+        <Button onClick={handleAddContact}>Ajouter</Button>
       )}
     </div>
   );

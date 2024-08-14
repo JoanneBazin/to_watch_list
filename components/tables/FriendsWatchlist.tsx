@@ -4,7 +4,6 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "../ui/hover-card";
-import { Button } from "../ui/button";
 import AddMedia from "../actions/media/AddMedia";
 
 interface FriendWatchlistProps {
@@ -18,7 +17,11 @@ const FriendsWatchlist = ({ medias }: FriendWatchlistProps) => {
         medias.map((media) => (
           <HoverCard key={media.id}>
             <HoverCardTrigger asChild>
-              <li className="my-3">{media.title}</li>
+              {media.watched ? (
+                <li className="my-3 italic text-zinc-500">{media.title}</li>
+              ) : (
+                <li className="my-3">{media.title}</li>
+              )}
             </HoverCardTrigger>
             <HoverCardContent className="w-80">
               <div className="space-y-1">

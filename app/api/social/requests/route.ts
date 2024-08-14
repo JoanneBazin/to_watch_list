@@ -69,7 +69,6 @@ export async function GET(req: Request) {
       avatar: req.sender.avatar ? req.sender.avatar.toString("base64") : null,
     },
   }));
-  console.log(requestReceived);
 
   return NextResponse.json({ requestSent, requestReceived });
 }

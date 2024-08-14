@@ -7,13 +7,42 @@ export async function GET(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const id = params.id;
-  const media = await prisma.watchList.findUnique({
+  const session = await getServerSession(AuthOptions);
+
+  if (!session) {
+    return null;
+  }
+
+  const userId = session.user.id;
+  const mediaId = params.id;
+
+  const media = await prisma.usersWatchList.findUnique({
     where: {
-      id: id,
+      userId_mediaId: {
+        userId: userId,
+        mediaId: mediaId,
+      },
+      OR: [
+        {
+          suggestions: {
+            some: {
+              status: "ACCEPTED",
+            },
+          },
+        },
+        {
+          suggestions: {
+            none: {},
+          },
+        },
+      ],
     },
   });
-  return NextResponse.json(media);
+  if (media) {
+    return NextResponse.json(true);
+  } else {
+    return NextResponse.json(false);
+  }
 }
 
 export async function PUT(
@@ -29,7 +58,7 @@ export async function PUT(
     },
     data: json,
   });
-  return NextResponse.json(updateMedia);
+  return NextResponse.json({ success: true });
 }
 
 export async function DELETE(
@@ -54,5 +83,5 @@ export async function DELETE(
     },
   });
 
-  return NextResponse.json(deleteUserMedia);
+  return NextResponse.json({ success: true });
 }

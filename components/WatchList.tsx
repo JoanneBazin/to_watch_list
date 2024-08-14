@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import AddEntryForm from "./actions/forms/AddEntryForm";
 import { DataTable } from "./tables/DataTable";
 import { Loader } from "./layout/Loader";
@@ -36,7 +35,7 @@ export default function WatchList() {
                 <DialogHeader>
                   <DialogTitle>Nouveau Film</DialogTitle>
                 </DialogHeader>
-                <AddEntryForm entry="FILM" onAdded={refetch} />
+                <AddEntryForm entry="FILM" onAdd={refetch} />
               </DialogContent>
             </Dialog>
             <section className="container mx-auto py-10">
@@ -59,7 +58,7 @@ export default function WatchList() {
                 <DialogHeader>
                   <DialogTitle>Nouvelle Série</DialogTitle>
                 </DialogHeader>
-                <AddEntryForm entry="SERIE" onAdded={refetch} />
+                <AddEntryForm entry="SERIE" onAdd={refetch} />
               </DialogContent>
             </Dialog>
             <section className="container mx-auto py-10">

@@ -10,13 +10,12 @@ import { toast } from "@/components/ui/use-toast";
 import { useState } from "react";
 import { useFetchCategories } from "@/components/hooks/useFetchCategories";
 
-const AddEntryForm = ({
-  onAdded,
-  entry,
-}: {
+interface AddEntryProps {
   entry: string;
-  onAdded: () => void;
-}) => {
+  onAdd: () => void;
+}
+
+const AddEntryForm = ({ onAdd, entry }: AddEntryProps) => {
   const { handleSubmit, register, reset } = useForm<Item>();
   const [responseMessage, setResponseMessage] = useState<string>(
     "La to-watch-list a été mise à jour ! 😍"
@@ -42,10 +41,11 @@ const AddEntryForm = ({
         throw new Error("HTTP error");
       }
 
-      const result = await response.json();
+      const newEntry = await response.json();
       reset();
       setResponseMessage("La to-watch-list a été mise à jour ! 😍");
-      onAdded();
+
+      onAdd();
     } catch (error) {
       console.log(error);
       setResponseMessage("An error occurred while submitting the form 🫣");

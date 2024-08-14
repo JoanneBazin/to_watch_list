@@ -47,7 +47,6 @@ const EditMedia = ({ row, onModify }: EditProps) => {
         throw new Error("HTTP error");
       }
 
-      const result = await response.json();
       onModify();
     } catch (error) {
       console.log(error);

@@ -32,7 +32,6 @@ const ValidateRequest = ({ requestId, senderId }: RequestIdProps) => {
         throw new Error("HTTP error");
       }
 
-      const result = await response.json();
       setLoading(false);
       setAdded(true);
     } catch (error) {
@@ -55,7 +54,6 @@ const ValidateRequest = ({ requestId, senderId }: RequestIdProps) => {
         throw new Error("HTTP error");
       }
 
-      const result = await response.json();
       setLoading(false);
       setDeleted(true);
     } catch (error) {

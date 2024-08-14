@@ -30,6 +30,22 @@ export async function GET(
               type: "FILM",
             },
           },
+          {
+            OR: [
+              {
+                suggestions: {
+                  none: {},
+                },
+              },
+              {
+                suggestions: {
+                  some: {
+                    status: "ACCEPTED",
+                  },
+                },
+              },
+            ],
+          },
         ],
       },
       select: {
@@ -48,6 +64,22 @@ export async function GET(
             media: {
               type: "SERIE",
             },
+          },
+          {
+            OR: [
+              {
+                suggestions: {
+                  none: {},
+                },
+              },
+              {
+                suggestions: {
+                  some: {
+                    status: "ACCEPTED",
+                  },
+                },
+              },
+            ],
           },
         ],
       },
@@ -154,5 +186,5 @@ export async function DELETE(
     },
   });
 
-  return NextResponse.json(deleteContact);
+  return NextResponse.json({ success: true });
 }

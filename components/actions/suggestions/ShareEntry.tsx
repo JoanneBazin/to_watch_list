@@ -9,7 +9,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { FriendsProps, Item } from "@/lib/types";
-import Image from "next/image";
 import { IoShareSocial } from "react-icons/io5";
 import SendSuggestion from "./SendSuggestion";
 import {
@@ -29,7 +28,12 @@ const ShareEntry = ({ row, friends }: ShareProps) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">
+        <Button
+          variant="outline"
+          className={
+            row.watched ? "bg-zinc-900 hover:bg-zinc-800 border-black" : ""
+          }
+        >
           <IoShareSocial />
         </Button>
       </DialogTrigger>

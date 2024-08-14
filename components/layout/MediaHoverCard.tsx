@@ -34,7 +34,7 @@ const MediaHoverCard = ({ row }: RowProps) => {
         </div>
 
         <div>
-          {suggestions.length > 0 ? (
+          {suggestions && suggestions.length > 0 ? (
             <div className="flex flex-col">
               Suggestion envoyée par{" "}
               {suggestions.map((suggest) => (

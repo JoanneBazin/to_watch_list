@@ -19,12 +19,10 @@ export async function POST(
   const receiver = await prisma.user.findUnique({ where: { id: params.id } });
 
   if (!sender) {
-    console.log(sender);
-
     throw new Error("Sender not found");
   }
   if (!receiver) {
-    throw new Error("Sender not found");
+    throw new Error("Receiver not found");
   }
 
   const newRequest = await prisma.friendRequest.create({
@@ -35,7 +33,7 @@ export async function POST(
     },
   });
 
-  return NextResponse.json(newRequest);
+  return NextResponse.json({ success: true });
 }
 
 export async function PUT(
@@ -58,7 +56,7 @@ export async function PUT(
     data: json,
   });
 
-  return NextResponse.json(updateRequest);
+  return NextResponse.json({ success: true });
 }
 
 export async function DELETE(
@@ -79,5 +77,5 @@ export async function DELETE(
     },
   });
 
-  return NextResponse.json(deleteRequest);
+  return NextResponse.json({ success: true });
 }

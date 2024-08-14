@@ -138,7 +138,14 @@ export function DataTable({ data, onModify }: DataTableProps) {
       cell: ({ row }) => (
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline">
+            <Button
+              variant="outline"
+              className={
+                row.original.watched
+                  ? "bg-zinc-900 hover:bg-zinc-800 border-black"
+                  : ""
+              }
+            >
               <BiSolidEditAlt />
             </Button>
           </DialogTrigger>
