@@ -13,7 +13,9 @@ const SignInBtn = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Connexion</Button>
+        <Button variant="outline" className="mx-4">
+          Connexion
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

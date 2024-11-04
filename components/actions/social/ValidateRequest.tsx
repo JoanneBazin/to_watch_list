@@ -82,6 +82,7 @@ const ValidateRequest = ({ requestId, senderId }: RequestIdProps) => {
       ) : (
         <div className="flex gap-4">
           <Button
+            variant="outline"
             onClick={() => {
               handleAcceptRequest();
             }}
@@ -89,6 +90,7 @@ const ValidateRequest = ({ requestId, senderId }: RequestIdProps) => {
             <FaCheck />
           </Button>
           <Button
+            variant="outline"
             onClick={() => {
               handleDeleteRequest();
             }}

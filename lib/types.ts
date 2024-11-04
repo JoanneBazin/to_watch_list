@@ -9,7 +9,7 @@ export interface Item {
   watched: boolean;
   id: string;
   type: string;
-  suggestions?: SuggestionsProps[];
+  suggestions?: SuggestionsListProps[];
 }
 export interface SuggestionItem {
   title: string;
@@ -36,6 +36,8 @@ export interface UserProps {
   name: string;
   avatar: string | null;
   email?: string;
+  friendRequests: number | null;
+  suggestions: number | null;
 }
 export interface FriendsProps {
   id: string;
@@ -59,18 +61,18 @@ export interface SenderRequestsProps {
 }
 
 export interface SuggestionsProps {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  mediaId: string;
+  senderComment: string;
+  receiverComment: string;
+  sender: UserProps;
+  receiver: UserProps;
   media: Item;
-  suggestions: [
-    {
-      id: string;
-      senderId: string;
-      receiverId: string;
-      mediaId: string;
-      senderComment: string;
-      receiverComment: string;
+}
 
-      sender: UserProps;
-      receiver: UserProps;
-    }
-  ];
+export interface SuggestionsListProps {
+  media: Item;
+  suggestions: SuggestionsProps[];
 }

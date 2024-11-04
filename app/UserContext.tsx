@@ -38,6 +38,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
           name: userData.name,
           avatar: userData.avatar,
           id: userData.id,
+          friendRequests: userData._count.friendRequestReceived,
+          suggestions: userData._count.suggestionsReceived,
         });
       } catch (err) {
         console.log(err);

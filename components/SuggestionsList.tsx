@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { SuggestionsProps } from "@/lib/types";
+import { SuggestionsListProps } from "@/lib/types";
 import { Loader } from "./layout/Loader";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import SuggestionResponse from "./actions/suggestions/SuggestionResponse";
@@ -9,7 +9,7 @@ import { Badge } from "./ui/badge";
 import { Avatar } from "./layout/Avatar";
 
 const SuggestionsList = () => {
-  const [suggestions, setSuggestions] = useState<SuggestionsProps[]>([]);
+  const [suggestions, setSuggestions] = useState<SuggestionsListProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -35,7 +35,6 @@ const SuggestionsList = () => {
 
   return (
     <div>
-      <h2 className="my-6 text-3xl">Suggestions</h2>
       {loading ? (
         <Loader />
       ) : suggestions.length > 0 ? (

@@ -16,8 +16,7 @@ export default async function Home() {
 
   return (
     <div>
-      <h2 className="font-semibold text-center text-2xl">Watch List</h2>
-
+      <h1 className="font-semibold text-center text-3xl m-8">Watch List</h1>
       <WatchList />
     </div>
   );

@@ -1,23 +1,16 @@
 import ReceivedMessages from "@/components/ReceivedMessages";
 import SuggestionsList from "@/components/SuggestionsList";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const SuggestionsPage = () => {
   return (
-    <Tabs defaultValue="suggestions" className=" m-8">
-      <TabsList>
-        <TabsTrigger value="suggestions">Suggestions</TabsTrigger>
-        <TabsTrigger value="messages">Messages</TabsTrigger>
-      </TabsList>
-
-      <TabsContent value="suggestions">
-        <SuggestionsList />
-      </TabsContent>
-
-      <TabsContent value="messages">
-        <ReceivedMessages />
-      </TabsContent>
-    </Tabs>
+    <div>
+      <h2 className="m-10 p-8 text-3xl border rounded-md">Suggestions</h2>
+      <SuggestionsList />
+      <h2 className="m-10 p-8 text-3xl border rounded-md">
+        Retour de suggestions
+      </h2>
+      <ReceivedMessages />
+    </div>
   );
 };
 

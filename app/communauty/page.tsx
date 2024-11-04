@@ -7,7 +7,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 const CommunautyPage = async () => {
   return (
     <div>
-      <h1 className="m-10 p-8 text-3xl border rounded-md">Communauté</h1>
+      <h2 className="m-10 p-8 text-3xl border rounded-md">Communauté</h2>
 
       <Tabs defaultValue="contacts" className=" m-8">
         <TabsList>

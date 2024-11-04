@@ -13,7 +13,9 @@ const SignUpBtn = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="mx-4">Inscription</Button>
+        <Button variant="outline" className="mx-4">
+          Inscription
+        </Button>
       </DialogTrigger>
 
       <DialogContent>

@@ -11,7 +11,7 @@ const SignOutBtn = () => {
   };
 
   return (
-    <Button className="mx-4" onClick={handleLogOut}>
+    <Button variant="outline" className=" px-2" onClick={handleLogOut}>
       Déconnexion
     </Button>
   );

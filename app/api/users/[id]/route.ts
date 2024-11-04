@@ -14,6 +14,20 @@ export async function GET(
       id: true,
       name: true,
       avatar: true,
+      _count: {
+        select: {
+          friendRequestReceived: {
+            where: {
+              status: "PENDING",
+            },
+          },
+          suggestionsReceived: {
+            where: {
+              status: "PENDING",
+            },
+          },
+        },
+      },
     },
   });
 
