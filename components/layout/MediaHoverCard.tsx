@@ -1,4 +1,4 @@
-import { Item } from "@/lib/types";
+import { Item } from "@/utils/types";
 import { RiSingleQuotesL } from "react-icons/ri";
 import { RiSingleQuotesR } from "react-icons/ri";
 

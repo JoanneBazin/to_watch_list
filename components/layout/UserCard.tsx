@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { UserProps } from "@/lib/types";
+import { UserProps } from "@/utils/types";
 import { useFetchFriends } from "../hooks/useFetchFriends";
 import { Button } from "../ui/button";
 import Link from "next/link";

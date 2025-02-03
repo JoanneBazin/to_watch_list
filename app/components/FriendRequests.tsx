@@ -1,9 +1,9 @@
 "use client";
 
-import { useFetchRequests } from "./hooks/useFetchRequests";
-import { Loader } from "./layout/Loader";
-import ValidateRequest from "./actions/social/ValidateRequest";
-import { Avatar } from "./layout/Avatar";
+import { useFetchRequests } from "../../components/hooks/useFetchRequests";
+import { Loader } from "../../components/layout/Loader";
+import ValidateRequest from "../../components/actions/social/ValidateRequest";
+import { Avatar } from "../../components/layout/Avatar";
 
 const FriendRequests = () => {
   const { receivedRequests, loading } = useFetchRequests();

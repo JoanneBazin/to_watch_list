@@ -1,5 +1,5 @@
 "use client";
-import { ReceiverRequestsProps, SenderRequestsProps } from "@/lib/types";
+import { ReceiverRequestsProps, SenderRequestsProps } from "@/utils/types";
 import { useEffect, useState } from "react";
 
 export const useFetchRequests = () => {

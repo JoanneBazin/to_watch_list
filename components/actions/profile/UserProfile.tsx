@@ -1,6 +1,6 @@
 "use client";
 
-import { useUser } from "@/app/UserContext";
+import { useUser } from "@/hooks/UserContext";
 import DeleteProfile from "@/components/actions/profile/DeleteProfile";
 import EditProfile from "@/components/actions/profile/EditProfile";
 import { Avatar } from "@/components/layout/Avatar";

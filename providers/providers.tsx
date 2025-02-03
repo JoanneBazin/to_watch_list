@@ -1,7 +1,7 @@
 "use client";
 import { Toaster } from "@/components/ui/toaster";
 import { SessionProvider } from "next-auth/react";
-import { UserProvider } from "./UserContext";
+import { UserProvider } from "../hooks/UserContext";
 
 type Props = {
   children?: React.ReactNode;

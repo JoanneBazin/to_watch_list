@@ -3,7 +3,7 @@
 import { Avatar } from "@/components/layout/Avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { UserProps } from "@/lib/types";
+import { UserProps } from "@/utils/types";
 import { Dispatch, FormEvent, SetStateAction, useRef, useState } from "react";
 
 interface EditProfileProps {

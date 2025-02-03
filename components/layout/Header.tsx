@@ -4,12 +4,13 @@ import Link from "next/link";
 import SignOutBtn from "../actions/auth/SignOutBtn";
 import SignUpBtn from "../actions/auth/SignUpBtn";
 import SignInBtn from "../actions/auth/SignInBtn";
-import { useUser } from "@/app/UserContext";
+import { useUser } from "@/hooks/UserContext";
 import { Avatar } from "./Avatar";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { LuMenu } from "react-icons/lu";
 import { Skeleton } from "../ui/skeleton";
+import { Logo } from "./Logo";
 
 const Header = () => {
   const { user, loading } = useUser();
@@ -19,8 +20,8 @@ const Header = () => {
     <header className="bg-zinc-900 opacity-80 p-2 md:p-1">
       <div className="container mx-auto flex justify-between items-center">
         <div>
-          <Link href="/" className="text-3xl font-bold mr-2">
-            Watchers
+          <Link href="/">
+            <Logo size="medium" />
           </Link>
         </div>
         <Button

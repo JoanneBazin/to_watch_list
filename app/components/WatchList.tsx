@@ -1,16 +1,16 @@
 "use client";
-import AddEntryForm from "./actions/forms/AddEntryForm";
-import { DataTable } from "./tables/DataTable";
-import { Loader } from "./layout/Loader";
-import { useFetchWatchList } from "./hooks/useFetchWatchList";
+import AddEntryForm from "../../components/actions/forms/AddEntryForm";
+import { DataTable } from "../../components/tables/DataTable";
+import { Loader } from "../../components/layout/Loader";
+import { useFetchWatchList } from "../../components/hooks/useFetchWatchList";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./ui/dialog";
-import { Button } from "./ui/button";
+} from "../../components/ui/dialog";
+import { Button } from "../../components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CategorieList from "./CategorieList";
 

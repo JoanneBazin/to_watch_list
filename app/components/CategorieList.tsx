@@ -1,19 +1,19 @@
 "use client";
-import { Loader } from "./layout/Loader";
-import { Item } from "@/lib/types";
+import { Loader } from "../../components/layout/Loader";
+import { Item } from "@/utils/types";
 import { useState } from "react";
-import { DataTable } from "./tables/DataTable";
+import { DataTable } from "../../components/tables/DataTable";
 import {
   Select,
   SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
+} from "../../components/ui/select";
 import { SelectContent } from "@radix-ui/react-select";
-import { ScrollArea } from "./ui/scroll-area";
-import { useFetchCategories } from "./hooks/useFetchCategories";
-import { useFetchWatchList } from "./hooks/useFetchWatchList";
+import { ScrollArea } from "../../components/ui/scroll-area";
+import { useFetchCategories } from "../../components/hooks/useFetchCategories";
+import { useFetchWatchList } from "../../components/hooks/useFetchWatchList";
 
 export default function CategorieList() {
   const { categories } = useFetchCategories();

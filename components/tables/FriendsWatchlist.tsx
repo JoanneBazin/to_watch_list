@@ -1,4 +1,4 @@
-import { Item } from "@/lib/types";
+import { Item } from "@/utils/types";
 import {
   HoverCard,
   HoverCardContent,

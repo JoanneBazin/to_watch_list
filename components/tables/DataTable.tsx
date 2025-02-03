@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { Item } from "@/lib/types";
+import { Item } from "@/utils/types";
 import { Button } from "../ui/button";
 import { format } from "date-fns";
 import { RxCross1 } from "react-icons/rx";

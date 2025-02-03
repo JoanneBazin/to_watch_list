@@ -1,6 +1,6 @@
-import FriendRequests from "@/components/FriendRequests";
+import FriendRequests from "@/app/components/FriendRequests";
 
-import FriendsList from "@/components/FriendsList";
+import FriendsList from "@/app/components/FriendsList";
 import UserSearch from "@/components/actions/social/UserSearch";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 

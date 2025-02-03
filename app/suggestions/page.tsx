@@ -1,5 +1,5 @@
-import ReceivedMessages from "@/components/ReceivedMessages";
-import SuggestionsList from "@/components/SuggestionsList";
+import ReceivedMessages from "@/app/components/ReceivedMessages";
+import SuggestionsList from "@/app/components/SuggestionsList";
 
 const SuggestionsPage = () => {
   return (

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { FriendsProps } from "@/lib/types";
+import { FriendsProps } from "@/utils/types";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";

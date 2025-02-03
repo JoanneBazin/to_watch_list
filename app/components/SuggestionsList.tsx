@@ -1,12 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { SuggestionsListProps } from "@/lib/types";
-import { Loader } from "./layout/Loader";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import SuggestionResponse from "./actions/suggestions/SuggestionResponse";
-import { Badge } from "./ui/badge";
-import { Avatar } from "./layout/Avatar";
+import { SuggestionsListProps } from "@/utils/types";
+import { Loader } from "../../components/layout/Loader";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import SuggestionResponse from "../../components/actions/suggestions/SuggestionResponse";
+import { Badge } from "../../components/ui/badge";
+import { Avatar } from "../../components/layout/Avatar";
 
 const SuggestionsList = () => {
   const [suggestions, setSuggestions] = useState<SuggestionsListProps[]>([]);

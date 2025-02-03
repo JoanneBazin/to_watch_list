@@ -1,5 +1,5 @@
 "use client";
-import { useUser } from "@/app/UserContext";
+import { useUser } from "@/hooks/UserContext";
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
 

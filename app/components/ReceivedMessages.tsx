@@ -1,9 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { SuggestionsProps } from "@/lib/types";
-import { Loader } from "./layout/Loader";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { SuggestionsProps } from "@/utils/types";
+import { Loader } from "../../components/layout/Loader";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
 import { RiSingleQuotesL } from "react-icons/ri";
 import { RiSingleQuotesR } from "react-icons/ri";
 

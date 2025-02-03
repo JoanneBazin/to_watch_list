@@ -1,6 +1,4 @@
-"use client";
-import { UserProps } from "@/lib/types";
-import { useSession } from "next-auth/react";
+import { UserProps } from "@/utils/types";
 import {
   createContext,
   ReactNode,
@@ -9,6 +7,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { useUserId } from "./useUserId";
 
 interface UserContextProps {
   user: UserProps | null;
@@ -16,17 +15,27 @@ interface UserContextProps {
   loading: boolean;
 }
 
-const UserContext = createContext<UserContextProps | undefined>(undefined);
+const UserContext = createContext<UserContextProps>({
+  user: null,
+  setUser: () => {},
+  loading: true,
+});
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const { data: session, status } = useSession();
+  const userId = useUserId();
   const [user, setUser] = useState<UserProps | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    if (!userId) {
+      setLoading(false);
+
+      return;
+    }
+
     const fetchUser = async () => {
       try {
-        const response = await fetch(`/api/users/${session?.user.id}`);
+        const response = await fetch(`/api/users/${userId}`);
 
         if (!response.ok) {
           throw new Error("Error network");
@@ -43,25 +52,24 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         });
       } catch (err) {
         console.log(err);
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (status === "authenticated") {
-      fetchUser();
-    } else {
-      setUser(null);
-    }
-    setLoading(false);
-  }, [status, session]);
+    fetchUser();
+  }, [userId]);
 
   return (
-    <UserContext.Provider value={{ user, setUser, loading }}>
+    <UserContext.Provider
+      value={{ user, setUser, loading } as UserContextProps}
+    >
       {children}
     </UserContext.Provider>
   );
 };
 
-export const useUser = () => {
+export const useUser = (): UserContextProps => {
   const context = useContext(UserContext);
   if (context === undefined) {
     throw new Error("useUser must be used within a UserProvider");

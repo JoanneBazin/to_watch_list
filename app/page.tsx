@@ -1,15 +1,25 @@
-import { getServerSession } from "next-auth";
-import { AuthOptions } from "./api/auth/[...nextauth]/options";
-import WatchList from "@/components/WatchList";
+"use client";
+import WatchList from "@/app/components/WatchList";
+import SignInBtn from "@/components/actions/auth/SignInBtn";
+import { Logo } from "@/components/layout/Logo";
+import { Button } from "@/components/ui/button";
+import { useUser } from "@/hooks/UserContext";
+import Link from "next/link";
 
-export default async function Home() {
-  // Return ==> Server Session
-  const session = await getServerSession(AuthOptions);
+export default function Home() {
+  const { user, loading } = useUser();
 
-  if (!session) {
+  if (!user) {
     return (
-      <div className="flex flex-col items-center  h-full my-10">
-        <h2 className="text-2xl">No session</h2>
+      <div className="flex items-center justify-around  h-full my-10">
+        <div className="flex flex-col gap-3">
+          <Link href="/auth">
+            <Button variant="outline">S&#39;inscrire</Button>
+          </Link>
+          <SignInBtn />
+        </div>
+
+        <Logo />
       </div>
     );
   }

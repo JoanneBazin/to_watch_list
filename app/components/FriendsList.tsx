@@ -1,8 +1,8 @@
 "use client";
-import { useFetchFriends } from "./hooks/useFetchFriends";
+import { useFetchFriends } from "../../components/hooks/useFetchFriends";
 import Link from "next/link";
-import { Loader } from "./layout/Loader";
-import { Avatar } from "./layout/Avatar";
+import { Loader } from "../../components/layout/Loader";
+import { Avatar } from "../../components/layout/Avatar";
 
 const FriendsList = () => {
   const { friends, loading } = useFetchFriends();
