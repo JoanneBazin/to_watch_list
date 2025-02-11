@@ -1,4 +1,4 @@
-import { NextAuthOptions } from "next-auth";
+import { NextAuthOptions, Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import bcrypt from "bcrypt";
@@ -42,16 +42,26 @@ export const AuthOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.sub = user.id;
+        token.accessTokenExpires = Date.now() + 60 * 60 * 24 * 7;
       }
+
+      if (Date.now() > (token.accessTokenExpires as number)) {
+        return { error: "Token expired" };
+      }
+
       return token;
     },
 
     async session({ session, token }) {
-      if (session.user && token) {
+      if (session.user) {
         session.user.id = token.sub || "";
       }
 
-      return session;
+      if (token.error === "Token expired") {
+        return null as unknown as Session;
+      }
+
+      return session || {};
     },
   },
 

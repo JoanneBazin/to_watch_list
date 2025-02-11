@@ -1,5 +1,6 @@
 import SignIn from "@/components/actions/auth/SignIn";
 import SignUp from "@/components/actions/auth/SignUp";
+import SignInBtn from "@/components/actions/auth/SignUpBtn";
 import {
   Carousel,
   CarouselContent,
@@ -10,25 +11,10 @@ import {
 
 const Authentification = () => {
   return (
-    <div className="flex flex-col gap-10 mx-auto my-8 w-1/2 ">
-      <Carousel>
-        <CarouselContent>
-          <CarouselItem>
-            <div className="bg-zinc-700 border rounded-md p-4 flex flex-col items-center justify-center">
-              <p>Créer un compte</p>
-              <SignUp />
-            </div>
-          </CarouselItem>
-          <CarouselItem>
-            <div className="bg-zinc-700 border rounded-md p-4 flex flex-col items-center justify-center">
-              <p>Connexion</p>
-              <SignIn />
-            </div>
-          </CarouselItem>
-        </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
-      </Carousel>
+    <div className="rounded-md p-4 flex flex-col items-center justify-center">
+      <h2>Créer un compte</h2>
+
+      <SignUp />
     </div>
   );
 };

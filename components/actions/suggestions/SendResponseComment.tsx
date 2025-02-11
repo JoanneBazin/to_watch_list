@@ -23,7 +23,9 @@ const SendResponseComment = ({ suggestId }: SendResponseProps) => {
       const response = await fetch(`/api/suggestions/${suggestId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ receiverComment: receiverComment }),
+        body: JSON.stringify({
+          receiverComment: receiverComment,
+        }),
       });
 
       if (!response.ok) {

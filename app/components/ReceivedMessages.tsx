@@ -3,18 +3,15 @@
 import { useEffect, useState } from "react";
 import { SuggestionsProps } from "@/utils/types";
 import { Loader } from "../../components/layout/Loader";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../components/ui/card";
+
 import { RiSingleQuotesL } from "react-icons/ri";
 import { RiSingleQuotesR } from "react-icons/ri";
+import { useRouter } from "next/navigation";
 
 const ReceivedMessages = () => {
   const [messages, setMessages] = useState<SuggestionsProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -22,7 +19,10 @@ const ReceivedMessages = () => {
         const response = await fetch("/api/suggestions/response");
 
         if (!response.ok) {
-          throw new Error("HTTP error");
+          if (response.status === 401) {
+            router.push("/");
+          }
+          throw new Error("HTTP error! Status: " + response.status);
         }
 
         const result = await response.json();
@@ -41,27 +41,49 @@ const ReceivedMessages = () => {
     <div>
       {loading ? (
         <Loader />
-      ) : messages ? (
+      ) : messages.length > 0 ? (
         <div>
-          <div className="grid grid-cols-2 gap-4 mx-4 my-10">
-            {messages.map((message) => (
-              <Card key={message.id}>
-                <CardHeader>
-                  <CardTitle className="flex gap-4">
-                    <span>{message.receiver.name}</span>
-                    <span className="italic">{message.media.title}</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex">
-                  <RiSingleQuotesL />
-                  <p>{message.receiverComment}</p>
-                  <RiSingleQuotesR />
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {messages.map((message) => (
+            <div key={message.id} className="p-2 border-b-2">
+              <p>
+                {message.receiver.name} sur{" "}
+                <span>
+                  <em>{message.media.title}</em>
+                </span>
+              </p>
+
+              <div className="flex">
+                <RiSingleQuotesL />
+                {message.receiverComment}
+                <RiSingleQuotesR />
+              </div>
+            </div>
+          ))}
         </div>
-      ) : null}
+      ) : (
+        // <div>
+        //   <div className="grid grid-cols-2 gap-4 mx-4 my-10">
+        //     {messages.map((message) => (
+        //       <Card key={message.id}>
+        //         <CardHeader>
+        //           <CardTitle className="flex gap-4">
+        //             <span>{message.receiver.name}</span>
+        //             <span className="italic">{message.media.title}</span>
+        //           </CardTitle>
+        //         </CardHeader>
+        //         <CardContent className="flex">
+        //           <RiSingleQuotesL />
+        //           <p>{message.receiverComment}</p>
+        //           <RiSingleQuotesR />
+        //         </CardContent>
+        //       </Card>
+        //     ))}
+        //   </div>
+        // </div>
+        <p>
+          <em>Pas de messages</em>
+        </p>
+      )}
     </div>
   );
 };

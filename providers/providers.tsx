@@ -1,7 +1,9 @@
 "use client";
-import { Toaster } from "@/components/ui/toaster";
-import { SessionProvider } from "next-auth/react";
+import { SessionProvider, signOut, useSession } from "next-auth/react";
 import { UserProvider } from "../hooks/UserContext";
+import { Loader } from "@/components/layout/Loader";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Props = {
   children?: React.ReactNode;
@@ -9,11 +11,37 @@ type Props = {
 
 export const Providers = ({ children }: Props) => {
   return (
-    <>
-      <Toaster />
-      <SessionProvider>
+    <SessionProvider>
+      <AuthWrapper>
         <UserProvider>{children}</UserProvider>
-      </SessionProvider>
-    </>
+      </AuthWrapper>
+    </SessionProvider>
   );
+};
+
+const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
+  const { status, data: session } = useSession();
+  const router = useRouter();
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hasMounted) return;
+
+    if (status === "unauthenticated") {
+      router.push("/");
+    }
+  }, [status, router, hasMounted]);
+
+  if (status === "loading") return <Loader />;
+
+  if (status === "authenticated" && !session) {
+    signOut();
+    return <Loader />;
+  }
+
+  return <>{children}</>;
 };

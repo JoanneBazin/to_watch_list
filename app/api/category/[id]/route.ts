@@ -2,17 +2,19 @@ import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { AuthOptions } from "../../auth/[...nextauth]/options";
 import prisma from "@/utils/script";
+import { NextRequest } from "next/server";
 
 export async function GET(
-  req: Request,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const categoryId = params.id;
   const session = await getServerSession(AuthOptions);
 
   if (!session) {
-    return null;
+    return new Response("Unauthorized", { status: 401 });
   }
+
+  const categoryId = params.id;
 
   const userId = session.user.id;
 

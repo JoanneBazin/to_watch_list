@@ -5,9 +5,10 @@ import {
   SetStateAction,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
-import { useUserId } from "./useUserId";
+import { signOut, useSession } from "next-auth/react";
 
 interface UserContextProps {
   user: UserProps | null;
@@ -22,14 +23,22 @@ const UserContext = createContext<UserContextProps>({
 });
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const userId = useUserId();
+  const { data: session, status } = useSession();
+  const userId = session?.user?.id || null;
   const [user, setUser] = useState<UserProps | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const hasSignOut = useRef(false);
 
   useEffect(() => {
+    if (status === "loading") return;
+
+    if (!session) {
+      setLoading(false);
+      return;
+    }
+
     if (!userId) {
       setLoading(false);
-
       return;
     }
 
@@ -38,6 +47,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         const response = await fetch(`/api/users/${userId}`);
 
         if (!response.ok) {
+          if (response.status === 401 && !hasSignOut.current) {
+            hasSignOut.current = true;
+            signOut();
+          }
+
           throw new Error("Error network");
         }
 
@@ -58,7 +72,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     };
 
     fetchUser();
-  }, [userId]);
+  }, [session, userId, status]);
 
   return (
     <UserContext.Provider
@@ -71,7 +85,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
 export const useUser = (): UserContextProps => {
   const context = useContext(UserContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useUser must be used within a UserProvider");
   }
   return context;

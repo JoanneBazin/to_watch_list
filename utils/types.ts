@@ -9,7 +9,7 @@ export interface Item {
   watched: boolean;
   id: string;
   type: string;
-  suggestions?: SuggestionsListProps[];
+  suggestions?: SuggestionsProps[];
 }
 export interface SuggestionItem {
   title: string;
