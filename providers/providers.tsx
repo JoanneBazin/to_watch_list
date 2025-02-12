@@ -2,8 +2,9 @@
 import { SessionProvider, signOut, useSession } from "next-auth/react";
 import { UserProvider } from "../hooks/UserContext";
 import { Loader } from "@/components/layout/Loader";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import DebugSession from "@/app/components/DebugSession";
 
 type Props = {
   children?: React.ReactNode;
@@ -12,6 +13,7 @@ type Props = {
 export const Providers = ({ children }: Props) => {
   return (
     <SessionProvider>
+      <DebugSession />
       <AuthWrapper>
         <UserProvider>{children}</UserProvider>
       </AuthWrapper>
@@ -22,26 +24,14 @@ export const Providers = ({ children }: Props) => {
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
   const { status, data: session } = useSession();
   const router = useRouter();
-  const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
-    setHasMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!hasMounted) return;
-
-    if (status === "unauthenticated") {
-      router.push("/");
+    if (session?.error === "RefreshAccessTokenError") {
+      signOut();
     }
-  }, [status, router, hasMounted]);
+  }, [session]);
 
   if (status === "loading") return <Loader />;
-
-  if (status === "authenticated" && !session) {
-    signOut();
-    return <Loader />;
-  }
 
   return <>{children}</>;
 };

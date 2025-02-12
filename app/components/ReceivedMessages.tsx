@@ -6,12 +6,10 @@ import { Loader } from "../../components/layout/Loader";
 
 import { RiSingleQuotesL } from "react-icons/ri";
 import { RiSingleQuotesR } from "react-icons/ri";
-import { useRouter } from "next/navigation";
 
 const ReceivedMessages = () => {
   const [messages, setMessages] = useState<SuggestionsProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const router = useRouter();
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -19,9 +17,6 @@ const ReceivedMessages = () => {
         const response = await fetch("/api/suggestions/response");
 
         if (!response.ok) {
-          if (response.status === 401) {
-            router.push("/");
-          }
           throw new Error("HTTP error! Status: " + response.status);
         }
 

@@ -3,6 +3,39 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import bcrypt from "bcrypt";
 import prisma from "@/utils/script";
+import { generateAccessToken, generateRefreshToken } from "@/utils/auth";
+
+async function refreshAccessToken(token: any) {
+  try {
+    const response = await fetch(
+      `${process.env.NEXTAUTH_URL}/api/auth/refresh`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ refreshToken: token.refreshToken }),
+      }
+    );
+
+    if (!response.ok) throw new Error("Failed to refresh access token");
+
+    const refreshedToken = await response.json();
+
+    return {
+      ...token,
+      accessToken: refreshedToken.accessToken,
+      refreshToken: refreshedToken.refreshToken ?? token.refreshToken,
+      accessTokenExpires: Date.now() + 60 * 60 * 1000,
+    };
+  } catch (error) {
+    console.error("Error refreshing access token: ", error);
+    return {
+      ...token,
+      error: "RefreshAccessTokenError",
+    };
+  }
+}
 
 export const AuthOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -14,7 +47,8 @@ export const AuthOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials) return null;
+        console.log("Credentials received: ", credentials);
+        if (!credentials?.email || !credentials?.password) return null;
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
@@ -38,30 +72,45 @@ export const AuthOptions: NextAuthOptions = {
       },
     }),
   ],
+
   callbacks: {
     async jwt({ token, user }) {
+      console.log("JWT callback: ", token, user);
+
       if (user) {
-        token.sub = user.id;
-        token.accessTokenExpires = Date.now() + 60 * 60 * 24 * 7;
+        return {
+          sub: user.id,
+          accessToken: generateAccessToken(user.id),
+          refreshToken: generateRefreshToken(user.id),
+          accessTokenExpires: Date.now() + 60 * 60 * 1000,
+        };
       }
 
-      if (Date.now() > (token.accessTokenExpires as number)) {
-        return { error: "Token expired" };
+      if (Date.now() < (token.accessTokenExpires as number)) {
+        return token;
       }
 
-      return token;
+      return await refreshAccessToken(token);
     },
 
     async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.sub || "";
+      console.log("Session callback: ", session, token);
+
+      if (token.error === "RefreshAccessTokenError") {
+        return {
+          ...session,
+          error: "RefreshAccessTokenError",
+        };
       }
 
-      if (token.error === "Token expired") {
-        return null as unknown as Session;
-      }
-
-      return session || {};
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.sub || "",
+        },
+        accessToken: token.accessToken,
+      };
     },
   },
 

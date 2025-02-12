@@ -38,6 +38,7 @@ model User {
   email     String   @unique
   name      String
   password  String
+  refreshToken  String?
   avatar    Bytes?   
   createdAt DateTime @default(now())
   admin     Boolean  @default(false)

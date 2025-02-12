@@ -22,12 +22,10 @@ const Header = () => {
   const [isMessageOpen, setIsMessageOpen] = useState(false);
 
   return (
-    <header className="bg-zinc-900 opacity-80 p-2 md:p-1">
+    <header className="bg-zinc-900 p-2 md:p-1">
       <div className="container mx-auto flex justify-between items-center">
         <div>
-          <Link href="/">
-            <Logo size="medium" />
-          </Link>
+          <Logo size="medium" />
         </div>
 
         {/* Nav. mobile */}

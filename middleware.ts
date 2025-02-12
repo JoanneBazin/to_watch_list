@@ -1,5 +1,4 @@
 import { getToken } from "next-auth/jwt";
-import withAuth from "next-auth/middleware";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(
@@ -10,16 +9,18 @@ export async function middleware(
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  if (!token || Date.now() > (token.accessTokenExpires as number)) {
-    return new NextResponse("Unauthorized", { status: 401 });
+  const isAuthenticated =
+    token &&
+    typeof token.accessTokenExpires === "number" &&
+    Date.now() < token.accessTokenExpires;
+
+  if (!isAuthenticated) {
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
-  const reqWithAuth = req as NextRequest & {
-    nextauth: { token: typeof token };
-  };
-  return withAuth(reqWithAuth) as unknown as NextResponse | null;
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/communauty/:path*", "/account:path*", "/messages"],
+  matcher: ["/dashboard", "/communauty/:path*", "/account:path*", "/messages"],
 };
