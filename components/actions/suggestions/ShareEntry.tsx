@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { FriendsProps, Item } from "@/utils/types";
+import { FriendsProps, Item } from "@/lib/types";
 import { IoShareSocial } from "react-icons/io5";
 import SendSuggestion from "./SendSuggestion";
 import {

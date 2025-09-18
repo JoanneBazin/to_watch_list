@@ -1,6 +1,6 @@
 "use client";
 import { Loader } from "../../components/layout/Loader";
-import { Item } from "@/utils/types";
+import { Item } from "@/lib/types";
 import { useState } from "react";
 import { DataTable } from "../../components/tables/DataTable";
 import {

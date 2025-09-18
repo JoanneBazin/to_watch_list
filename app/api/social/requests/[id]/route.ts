@@ -1,17 +1,12 @@
-import { AuthOptions } from "@/app/api/auth/[...nextauth]/options";
-import prisma from "@/utils/script";
-import { getServerSession } from "next-auth";
+import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/utils/requireAuth";
 import { NextResponse } from "next/server";
 
 export async function POST(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const session = await getServerSession(AuthOptions);
-
-  if (!session) {
-    return NextResponse.json({ error: "Missing session" }, { status: 400 });
-  }
+  const session = await requireAuth(req);
 
   const sender = await prisma.user.findUnique({
     where: { id: session.user.id },

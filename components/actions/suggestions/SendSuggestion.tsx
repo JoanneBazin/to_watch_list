@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { CiCirclePlus } from "react-icons/ci";
 import { useEffect, useState } from "react";
-import { FriendsProps, Item } from "@/utils/types";
+import { FriendsProps, Item } from "@/lib/types";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { FaUserCheck } from "react-icons/fa6";

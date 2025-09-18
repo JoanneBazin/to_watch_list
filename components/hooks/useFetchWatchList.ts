@@ -1,5 +1,5 @@
 "use client";
-import { Item } from "@/utils/types";
+import { Item } from "@/lib/types";
 import { useEffect, useState } from "react";
 
 export const useFetchWatchList = () => {

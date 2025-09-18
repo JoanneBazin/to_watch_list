@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { FriendsProps, SenderRequestsProps } from "@/utils/types";
+import { FriendsProps, SenderRequestsProps } from "@/lib/types";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";

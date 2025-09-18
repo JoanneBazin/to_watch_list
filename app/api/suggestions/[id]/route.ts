@@ -1,7 +1,6 @@
-import prisma from "@/utils/script";
-import { getServerSession } from "next-auth";
+import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/utils/requireAuth";
 import { NextResponse } from "next/server";
-import { AuthOptions } from "../../auth/[...nextauth]/options";
 
 export async function GET(
   req: Request,
@@ -20,13 +19,9 @@ export async function PUT(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const session = await getServerSession(AuthOptions);
-
-  if (!session) {
-    return NextResponse.json({ success: false, message: "Unauthorized" });
-  }
-
+  const session = await requireAuth(req);
   const userId = session.user.id;
+
   const suggestId = params.id;
   const { receiverComment } = await req.json();
 

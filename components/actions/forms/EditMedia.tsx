@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Item } from "@/utils/types";
+import { Item } from "@/lib/types";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 interface EditProps {

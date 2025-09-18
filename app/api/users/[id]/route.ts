@@ -1,4 +1,4 @@
-import prisma from "@/utils/script";
+import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -13,7 +13,7 @@ export async function GET(
     select: {
       id: true,
       name: true,
-      avatar: true,
+      image: true,
       _count: {
         select: {
           friendRequestReceived: {
@@ -30,10 +30,6 @@ export async function GET(
       },
     },
   });
-
-  if (user && user.avatar) {
-    user.avatar = user.avatar.toString("base64") as any;
-  }
 
   return NextResponse.json(user);
 }
@@ -55,7 +51,7 @@ export async function PUT(
       id: id,
     },
     data: {
-      avatar: avatarData,
+      image: avatarData,
     },
   });
   return NextResponse.json({ success: true });

@@ -1,4 +1,4 @@
-import { UserProps } from "@/utils/types";
+import { UserProps } from "@/lib/types";
 import {
   createContext,
   ReactNode,

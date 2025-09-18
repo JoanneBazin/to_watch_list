@@ -1,15 +1,9 @@
-import { getServerSession } from "next-auth";
+import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/utils/requireAuth";
 import { NextResponse } from "next/server";
-import { AuthOptions } from "../auth/[...nextauth]/options";
-import prisma from "@/utils/script";
 
 export async function GET(req: Request) {
-  const session = await getServerSession(AuthOptions);
-
-  if (!session) {
-    return NextResponse.json({ error: "Lost session" }, { status: 400 });
-  }
-
+  const session = await requireAuth(req);
   const userId = session.user.id;
 
   const userProfile = await prisma.user.findUnique({
@@ -19,25 +13,16 @@ export async function GET(req: Request) {
     select: {
       id: true,
       name: true,
-      avatar: true,
+      image: true,
       email: true,
     },
   });
-
-  if (userProfile && userProfile.avatar) {
-    userProfile.avatar = userProfile.avatar.toString("base64") as any;
-  }
 
   return NextResponse.json(userProfile);
 }
 
 export async function PUT(req: Request) {
-  const session = await getServerSession(AuthOptions);
-
-  if (!session) {
-    return NextResponse.json({ error: "Lost session" }, { status: 400 });
-  }
-
+  const session = await requireAuth(req);
   const userId = session.user.id;
   const json = await req.json();
 

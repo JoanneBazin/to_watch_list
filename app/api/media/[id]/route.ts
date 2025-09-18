@@ -1,18 +1,12 @@
-import { getServerSession } from "next-auth";
+import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/utils/requireAuth";
 import { NextResponse } from "next/server";
-import { AuthOptions } from "../../auth/[...nextauth]/options";
-import prisma from "@/utils/script";
 
 export async function GET(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const session = await getServerSession(AuthOptions);
-
-  if (!session) {
-    return null;
-  }
-
+  const session = await requireAuth(req);
   const userId = session.user.id;
   const mediaId = params.id;
 
@@ -65,12 +59,7 @@ export async function DELETE(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const session = await getServerSession(AuthOptions);
-
-  if (!session) {
-    return null;
-  }
-
+  const session = await requireAuth(req);
   const userId = session.user.id;
   const mediaId = params.id;
 

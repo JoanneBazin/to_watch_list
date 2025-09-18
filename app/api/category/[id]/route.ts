@@ -1,22 +1,16 @@
-import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-import { AuthOptions } from "../../auth/[...nextauth]/options";
-import prisma from "@/utils/script";
 import { NextRequest } from "next/server";
+import { requireAuth } from "@/utils/requireAuth";
+import { prisma } from "@/lib/prisma";
 
 export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const session = await getServerSession(AuthOptions);
-
-  if (!session) {
-    return new Response("Unauthorized", { status: 401 });
-  }
+  const session = await requireAuth(req);
+  const userId = session.user.id;
 
   const categoryId = params.id;
-
-  const userId = session.user.id;
 
   const medias = await Promise.allSettled([
     prisma.usersWatchList.findMany({

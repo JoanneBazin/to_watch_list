@@ -1,18 +1,12 @@
-import { AuthOptions } from "@/app/api/auth/[...nextauth]/options";
-import prisma from "@/utils/script";
-import { getServerSession } from "next-auth";
+import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/utils/requireAuth";
 import { NextResponse } from "next/server";
 
 export async function POST(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const session = await getServerSession(AuthOptions);
-
-  if (!session) {
-    return null;
-  }
-
+  const session = await requireAuth(req);
   const userId = session.user.id;
   const mediaId = params.id;
 
@@ -50,13 +44,9 @@ export async function PUT(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const session = await getServerSession(AuthOptions);
-
-  if (!session) {
-    return null;
-  }
-
+  const session = await requireAuth(req);
   const userId = session.user.id;
+
   const mediaId = params.id;
   const json = await req.json();
 

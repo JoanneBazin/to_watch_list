@@ -1,7 +1,6 @@
-import { getServerSession } from "next-auth";
+import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/utils/requireAuth";
 import { NextResponse } from "next/server";
-import { AuthOptions } from "../../auth/[...nextauth]/options";
-import prisma from "@/utils/script";
 
 export async function GET(
   req: Request,
@@ -13,12 +12,7 @@ export async function GET(
     return NextResponse.json({ message: "No results" }, { status: 400 });
   }
 
-  const session = await getServerSession(AuthOptions);
-
-  if (!session) {
-    return null;
-  }
-
+  const session = await requireAuth(req);
   const userId = session.user.id;
 
   const allUsers = await prisma.user.findMany({
@@ -29,19 +23,14 @@ export async function GET(
     },
     select: {
       name: true,
-      avatar: true,
+      image: true,
       id: true,
     },
   });
 
-  const results = allUsers.filter((user) =>
+  const usersList = allUsers.filter((user) =>
     user.name.toLowerCase().includes(query.toLowerCase())
   );
-
-  const usersList = results.map((user) => ({
-    ...user,
-    avatar: user.avatar ? user.avatar.toString("base64") : null,
-  }));
 
   return NextResponse.json(usersList);
 }

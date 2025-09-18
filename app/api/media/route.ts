@@ -1,15 +1,9 @@
-import { getServerSession } from "next-auth";
+import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/utils/requireAuth";
 import { NextResponse } from "next/server";
-import { AuthOptions } from "../auth/[...nextauth]/options";
-import prisma from "@/utils/script";
 
 export async function GET(req: Request) {
-  const session = await getServerSession(AuthOptions);
-
-  if (!session) {
-    return null;
-  }
-
+  const session = await requireAuth(req);
   const userId = session.user.id;
 
   const medias = await Promise.allSettled([
@@ -139,12 +133,7 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const session = await getServerSession(AuthOptions);
-
-  if (!session) {
-    return null;
-  }
-
+  const session = await requireAuth(req);
   const userId = session.user.id;
 
   const data = await req.json();

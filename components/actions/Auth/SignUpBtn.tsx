@@ -7,7 +7,7 @@ import {
   DialogContent,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import SignUp from "./SignUp";
+import SignUp from "./AuthForm";
 
 const SignUpBtn = () => {
   return (

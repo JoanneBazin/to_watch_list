@@ -13,7 +13,6 @@ import { Skeleton } from "../ui/skeleton";
 import { Logo } from "./Logo";
 import Image from "next/image";
 import ReceivedMessages from "@/app/components/ReceivedMessages";
-import OutsideClickHandler from "react-outside-click-handler";
 
 const Header = () => {
   const { user, loading } = useUser();
@@ -37,46 +36,44 @@ const Header = () => {
 
           {user ? (
             isOpen && (
-              <OutsideClickHandler onOutsideClick={() => setIsOpen(false)}>
-                <nav
-                  className={`block space-y-4 absolute top-16 right-2 w-auto bg-zinc-900 opacity-90 p-4 z-10 rounded-md`}
+              <nav
+                className={`block space-y-4 absolute top-16 right-2 w-auto bg-zinc-900 opacity-90 p-4 z-10 rounded-md`}
+              >
+                <div className="flex items-center justify-around">
+                  <Avatar
+                    img={`data:image/*;base64,${user.avatar}`}
+                    size="small"
+                  />
+                  <Link href="/account" onClick={() => setIsOpen(false)}>
+                    {user.name}
+                  </Link>
+                </div>
+
+                <Link
+                  href="/communauty"
+                  onClick={() => setIsOpen(false)}
+                  className="block hover:text-zinc-600"
                 >
-                  <div className="flex items-center justify-around">
-                    <Avatar
-                      img={`data:image/*;base64,${user.avatar}`}
-                      size="small"
-                    />
-                    <Link href="/account" onClick={() => setIsOpen(false)}>
-                      {user.name}
-                    </Link>
+                  <div className="relative">
+                    <p>Communauté</p>
+                    {user.friendRequests && user.friendRequests > 0 ? (
+                      <span className="absolute top-2 right-7 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-zinc-500 transform translate-x-1/2 -translate-y-1/2 bg-transparent rounded-full">
+                        {user.friendRequests}
+                      </span>
+                    ) : null}
                   </div>
+                </Link>
 
-                  <Link
-                    href="/communauty"
-                    onClick={() => setIsOpen(false)}
-                    className="block hover:text-zinc-600"
-                  >
-                    <div className="relative">
-                      <p>Communauté</p>
-                      {user.friendRequests && user.friendRequests > 0 ? (
-                        <span className="absolute top-2 right-7 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-zinc-500 transform translate-x-1/2 -translate-y-1/2 bg-transparent rounded-full">
-                          {user.friendRequests}
-                        </span>
-                      ) : null}
-                    </div>
-                  </Link>
+                <Link
+                  href="/messages"
+                  onClick={() => setIsOpen(false)}
+                  className="block hover:text-zinc-600"
+                >
+                  <p className="relative">Messages</p>
+                </Link>
 
-                  <Link
-                    href="/messages"
-                    onClick={() => setIsOpen(false)}
-                    className="block hover:text-zinc-600"
-                  >
-                    <p className="relative">Messages</p>
-                  </Link>
-
-                  <SignOutBtn />
-                </nav>
-              </OutsideClickHandler>
+                <SignOutBtn />
+              </nav>
             )
           ) : (
             <nav
@@ -127,13 +124,9 @@ const Header = () => {
                 </button>
 
                 {isMessageOpen && (
-                  <OutsideClickHandler
-                    onOutsideClick={() => setIsMessageOpen(false)}
-                  >
-                    <div className="absolute top-10 right-12 w-40 bg-zinc-900 opacity-90 p-2 rounded-md shadow-md flex flex-col z-10">
-                      <ReceivedMessages />
-                    </div>
-                  </OutsideClickHandler>
+                  <div className="absolute top-10 right-12 w-40 bg-zinc-900 opacity-90 p-2 rounded-md shadow-md flex flex-col z-10">
+                    <ReceivedMessages />
+                  </div>
                 )}
               </div>
 
@@ -150,20 +143,16 @@ const Header = () => {
                 </button>
 
                 {isProfileOpen && (
-                  <OutsideClickHandler
-                    onOutsideClick={() => setIsProfileOpen(false)}
-                  >
-                    <div className="absolute top-10 right-0 w-40 bg-zinc-900 opacity-90 p-2 rounded-md shadow-md flex flex-col">
-                      <Link
-                        href="/account"
-                        className="block px-4 py-2 hover:bg-zinc-700 rounded"
-                        onClick={() => setIsProfileOpen(false)}
-                      >
-                        Profil
-                      </Link>
-                      <SignOutBtn />
-                    </div>
-                  </OutsideClickHandler>
+                  <div className="absolute top-10 right-0 w-40 bg-zinc-900 opacity-90 p-2 rounded-md shadow-md flex flex-col">
+                    <Link
+                      href="/account"
+                      className="block px-4 py-2 hover:bg-zinc-700 rounded"
+                      onClick={() => setIsProfileOpen(false)}
+                    >
+                      Profil
+                    </Link>
+                    <SignOutBtn />
+                  </div>
                 )}
               </div>
             </nav>

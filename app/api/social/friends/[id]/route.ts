@@ -1,6 +1,5 @@
-import { AuthOptions } from "@/app/api/auth/[...nextauth]/options";
-import prisma from "@/utils/script";
-import { getServerSession } from "next-auth";
+import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/utils/requireAuth";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -16,7 +15,7 @@ export async function GET(
     select: {
       id: true,
       name: true,
-      avatar: true,
+      image: true,
     },
   });
 
@@ -101,14 +100,14 @@ export async function GET(
           select: {
             id: true,
             name: true,
-            avatar: true,
+            image: true,
           },
         },
         receiver: {
           select: {
             id: true,
             name: true,
-            avatar: true,
+            image: true,
           },
         },
       },
@@ -121,10 +120,6 @@ export async function GET(
     friendProfile[1].status === "fulfilled" ? friendProfile[1].value : [];
   const friends =
     friendProfile[2].status === "fulfilled" ? friendProfile[2].value : [];
-
-  if (friend && friend.avatar) {
-    friend.avatar = friend.avatar.toString("base64") as any;
-  }
 
   const friendFilms = films.map((film) => ({
     ...film,
@@ -142,17 +137,13 @@ export async function GET(
       return {
         id: request.receiver.id,
         name: request.receiver.name,
-        avatar: request.receiver.avatar
-          ? (request.receiver.avatar.toString("base64") as any)
-          : null,
+        avatar: request.receiver.image,
       };
     } else {
       return {
         id: request.sender.id,
         name: request.sender.name,
-        avatar: request.sender.avatar
-          ? (request.sender.avatar.toString("base64") as any)
-          : null,
+        avatar: request.sender.image,
       };
     }
   });
@@ -164,13 +155,9 @@ export async function DELETE(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const session = await getServerSession(AuthOptions);
-
-  if (!session) {
-    return null;
-  }
-
+  const session = await requireAuth(req);
   const userId = session.user.id;
+
   const friendId = params.id;
 
   const deleteContact = await prisma.friendRequest.deleteMany({

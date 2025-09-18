@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { SuggestionsListProps } from "@/utils/types";
+import { SuggestionsListProps } from "@/lib/types";
 import { Loader } from "../../components/layout/Loader";
 import {
   Card,

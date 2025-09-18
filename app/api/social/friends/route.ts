@@ -1,17 +1,12 @@
-import { getServerSession } from "next-auth";
+import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/utils/requireAuth";
 import { NextResponse } from "next/server";
-import { AuthOptions } from "../../auth/[...nextauth]/options";
-import prisma from "@/utils/script";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const session = await getServerSession(AuthOptions);
-
-  if (!session) {
-    return new Response("Unauthorized", { status: 401 });
-  }
-
+  const session = await requireAuth(req);
   const userId = session.user.id;
+
   const friends = await prisma.friendRequest.findMany({
     where: {
       status: "ACCEPTED",
@@ -22,14 +17,14 @@ export async function GET(req: NextRequest) {
         select: {
           id: true,
           name: true,
-          avatar: true,
+          image: true,
         },
       },
       receiver: {
         select: {
           id: true,
           name: true,
-          avatar: true,
+          image: true,
         },
       },
     },
@@ -40,17 +35,13 @@ export async function GET(req: NextRequest) {
       return {
         id: request.receiver.id,
         name: request.receiver.name,
-        avatar: request.receiver.avatar
-          ? (request.receiver.avatar.toString("base64") as any)
-          : null,
+        avatar: request.receiver.image,
       };
     } else {
       return {
         id: request.sender.id,
         name: request.sender.name,
-        avatar: request.sender.avatar
-          ? (request.sender.avatar.toString("base64") as any)
-          : null,
+        avatar: request.sender.image,
       };
     }
   });

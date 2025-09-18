@@ -1,15 +1,9 @@
-import { AuthOptions } from "@/app/api/auth/[...nextauth]/options";
-import prisma from "@/utils/script";
-import { getServerSession } from "next-auth";
+import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/utils/requireAuth";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
-  const session = await getServerSession(AuthOptions);
-
-  if (!session) {
-    return null;
-  }
-
+  const session = await requireAuth(req);
   const userId = session.user.id;
 
   const receivedMessages = await prisma.suggestion.findMany({
@@ -34,7 +28,7 @@ export async function GET(req: Request) {
       receiver: {
         select: {
           name: true,
-          avatar: true,
+          image: true,
         },
       },
     },
@@ -44,9 +38,7 @@ export async function GET(req: Request) {
     ...message,
     receiver: {
       name: message.receiver.name,
-      avatar: message.receiver.avatar
-        ? message.receiver.avatar.toString("base64")
-        : null,
+      avatar: message.receiver.image,
     },
   }));
 

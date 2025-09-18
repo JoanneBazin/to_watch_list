@@ -13,7 +13,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { FriendsProps, Item, UserProps } from "@/utils/types";
+import { FriendsProps, Item, UserProps } from "@/lib/types";
 import { useEffect, useState } from "react";
 
 const FriendProfile = ({ params }: { params: { userId: string } }) => {

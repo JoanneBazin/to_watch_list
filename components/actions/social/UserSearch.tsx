@@ -3,7 +3,7 @@ import { Loader } from "@/components/layout/Loader";
 import UserCard from "@/components/layout/UserCard";
 
 import { Input } from "@/components/ui/input";
-import { UserProps } from "@/utils/types";
+import { UserProps } from "@/lib/types";
 import React, { useEffect, useState } from "react";
 
 const UserSearch = () => {

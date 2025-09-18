@@ -1,5 +1,5 @@
 "use client";
-import { CategoryProps } from "@/utils/types";
+import { CategoryProps } from "@/lib/types";
 import { useEffect, useState } from "react";
 
 export function useFetchCategories() {

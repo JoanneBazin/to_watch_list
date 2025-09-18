@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { SuggestionsProps } from "@/utils/types";
+import { SuggestionsProps } from "@/lib/types";
 import { Loader } from "../../components/layout/Loader";
 
 import { RiSingleQuotesL } from "react-icons/ri";

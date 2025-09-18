@@ -1,15 +1,9 @@
-import { AuthOptions } from "@/app/api/auth/[...nextauth]/options";
-import prisma from "@/utils/script";
-import { getServerSession } from "next-auth";
+import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/utils/requireAuth";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
-  const session = await getServerSession(AuthOptions);
-
-  if (!session) {
-    return null;
-  }
-
+  const session = await requireAuth(req);
   const userId = session.user.id;
 
   const suggestion = await prisma.usersWatchList.findMany({
@@ -37,7 +31,7 @@ export async function GET(req: Request) {
           sender: {
             select: {
               name: true,
-              avatar: true,
+              image: true,
             },
           },
         },
@@ -52,51 +46,17 @@ export async function GET(req: Request) {
       senderComment: suggest.senderComment,
       sender: {
         name: suggest.sender.name,
-        avatar: suggest.sender.avatar
-          ? suggest.sender.avatar.toString("base64")
-          : null,
+        avatar: suggest.sender.image,
       },
     })),
   }));
   return NextResponse.json(receivedSuggestions);
 }
 
-// const suggestion = await prisma.suggestion.findMany({
-//   where: {
-//     receiverId: userId,
-//     status: "PENDING",
-//   },
-//   select: {
-//     id: true,
-//     senderComment: true,
-//     media: true,
-//     sender: {
-//       select: {
-//         name: true,
-//         avatar: true,
-//       },
-//     },
-//   },
-// });
-
-// const receivedSuggestions = suggestion.map((suggest) => ({
-//   ...suggest,
-//   sender: {
-//     name: suggest.sender.name,
-//     avatar: suggest.sender.avatar
-//       ? suggest.sender.avatar.toString("base64")
-//       : null,
-//   },
-// }));
-
 export async function POST(req: Request) {
-  const session = await getServerSession(AuthOptions);
-
-  if (!session) {
-    return null;
-  }
-
+  const session = await requireAuth(req);
   const userId = session.user.id;
+
   const data = await req.json();
 
   const addSuggestion = await prisma.watchList.create({

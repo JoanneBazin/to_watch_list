@@ -17,10 +17,10 @@ export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Providers>
-          <Header />
-          {children}
-        </Providers>
+        {/* <Providers> */}
+        {/* <Header /> */}
+        {children}
+        {/* </Providers> */}
       </body>
     </html>
   );

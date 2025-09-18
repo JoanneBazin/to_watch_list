@@ -1,5 +1,5 @@
 "use client";
-import { FriendsProps } from "@/utils/types";
+import { FriendsProps } from "@/lib/types";
 import { useEffect, useState } from "react";
 
 export const useFetchFriends = () => {
