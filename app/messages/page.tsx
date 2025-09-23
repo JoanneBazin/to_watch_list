@@ -1,4 +1,5 @@
-import ReceivedMessages from "../components/ReceivedMessages";
+import SuggestionsList from "@/components/features/suggestions/SuggestionsList";
+import ReceivedMessages from "../../components/features/social/ReceivedMessages";
 
 export default function MessagesPage() {
   return (
@@ -7,6 +8,7 @@ export default function MessagesPage() {
         Retour de suggestions
       </h2>
       <ReceivedMessages />
+      <SuggestionsList />
     </div>
   );
 }

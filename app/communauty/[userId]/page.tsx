@@ -1,19 +1,19 @@
 "use client";
-import AddSuggestion from "@/components/actions/forms/AddSuggestion";
-import DeleteFriend from "@/components/actions/social/DeleteFriend";
-import { Avatar } from "@/components/layout/Avatar";
-import { Loader } from "@/components/layout/Loader";
+import AddSuggestion from "@/components/forms/AddSuggestion";
+import DeleteFriend from "@/components/features/social/DeleteFriend";
+import { Avatar } from "@/components/ui/Avatar";
+import { Loader } from "@/src/components/ui/Loader";
 import FriendsWatchlist from "@/components/tables/FriendsWatchlist";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/src/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/src/components/ui/dialog";
 
-import { FriendsProps, Item, UserProps } from "@/lib/types";
+import { FriendsProps, Item, UserProps } from "@/src/lib/types";
 import { useEffect, useState } from "react";
 
 const FriendProfile = ({ params }: { params: { userId: string } }) => {

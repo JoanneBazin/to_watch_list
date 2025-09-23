@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/src/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -30,6 +30,12 @@ export async function GET(
       },
     },
   });
+
+  if (!user)
+    return NextResponse.json(
+      { error: "Utilisateur non trouvé" },
+      { status: 404 }
+    );
 
   return NextResponse.json(user);
 }

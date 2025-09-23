@@ -1,4 +1,4 @@
-import UserProfile from "@/components/actions/profile/UserProfile";
+import UserProfile from "@/components/features/profile/UserProfile";
 
 const Account = () => {
   return <UserProfile />;

@@ -1,18 +1,6 @@
-import { auth } from "@/lib/auth";
+import { auth } from "@/src/lib/auth";
 import { toNextJsHandler } from "better-auth/next-js";
 
-// export const { POST, GET } = toNextJsHandler(auth);
+export const runtime = "nodejs";
 
-const originalHandler = toNextJsHandler(auth);
-
-import { NextRequest } from "next/server";
-
-export const POST = async (req: NextRequest) => {
-  console.log("🔍 POST reçu sur /api/auth");
-  const body = await req.clone().json();
-  console.log("📦 Body reçu:", body);
-
-  return originalHandler.POST(req);
-};
-
-export const { GET } = originalHandler;
+export const { POST, GET } = toNextJsHandler(auth);

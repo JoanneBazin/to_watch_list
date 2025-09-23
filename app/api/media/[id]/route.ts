@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/prisma";
-import { requireAuth } from "@/utils/requireAuth";
+import { prisma } from "@/src/lib/prisma";
+import { requireAuth } from "@/src/utils/requireAuth";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -55,22 +55,22 @@ export async function PUT(
   return NextResponse.json({ success: true });
 }
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  const session = await requireAuth(req);
-  const userId = session.user.id;
-  const mediaId = params.id;
+// export async function DELETE(
+//   req: Request,
+//   { params }: { params: { id: string } }
+// ) {
+//   const session = await requireAuth(req);
+//   const userId = session.user.id;
+//   const mediaId = params.id;
 
-  const deleteUserMedia = await prisma.usersWatchList.delete({
-    where: {
-      userId_mediaId: {
-        userId: userId,
-        mediaId: mediaId,
-      },
-    },
-  });
+//   const deleteUserMedia = await prisma.usersWatchList.delete({
+//     where: {
+//       userId_mediaId: {
+//         userId: userId,
+//         mediaId: mediaId,
+//       },
+//     },
+//   });
 
-  return NextResponse.json({ success: true });
-}
+//   return NextResponse.json({ success: true });
+// }

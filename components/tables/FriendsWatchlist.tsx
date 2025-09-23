@@ -1,10 +1,10 @@
-import { Item } from "@/lib/types";
+import { Item } from "@/src/lib/types";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "../ui/hover-card";
-import AddMedia from "../actions/media/AddMedia";
+import AddMedia from "../features/watchlist/AddMedia";
 
 interface FriendWatchlistProps {
   medias: Item[];

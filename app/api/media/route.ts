@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/prisma";
-import { requireAuth } from "@/utils/requireAuth";
+import { prisma } from "@/src/lib/prisma";
+import { requireAuth } from "@/src/utils/requireAuth";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
@@ -132,34 +132,34 @@ export async function GET(req: Request) {
   return NextResponse.json({ films, series });
 }
 
-export async function POST(req: Request) {
-  const session = await requireAuth(req);
-  const userId = session.user.id;
+// export async function POST(req: Request) {
+//   const session = await requireAuth(req);
+//   const userId = session.user.id;
 
-  const data = await req.json();
+//   const data = await req.json();
 
-  const addEntry = await prisma.watchList.create({
-    data: {
-      title: data.title,
-      type: data.type,
-      synopsis: data.synopsis,
-      year: data.year,
-      real: data.real,
-      platform: data.platform,
-      categoryName: data.categoryName,
-      users: {
-        create: [
-          {
-            user: {
-              connect: {
-                id: userId,
-              },
-            },
-          },
-        ],
-      },
-    },
-  });
+//   const addEntry = await prisma.watchList.create({
+//     data: {
+//       title: data.title,
+//       type: data.type,
+//       synopsis: data.synopsis,
+//       year: data.year,
+//       real: data.real,
+//       platform: data.platform,
+//       categoryName: data.categoryName,
+//       users: {
+//         create: [
+//           {
+//             user: {
+//               connect: {
+//                 id: userId,
+//               },
+//             },
+//           },
+//         ],
+//       },
+//     },
+//   });
 
-  return NextResponse.json(addEntry);
-}
+//   return NextResponse.json(addEntry);
+// }

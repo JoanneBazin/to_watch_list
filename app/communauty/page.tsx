@@ -1,8 +1,12 @@
-import FriendRequests from "@/app/components/FriendRequests";
-
-import FriendsList from "@/app/components/FriendsList";
-import UserSearch from "@/components/actions/social/UserSearch";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import FriendRequests from "@/components/features/social/FriendRequests";
+import FriendsList from "@/components/features/social/FriendsList";
+import UserSearch from "@/components/features/social/UserSearch";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "@/src/components/ui/tabs";
 
 const CommunautyPage = async () => {
   return (
