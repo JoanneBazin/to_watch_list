@@ -12,3 +12,8 @@ export interface SuggestionsProps {
   receiver: User;
   media: MediaItem;
 }
+
+export interface SendSuggestionProps {
+  contactId: string;
+  mediaId: string;
+}

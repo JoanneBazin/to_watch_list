@@ -1,3 +1,5 @@
+import { MediaItem, SuggestionsProps } from "../types";
+
 export interface SuggestionItem {
   title: string;
   synopsis: string | null;
@@ -21,7 +23,7 @@ export interface CategoryProps {
 export interface UserProps {
   id: string;
   name: string;
-  avatar: string | null;
+  image?: string | null;
   email?: string;
   friendRequests?: number | null;
   suggestions?: number | null;
@@ -31,10 +33,10 @@ export interface FriendsProps {
   name: string;
   avatar: string | null;
   films: {
-    film: Item[];
+    film: MediaItem[];
   };
   series: {
-    serie: Item[];
+    serie: MediaItem[];
   };
 }
 
@@ -48,6 +50,6 @@ export interface SenderRequestsProps {
 }
 
 export interface SuggestionsListProps {
-  media: Item;
+  media: MediaItem;
   suggestions: SuggestionsProps[];
 }

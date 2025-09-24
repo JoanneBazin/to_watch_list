@@ -1,15 +1,12 @@
 "use client";
 
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Button } from "@/src/components/ui/button";
-import { DialogFooter } from "@/src/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { useFetchCategories } from "@/src/hooks/queries/useFetchCategories";
+import { useFetchCategories } from "@/src/features/media/hooks/useFetchCategories";
 import { EntryType, MediaItem } from "@/src/types";
-import { useAddMedia } from "@/src/hooks/queries/mutations/useWatchlistMutations";
+import { useAddMedia } from "@/src/features/media/hooks/useWatchlistMutations";
 import { ApiError } from "@/src/utils/ApiError";
+import { Button, DialogFooter, Input, Label } from "@/src/components/ui";
 
 const AddEntryForm = ({ entry }: { entry: EntryType }) => {
   const { handleSubmit, register, reset } = useForm<MediaItem>();

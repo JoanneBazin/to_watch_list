@@ -1,20 +1,20 @@
 "use client";
 
-import { Button } from "@/src/components/ui/button";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { MediaItem } from "@/src/types";
+import { useUpdateMedia } from "@/src/features/media/hooks/useWatchlistMutations";
+import { useState } from "react";
+import { ApiError } from "@/src/utils/ApiError";
 import {
+  Button,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/src/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { MediaItem } from "@/src/types";
-import { useUpdateMedia } from "@/src/hooks/queries/mutations/useWatchlistMutations";
-import { useState } from "react";
-import { ApiError } from "@/src/utils/ApiError";
+  Input,
+  Label,
+  Textarea,
+} from "@/src/components/ui";
 
 const EditMedia = ({ row }: { row: MediaItem }) => {
   const { handleSubmit, register, setValue } = useForm<MediaItem>();

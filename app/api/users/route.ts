@@ -5,27 +5,36 @@ import { NextResponse } from "next/server";
 export async function GET(req: Request) {
   const session = await requireAuth(req);
   const userId = session.user.id;
-  console.log(userId);
 
-  const userProfile = await prisma.user.findUnique({
+  const userCount = await prisma.user.findUnique({
     where: {
       id: userId,
     },
     select: {
-      id: true,
-      name: true,
-      image: true,
-      email: true,
+      _count: {
+        select: {
+          friendRequestReceived: {
+            where: {
+              status: "PENDING",
+            },
+          },
+          suggestionsReceived: {
+            where: {
+              status: "PENDING",
+            },
+          },
+        },
+      },
     },
   });
 
-  if (!userProfile)
+  if (!userCount)
     return NextResponse.json(
       { error: "Utilisateur non trouvé" },
       { status: 404 }
     );
 
-  return NextResponse.json(userProfile);
+  return NextResponse.json(userCount);
 }
 
 export async function PUT(req: Request) {

@@ -1,5 +1,5 @@
 "use client";
-import { Logo } from "@/components/ui/Logo";
+import { Logo } from "@/src/components/ui/Logo";
 import { useSession } from "@/src/lib/auth-client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

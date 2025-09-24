@@ -6,35 +6,35 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+
+import { format } from "date-fns";
+import { RxCross1 } from "react-icons/rx";
+import { FaCheck } from "react-icons/fa6";
+import { BiSolidEditAlt } from "react-icons/bi";
+
+import EditMedia from "./EditMedia";
+import { MediaItem, MediaTableProps } from "@/src/types";
 import {
+  useDeleteFromWatchlist,
+  useToggleWatched,
+} from "@/src/features/media/hooks/useWatchlistMutations";
+import { useState } from "react";
+import { ApiError } from "@/src/utils/ApiError";
+import {
+  Button,
+  Dialog,
+  DialogTrigger,
+  MediaHoverCard,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from "../../../../components/ui/table";
-import { Button } from "../../../components/ui/button";
-import { format } from "date-fns";
-import { RxCross1 } from "react-icons/rx";
-import { FaCheck } from "react-icons/fa6";
-import { BiSolidEditAlt } from "react-icons/bi";
-
-import { useFetchFriends } from "../../../hooks/queries/useFetchFriends";
-import ShareEntry from "../../../../components/features/suggestions/ShareEntry";
-import EditMedia from "./EditMedia";
-import { Dialog, DialogTrigger } from "../../../components/ui/dialog";
-import MediaHoverCard from "../../../../components/ui/MediaHoverCard";
-import { MediaItem, MediaTableProps } from "@/src/types";
-import {
-  useDeleteFromWatchlist,
-  useToggleWatched,
-} from "@/src/hooks/queries/mutations/useWatchlistMutations";
-import { useState } from "react";
-import { ApiError } from "@/src/utils/ApiError";
+} from "@/src/components/ui";
+import ShareEntry from "../../suggestions/components/ShareEntry";
 
 export const MediaTable = ({ data, type }: MediaTableProps) => {
-  const { friends } = useFetchFriends();
   const { deleteItem } = useDeleteFromWatchlist();
   const { updateWatchedItem } = useToggleWatched();
   const [error, setError] = useState<string | null>(null);
@@ -71,7 +71,7 @@ export const MediaTable = ({ data, type }: MediaTableProps) => {
                 {row.original.title}
               </div>
             </DialogTrigger>
-            <MediaHoverCard row={row.original} />
+            <MediaHoverCard media={row.original} />
           </Dialog>
         );
       },
@@ -146,7 +146,7 @@ export const MediaTable = ({ data, type }: MediaTableProps) => {
 
     {
       id: "suggest",
-      cell: ({ row }) => <ShareEntry row={row.original} friends={friends} />,
+      cell: ({ row }) => <ShareEntry media={row.original} />,
     },
   ];
 

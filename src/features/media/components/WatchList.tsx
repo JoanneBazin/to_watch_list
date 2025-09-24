@@ -13,12 +13,12 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/src/components/ui";
-import { useFetchWatchList } from "../../../hooks/queries/useFetchWatchList";
+import { useFetchWatchList } from "../hooks/useFetchWatchList";
 
 import { MediaTable } from "@/src/features/media/components/MediaTable";
-import { useMediaStore } from "@/src/stores/mediaStore";
-import CategorieList from "@/components/features/watchlist/CategorieList";
+import CategorieList from "@/src/features/media/components/CategorieList";
 import AddEntryForm from "@/src/features/media/components/AddEntryForm";
+import { useMediaStore } from "../media.store";
 
 export default function WatchList() {
   const { isLoading, error } = useFetchWatchList();
