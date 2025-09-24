@@ -39,21 +39,21 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  const id = params.id;
-  const json = await req.json();
+// export async function PUT(
+//   req: Request,
+//   { params }: { params: { id: string } }
+// ) {
+//   const id = params.id;
+//   const json = await req.json();
 
-  const updateMedia = await prisma.watchList.update({
-    where: {
-      id: id,
-    },
-    data: json,
-  });
-  return NextResponse.json({ success: true });
-}
+//   const updateMedia = await prisma.watchList.update({
+//     where: {
+//       id: id,
+//     },
+//     data: json,
+//   });
+//   return NextResponse.json({ success: true });
+// }
 
 // export async function DELETE(
 //   req: Request,

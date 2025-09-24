@@ -10,16 +10,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Item } from "@/src/lib/types";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { MediaItem } from "@/src/types";
+import { useUpdateMedia } from "@/src/hooks/queries/mutations/useWatchlistMutations";
+import { useState } from "react";
+import { ApiError } from "@/src/utils/ApiError";
 
-interface EditProps {
-  row: Item;
-  onModify: () => void;
-}
-
-const EditMedia = ({ row, onModify }: EditProps) => {
-  const { handleSubmit, register, setValue } = useForm<Item>();
+const EditMedia = ({ row }: { row: MediaItem }) => {
+  const { handleSubmit, register, setValue } = useForm<MediaItem>();
+  const { updateItem } = useUpdateMedia();
+  const [error, setError] = useState<string | null>(null);
 
   setValue("synopsis", row.synopsis);
   setValue("real", row.real);
@@ -29,27 +29,18 @@ const EditMedia = ({ row, onModify }: EditProps) => {
     setValue("year", row.year);
   }
 
-  const onSubmit: SubmitHandler<Item> = async (data) => {
+  const onSubmit: SubmitHandler<MediaItem> = async (data) => {
     const reqData = {
       ...data,
       year: Number(data.year),
       type: row.type,
     };
+    console.log(reqData);
 
     try {
-      const response = await fetch(`/api/media/${row.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(reqData),
-      });
-
-      if (!response.ok) {
-        throw new Error("HTTP error");
-      }
-
-      onModify();
+      await updateItem(row.id, reqData, row.type);
     } catch (error) {
-      console.log(error);
+      setError((error as ApiError).message);
     }
   };
 

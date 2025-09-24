@@ -30,43 +30,34 @@ import {
   useDeleteFromWatchlist,
   useToggleWatched,
 } from "@/src/hooks/queries/mutations/useWatchlistMutations";
+import { useState } from "react";
+import { ApiError } from "@/src/utils/ApiError";
 
 export const MediaTable = ({ data, type }: MediaTableProps) => {
   const { friends } = useFetchFriends();
-  const { deleteFilm, deleteSerie } = useDeleteFromWatchlist();
-  const { updateFilmWatched, updateSerieWatched } = useToggleWatched();
+  const { deleteItem } = useDeleteFromWatchlist();
+  const { updateWatchedItem } = useToggleWatched();
+  const [error, setError] = useState<string | null>(null);
 
-  // const handleDelete = async (row: Item) => {
-  //   try {
-  //     const response = await fetch(`/api/media/${row.id}`, {
-  //       method: "DELETE",
-  //     });
+  const handleDelete = async (id: string) => {
+    setError(null);
 
-  //     if (!response.ok) {
-  //       throw new Error("Failed to delete");
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+    try {
+      await deleteItem(id, type);
+    } catch (error) {
+      setError((error as ApiError).message);
+    }
+  };
 
-  // const handleWatched = async (row: Item) => {
-  //   const toggleWatched = !row.watched;
+  const handleToggleWatched = async (id: string) => {
+    setError(null);
 
-  //   try {
-  //     const response = await fetch(`/api/media/${row.id}/user`, {
-  //       method: "PUT",
-  //       headers: { "Content-type": "application/json" },
-  //       body: JSON.stringify({ watched: toggleWatched }),
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error("Failed to update");
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+    try {
+      await updateWatchedItem(id, type);
+    } catch (error) {
+      setError((error as ApiError).message);
+    }
+  };
 
   const columns: ColumnDef<MediaItem>[] = [
     {
@@ -102,11 +93,7 @@ export const MediaTable = ({ data, type }: MediaTableProps) => {
       cell: ({ row }) => (
         <Button
           variant="outline"
-          onClick={() =>
-            type === "FILM"
-              ? updateFilmWatched(row.original.id)
-              : updateSerieWatched(row.original.id)
-          }
+          onClick={() => handleToggleWatched(row.original.id)}
           className={
             row.original.watched
               ? "bg-zinc-900 hover:bg-zinc-800 border-black"
@@ -123,11 +110,7 @@ export const MediaTable = ({ data, type }: MediaTableProps) => {
       cell: ({ row }) => (
         <Button
           variant="outline"
-          onClick={() =>
-            type === "FILM"
-              ? deleteFilm(row.original.id)
-              : deleteSerie(row.original.id)
-          }
+          onClick={() => handleDelete(row.original.id)}
           className={
             row.original.watched
               ? "bg-zinc-900 hover:bg-zinc-800 border-black"
@@ -156,7 +139,7 @@ export const MediaTable = ({ data, type }: MediaTableProps) => {
             </Button>
           </DialogTrigger>
 
-          {/* <EditMedia row={row.original} onModify={onModify} /> */}
+          <EditMedia row={row.original} />
         </Dialog>
       ),
     },

@@ -1,12 +1,13 @@
 import { auth } from "@/src/lib/auth";
 import { headers } from "next/headers";
+import { ApiError } from "./ApiError";
 
 export const requireAuth = async (req?: Request) => {
   const requestHeaders = req?.headers || headers();
   const session = await auth.api.getSession({ headers: requestHeaders });
 
   if (!session) {
-    throw new Error("Non autorisé");
+    throw new ApiError(401, "Non autorisé");
   }
 
   return session;

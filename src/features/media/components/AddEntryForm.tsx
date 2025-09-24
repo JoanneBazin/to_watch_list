@@ -9,10 +9,12 @@ import { useState } from "react";
 import { useFetchCategories } from "@/src/hooks/queries/useFetchCategories";
 import { EntryType, MediaItem } from "@/src/types";
 import { useAddMedia } from "@/src/hooks/queries/mutations/useWatchlistMutations";
+import { ApiError } from "@/src/utils/ApiError";
 
 const AddEntryForm = ({ entry }: { entry: EntryType }) => {
   const { handleSubmit, register, reset } = useForm<MediaItem>();
-  const { addFilm, addSerie } = useAddMedia();
+  const { addNewItem } = useAddMedia();
+  const [error, setError] = useState<string | null>(null);
 
   const { categories } = useFetchCategories();
 
@@ -23,13 +25,13 @@ const AddEntryForm = ({ entry }: { entry: EntryType }) => {
       type: entry,
     };
 
-    if (entry === "FILM") {
-      addFilm(reqData);
-    } else {
-      addSerie(reqData);
-    }
+    try {
+      await addNewItem(reqData, entry);
 
-    reset();
+      reset();
+    } catch (error) {
+      setError((error as ApiError).message);
+    }
   };
 
   return (
