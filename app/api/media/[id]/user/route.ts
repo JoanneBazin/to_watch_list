@@ -39,25 +39,3 @@ export async function POST(
 
   return NextResponse.json({ success: true });
 }
-
-// export async function PUT(
-//   req: Request,
-//   { params }: { params: { id: string } }
-// ) {
-//   const session = await requireAuth(req);
-//   const userId = session.user.id;
-
-//   const mediaId = params.id;
-//   const json = await req.json();
-
-//   const updateMedia = await prisma.usersWatchList.update({
-//     where: {
-//       userId_mediaId: {
-//         userId: userId,
-//         mediaId: mediaId,
-//       },
-//     },
-//     data: json,
-//   });
-//   return NextResponse.json({ success: true });
-// }

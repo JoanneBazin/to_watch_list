@@ -1,43 +1,30 @@
 "use client";
 
 import { Avatar, Button, Input } from "@/src/components/ui";
-import { UserProps } from "@/src/lib/types";
-import { Dispatch, FormEvent, SetStateAction, useRef, useState } from "react";
+import { User } from "@/src/types";
+import { FormEvent, useRef, useState } from "react";
+import { useUpdateUser } from "../hooks/useUserMutation";
+import { ApiError } from "@/src/utils/ApiError";
 
-interface EditProfileProps {
-  user: UserProps;
-}
-
-const EditProfile = ({ user }: EditProfileProps) => {
+const EditProfile = ({ user }: { user: User }) => {
   const [image, setImage] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [updatedName, setUpdatedName] = useState<string>();
+  const [error, setError] = useState<string | null>(null);
+
+  const [name, setName] = useState<string>(user.name);
   const fileInput = useRef<HTMLInputElement>(null);
+  const { updateName } = useUpdateUser();
 
   const handleEditName = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!updatedName || updatedName === user.name) return;
+    if (!name || name === user.name) return;
+    setError(null);
 
     try {
-      const response = await fetch(`/api/users`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: updatedName }),
-      });
-
-      if (!response.ok) {
-        throw new Error("HTTP error");
-      }
-
-      const updatedUserName = {
-        ...user,
-        name: updatedName,
-      };
-
-      // updateUser(updatedUserName);
+      await updateName(name);
     } catch (error) {
-      console.log(error);
+      setError((error as ApiError).message);
     }
   };
 
@@ -96,9 +83,9 @@ const EditProfile = ({ user }: EditProfileProps) => {
         <div>
           <form onSubmit={handleEditName}>
             <Input
-              defaultValue={user.name}
+              defaultValue={name}
               placeholder={user.name}
-              onChange={(e) => setUpdatedName(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
             />
             <Button variant="outline" className="my-4">
               Modifier

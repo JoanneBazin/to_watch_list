@@ -26,7 +26,7 @@ const UserProfile = () => {
             </div>
 
             <div>
-              <DeleteProfile userId={user.id} />
+              <DeleteProfile />
             </div>
           </div>
         </div>

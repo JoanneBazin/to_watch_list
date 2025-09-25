@@ -6,11 +6,27 @@ export async function GET(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const id = params.id;
+  const session = requireAuth();
+  const userId = (await session).user.id;
+  const friendId = params.id;
+
+  const friendshipStatus = await prisma.friendRequest.findFirst({
+    where: {
+      OR: [
+        { senderId: userId, receiverId: friendId, status: "ACCEPTED" },
+        { senderId: friendId, receiverId: userId, status: "ACCEPTED" },
+      ],
+    },
+    select: { id: true },
+  });
+
+  if (!friendshipStatus) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const friend = await prisma.user.findUnique({
     where: {
-      id: id,
+      id: friendId,
     },
     select: {
       id: true,
@@ -19,51 +35,11 @@ export async function GET(
     },
   });
 
-  const friendProfile = await Promise.allSettled([
+  const friendData = await Promise.allSettled([
     prisma.usersWatchList.findMany({
       where: {
         AND: [
-          { userId: id },
-          {
-            media: {
-              type: "FILM",
-            },
-          },
-          {
-            OR: [
-              {
-                suggestions: {
-                  none: {},
-                },
-              },
-              {
-                suggestions: {
-                  some: {
-                    status: "ACCEPTED",
-                  },
-                },
-              },
-            ],
-          },
-        ],
-      },
-      select: {
-        media: true,
-        watched: true,
-      },
-      orderBy: {
-        watched: "asc",
-      },
-    }),
-    prisma.usersWatchList.findMany({
-      where: {
-        AND: [
-          { userId: id },
-          {
-            media: {
-              type: "SERIE",
-            },
-          },
+          { userId: friendId },
           {
             OR: [
               {
@@ -93,7 +69,7 @@ export async function GET(
     prisma.friendRequest.findMany({
       where: {
         status: "ACCEPTED",
-        OR: [{ senderId: id }, { receiverId: id }],
+        OR: [{ senderId: friendId }, { receiverId: friendId }],
       },
       select: {
         sender: {
@@ -114,64 +90,36 @@ export async function GET(
     }),
   ]);
 
-  const films =
-    friendProfile[0].status === "fulfilled" ? friendProfile[0].value : [];
-  const series =
-    friendProfile[1].status === "fulfilled" ? friendProfile[1].value : [];
-  const friends =
-    friendProfile[2].status === "fulfilled" ? friendProfile[2].value : [];
+  const friendWatchList =
+    friendData[0].status === "fulfilled" ? friendData[0].value : [];
+  const friendContacts =
+    friendData[1].status === "fulfilled" ? friendData[1].value : [];
 
-  const friendFilms = films.map((film) => ({
-    ...film,
-    ...film.media,
-    media: undefined,
-  }));
-  const friendSeries = series.map((film) => ({
-    ...film,
-    ...film.media,
-    media: undefined,
-  }));
-
-  const userFriends = friends.map((request) => {
-    if (request.sender.id === id) {
+  const contacts = friendContacts.map((contact) => {
+    if (contact.sender.id === friendId) {
       return {
-        id: request.receiver.id,
-        name: request.receiver.name,
-        avatar: request.receiver.image,
+        id: contact.receiver.id,
+        name: contact.receiver.name,
+        image: contact.receiver.image,
       };
     } else {
       return {
-        id: request.sender.id,
-        name: request.sender.name,
-        avatar: request.sender.image,
+        id: contact.sender.id,
+        name: contact.sender.name,
+        image: contact.sender.image,
       };
     }
   });
 
-  return NextResponse.json({ friend, friendFilms, friendSeries, userFriends });
-}
+  const friendProfile = {
+    ...friend,
+    watchlist: friendWatchList.map((item) => ({
+      ...item,
+      ...item.media,
+      media: undefined,
+    })),
+    contacts,
+  };
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  const session = await requireAuth(req);
-  const userId = session.user.id;
-
-  const friendId = params.id;
-
-  const deleteContact = await prisma.friendRequest.deleteMany({
-    where: {
-      OR: [
-        {
-          AND: [{ senderId: userId }, { receiverId: friendId }],
-        },
-        {
-          AND: [{ senderId: friendId }, { receiverId: userId }],
-        },
-      ],
-    },
-  });
-
-  return NextResponse.json({ success: true });
+  return NextResponse.json(friendProfile);
 }

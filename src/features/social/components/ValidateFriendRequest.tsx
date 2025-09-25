@@ -1,5 +1,5 @@
 import { Button } from "@/src/components/ui";
-import { FriendsProps, SenderRequestsProps } from "@/src/lib/types";
+import { FriendRequestStatus, ValidateFriendRequestProps } from "@/src/types";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -7,60 +7,34 @@ import { FaCheckCircle } from "react-icons/fa";
 import { FaCheck } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 import { RxCross1 } from "react-icons/rx";
+import { useUpdateRequest } from "../hooks/useSocialMutations";
+import { ApiError } from "@/src/utils/ApiError";
 
-interface RequestIdProps {
-  requestId: SenderRequestsProps["id"];
-  senderId: FriendsProps["id"];
-}
-
-const ValidateRequest = ({ requestId, senderId }: RequestIdProps) => {
-  const [loading, setLoading] = useState<boolean>(false);
+const ValidateFriendRequest = ({
+  requestId,
+  senderId,
+}: ValidateFriendRequestProps) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const [added, setAdded] = useState<boolean>(false);
   const [deleted, setDeleted] = useState<boolean>(false);
+  const { updateFriendStatus } = useUpdateRequest();
 
-  const handleAcceptRequest = async () => {
-    setLoading(true);
-
-    try {
-      const response = await fetch(`/api/social/requests/${requestId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "ACCEPTED" }),
-      });
-
-      if (!response.ok) {
-        throw new Error("HTTP error");
-      }
-
-      setLoading(false);
-      setAdded(true);
-    } catch (error) {
-      console.log(error);
-      setAdded(false);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDeleteRequest = async () => {
-    setLoading(true);
+  const handleRespondToFriendRequest = async (status: FriendRequestStatus) => {
+    setIsLoading(true);
+    setError(null);
 
     try {
-      const response = await fetch(`/api/social/requests/${requestId}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        throw new Error("HTTP error");
+      await updateFriendStatus(requestId, status);
+      if (status === "ACCEPTED") {
+        setAdded(true);
+      } else {
+        setDeleted(true);
       }
-
-      setLoading(false);
-      setDeleted(true);
     } catch (error) {
-      console.log(error);
-      setDeleted(false);
+      setError((error as ApiError).message);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -75,7 +49,7 @@ const ValidateRequest = ({ requestId, senderId }: RequestIdProps) => {
         </div>
       ) : deleted ? (
         <RxCross1 className="text-2xl" />
-      ) : loading ? (
+      ) : isLoading ? (
         <Button>
           <Loader2 className="h-4 w-4 animate-spin" />
         </Button>
@@ -84,7 +58,7 @@ const ValidateRequest = ({ requestId, senderId }: RequestIdProps) => {
           <Button
             variant="outline"
             onClick={() => {
-              handleAcceptRequest();
+              handleRespondToFriendRequest("ACCEPTED");
             }}
           >
             <FaCheck />
@@ -92,7 +66,7 @@ const ValidateRequest = ({ requestId, senderId }: RequestIdProps) => {
           <Button
             variant="outline"
             onClick={() => {
-              handleDeleteRequest();
+              handleRespondToFriendRequest("REFUSED");
             }}
           >
             <ImCross />
@@ -103,4 +77,4 @@ const ValidateRequest = ({ requestId, senderId }: RequestIdProps) => {
   );
 };
 
-export default ValidateRequest;
+export default ValidateFriendRequest;

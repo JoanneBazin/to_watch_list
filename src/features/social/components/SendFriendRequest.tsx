@@ -1,39 +1,29 @@
 "use client";
 
 import { Button } from "@/src/components/ui";
-import { FriendsProps } from "@/src/lib/types";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
+import { useSendFriendRequest } from "../hooks/useSocialMutations";
+import { ApiError } from "@/src/utils/ApiError";
 
-interface ReceiverIdProps {
-  receiverId: FriendsProps["id"];
-}
-
-const SendRequest = ({ receiverId }: ReceiverIdProps) => {
-  const [loading, setLoading] = useState<boolean>(false);
+const SendFriendRequest = ({ receiverId }: { receiverId: string }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [added, setAdded] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const { addNewFriend } = useSendFriendRequest();
 
   const handleAddContact = async () => {
-    setLoading(true);
-
+    setIsLoading(true);
+    setError(null);
     try {
-      const response = await fetch(`/api/social/requests/${receiverId}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!response.ok) {
-        throw new Error("HTTP error");
-      }
-
-      setLoading(false);
+      await addNewFriend(receiverId);
       setAdded(true);
     } catch (error) {
-      console.log(error);
+      setError((error as ApiError).message);
       setAdded(false);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -43,7 +33,7 @@ const SendRequest = ({ receiverId }: ReceiverIdProps) => {
         <span>
           <FaCheckCircle className="text-2xl text-zinc-500 bg-zinc-800" />
         </span>
-      ) : loading ? (
+      ) : isLoading ? (
         <Button>
           <Loader2 className="h-4 w-4 animate-spin" />
         </Button>
@@ -54,4 +44,4 @@ const SendRequest = ({ receiverId }: ReceiverIdProps) => {
   );
 };
 
-export default SendRequest;
+export default SendFriendRequest;

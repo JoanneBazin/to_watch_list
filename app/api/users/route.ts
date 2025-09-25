@@ -36,18 +36,3 @@ export async function GET(req: Request) {
 
   return NextResponse.json(userCount);
 }
-
-export async function PUT(req: Request) {
-  const session = await requireAuth(req);
-  const userId = session.user.id;
-  const json = await req.json();
-
-  const updateUser = await prisma.user.update({
-    where: {
-      id: userId,
-    },
-    data: json,
-  });
-
-  return NextResponse.json({ success: true });
-}

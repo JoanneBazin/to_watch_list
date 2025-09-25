@@ -9,7 +9,7 @@ export const addToWatchlist = async (media: MediaItem) => {
   const session = await requireAuth();
 
   const userId = session.user.id;
-  const newMedia = await prisma.watchList.create({
+  return await prisma.watchList.create({
     data: {
       title: media.title,
       type: media.type,
@@ -31,7 +31,6 @@ export const addToWatchlist = async (media: MediaItem) => {
       },
     },
   });
-  return newMedia;
 };
 
 export const updateMedia = async (mediaId: string, data: MediaItem) => {
@@ -39,14 +38,12 @@ export const updateMedia = async (mediaId: string, data: MediaItem) => {
 
   const { suggestions, ...mediaData } = data;
 
-  const updatedMedia = await prisma.watchList.update({
+  return await prisma.watchList.update({
     where: {
       id: mediaId,
     },
     data: mediaData,
   });
-
-  return updatedMedia;
 };
 
 export const updateWatched = async (mediaId: string) => {
@@ -68,7 +65,7 @@ export const updateWatched = async (mediaId: string) => {
   if (!current)
     throw new ApiError(404, "Elément introuvable dans la watchlist");
 
-  const updatedMedia = await prisma.usersWatchList.update({
+  return await prisma.usersWatchList.update({
     where: {
       userId_mediaId: {
         userId,
@@ -80,8 +77,6 @@ export const updateWatched = async (mediaId: string) => {
     },
     select: { mediaId: true, watched: true },
   });
-
-  return updatedMedia;
 };
 
 export const deleteFromWatchlist = async (mediaId: string) => {
@@ -89,7 +84,7 @@ export const deleteFromWatchlist = async (mediaId: string) => {
 
   const userId = session.user.id;
 
-  const deletedMedia = await prisma.usersWatchList.delete({
+  return await prisma.usersWatchList.delete({
     where: {
       userId_mediaId: {
         userId,
@@ -98,6 +93,4 @@ export const deleteFromWatchlist = async (mediaId: string) => {
     },
     select: { mediaId: true },
   });
-
-  return deletedMedia;
 };

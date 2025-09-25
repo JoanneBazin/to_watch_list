@@ -32,7 +32,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/src/components/ui";
-import ShareEntry from "../../suggestions/components/ShareEntry";
+import ShareMedia from "../../suggestions/components/ShareMedia";
 
 export const MediaTable = ({ data, type }: MediaTableProps) => {
   const { deleteItem } = useDeleteFromWatchlist();
@@ -146,7 +146,7 @@ export const MediaTable = ({ data, type }: MediaTableProps) => {
 
     {
       id: "suggest",
-      cell: ({ row }) => <ShareEntry media={row.original} />,
+      cell: ({ row }) => <ShareMedia media={row.original} />,
     },
   ];
 

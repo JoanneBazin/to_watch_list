@@ -30,6 +30,7 @@ export async function GET(req: Request) {
 
           sender: {
             select: {
+              id: true,
               name: true,
               image: true,
             },
@@ -40,7 +41,7 @@ export async function GET(req: Request) {
   });
 
   const receivedSuggestions = suggestion.map((result) => ({
-    media: result.media,
+    ...result.media,
     suggestions: result.suggestions.map((suggest) => ({
       id: suggest.id,
       senderComment: suggest.senderComment,

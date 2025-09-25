@@ -12,45 +12,24 @@ import {
   CardTitle,
   Loader,
 } from "@/src/components/ui";
+import { useFetchSuggestions } from "../hooks/useFetchSuggestions";
 
 const SuggestionsList = () => {
-  const [suggestions, setSuggestions] = useState<SuggestionsListProps[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    const fetchSuggestions = async () => {
-      try {
-        const response = await fetch("/api/suggestions");
-
-        if (!response.ok) {
-          throw new Error("HTTP error");
-        }
-
-        const result = await response.json();
-
-        setSuggestions(result);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchSuggestions();
-  }, []);
+  const { suggestions, isLoading, error } = useFetchSuggestions();
 
   return (
     <div>
-      {loading ? (
+      {isLoading ? (
         <Loader />
       ) : suggestions.length > 0 ? (
         <div className="grid grid-cols-2 gap-4 mx-4 my-10">
           {suggestions.map((suggestion) => (
-            <Card key={suggestion.media.id}>
+            <Card key={suggestion.id}>
               <CardHeader>
                 <CardTitle className="flex justify-between items-center">
-                  <span>{suggestion.media.title}</span>
+                  <span>{suggestion.title}</span>
 
-                  <Badge>{suggestion.media.type}</Badge>
+                  <Badge>{suggestion.type}</Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -67,7 +46,7 @@ const SuggestionsList = () => {
                   </div>
                 ))}
 
-                <SuggestionResponse mediaId={suggestion.media.id} />
+                <SuggestionResponse mediaId={suggestion.id} />
               </CardContent>
             </Card>
           ))}

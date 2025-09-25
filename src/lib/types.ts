@@ -28,26 +28,6 @@ export interface UserProps {
   friendRequests?: number | null;
   suggestions?: number | null;
 }
-export interface FriendsProps {
-  id: string;
-  name: string;
-  avatar: string | null;
-  films: {
-    film: MediaItem[];
-  };
-  series: {
-    serie: MediaItem[];
-  };
-}
-
-export interface ReceiverRequestsProps {
-  id: string;
-  receiver: FriendsProps;
-}
-export interface SenderRequestsProps {
-  id: string;
-  sender: FriendsProps;
-}
 
 export interface SuggestionsListProps {
   media: MediaItem;

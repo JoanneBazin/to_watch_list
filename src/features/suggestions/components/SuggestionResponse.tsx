@@ -4,63 +4,38 @@ import { RiAddLargeLine } from "react-icons/ri";
 import { AiOutlineClose } from "react-icons/ai";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useUpdateSuggestionStatus } from "../hooks/useSuggestionsMutations";
+import { SuggestionsStatus } from "@/src/types";
+import { ApiError } from "@/src/utils/ApiError";
 
-interface SuggestionResponseProps {
-  mediaId: string;
-}
-
-const SuggestionResponse = ({ mediaId }: SuggestionResponseProps) => {
-  const [loading, setLoading] = useState<boolean>(false);
+const SuggestionResponse = ({ mediaId }: { mediaId: string }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const [acceptedSuggestion, setAcceptedSuggestion] = useState<boolean>(false);
   const [deletedSuggestion, setDeletedSuggestion] = useState<boolean>(false);
+  const { respondToSuggestion } = useUpdateSuggestionStatus();
 
-  const handleDelete = async () => {
-    setLoading(true);
-
-    try {
-      const response = await fetch(`/api/suggestions/${mediaId}`, {
-        method: "PUT",
-        headers: { "Content-type": "application/json" },
-        body: JSON.stringify({ status: "REFUSED" }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update status");
-      }
-
-      setDeletedSuggestion(true);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleAdd = async () => {
-    setLoading(true);
+  const handleUpdateSuggestion = async (status: SuggestionsStatus) => {
+    setIsLoading(true);
+    setError(null);
 
     try {
-      const response = await fetch(`/api/suggestions/${mediaId}`, {
-        method: "PUT",
-        headers: { "Content-type": "application/json" },
-        body: JSON.stringify({ status: "ACCEPTED" }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update status");
+      await respondToSuggestion(mediaId, status);
+      if (status === "ACCEPTED") {
+        setAcceptedSuggestion(true);
+      } else {
+        setDeletedSuggestion(true);
       }
-
-      setAcceptedSuggestion(true);
     } catch (error) {
-      console.log(error);
+      setError((error as ApiError).message);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="my-2 mx-auto">
-      {loading ? (
+      {isLoading ? (
         <Loader2 />
       ) : deletedSuggestion ? (
         <span className="italic ml-10">Suggestion ignorée</span>
@@ -68,11 +43,17 @@ const SuggestionResponse = ({ mediaId }: SuggestionResponseProps) => {
         <span className="italic ml-10">Suggestion ajoutée</span>
       ) : (
         <div className="flex flex-col gap-6 mt-4 justify-center">
-          <Button variant="outline" onClick={() => handleAdd()}>
+          <Button
+            variant="outline"
+            onClick={() => handleUpdateSuggestion("ACCEPTED")}
+          >
             <RiAddLargeLine />
             <span className="ml-2"> Ajouter à ma watch-list</span>
           </Button>
-          <Button variant="outline" onClick={() => handleDelete()}>
+          <Button
+            variant="outline"
+            onClick={() => handleUpdateSuggestion("REFUSED")}
+          >
             <AiOutlineClose />
             <span className="ml-2"> Supprimer la suggestion</span>
           </Button>

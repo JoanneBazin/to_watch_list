@@ -18,7 +18,7 @@ import { useUserStore } from "../../user/user.store";
 import { IoShareSocial } from "react-icons/io5";
 import SendSuggestion from "./SendSuggestion";
 
-const ShareEntry = ({ media }: { media: MediaItem }) => {
+const ShareMedia = ({ media }: { media: MediaItem }) => {
   const contacts = useUserStore((s) => s.contacts);
 
   return (
@@ -56,7 +56,13 @@ const ShareEntry = ({ media }: { media: MediaItem }) => {
                     <span className="mr-6">{contact.name}</span>
                   </AccordionTrigger>
                   <AccordionContent>
-                    <SendSuggestion friendId={contact.id} rowId={media.id} />
+                    {contact.suggestionsFromUser.find(
+                      (id) => id === media.id
+                    ) ? (
+                      <p>Suggestion envoyée !</p>
+                    ) : (
+                      <SendSuggestion friendId={contact.id} media={media} />
+                    )}
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
@@ -70,4 +76,4 @@ const ShareEntry = ({ media }: { media: MediaItem }) => {
   );
 };
 
-export default ShareEntry;
+export default ShareMedia;

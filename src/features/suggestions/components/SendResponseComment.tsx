@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
@@ -8,32 +9,22 @@ import {
   Textarea,
 } from "@/src/components/ui";
 import { useState } from "react";
+import { useUpdateSuggestionResponse } from "../hooks/useSuggestionsMutations";
+import { ApiError } from "@/src/utils/ApiError";
 
-interface SendResponseProps {
-  suggestId: string;
-}
-
-const SendResponseComment = ({ suggestId }: SendResponseProps) => {
+const SendResponseComment = ({ suggestionId }: { suggestionId: string }) => {
   const [receiverComment, setReceiverComment] = useState<string>("");
   const [commentSent, setCommentSent] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const { addResponseComment } = useUpdateSuggestionResponse();
 
   const handleSendResponse = async () => {
+    setError(null);
     try {
-      const response = await fetch(`/api/suggestions/${suggestId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          receiverComment: receiverComment,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("HTTP error");
-      }
-
+      await addResponseComment(suggestionId, receiverComment);
       setCommentSent(true);
     } catch (error) {
-      console.log(error);
+      setError((error as ApiError).message);
     }
   };
 
@@ -42,26 +33,28 @@ const SendResponseComment = ({ suggestId }: SendResponseProps) => {
       {commentSent ? (
         <p className="text-xs text-zinc-600">Réponse envoyée !</p>
       ) : (
-        <AccordionItem className="w-full" value={suggestId}>
-          <AccordionTrigger>
-            <span className="mr-6 text-xs">Renvoyer un commentaire</span>
-          </AccordionTrigger>
-          <AccordionContent>
-            <Textarea
-              onChange={(e) => setReceiverComment(e.target.value)}
-              name="comment"
-              placeholder="Laisser un commentaire ?"
-            />
+        <Accordion type="single">
+          <AccordionItem className="w-full" value={suggestionId}>
+            <AccordionTrigger>
+              <span className="mr-6 text-xs">Renvoyer un commentaire</span>
+            </AccordionTrigger>
+            <AccordionContent>
+              <Textarea
+                onChange={(e) => setReceiverComment(e.target.value)}
+                name="comment"
+                placeholder="Laisser un commentaire ?"
+              />
 
-            <Button
-              className="mt-2"
-              onClick={() => handleSendResponse()}
-              variant="outline"
-            >
-              Envoyer
-            </Button>
-          </AccordionContent>
-        </AccordionItem>
+              <Button
+                className="mt-2"
+                onClick={() => handleSendResponse()}
+                variant="outline"
+              >
+                Envoyer
+              </Button>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       )}
     </>
   );

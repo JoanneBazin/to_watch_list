@@ -1,22 +1,19 @@
 "use client";
-import { ReceivedRequests } from "@/src/types";
+import { MessageProps } from "@/src/types";
 import { useEffect, useState } from "react";
-import { fetchFriendRequests } from "../social.api";
-import { ApiError } from "next/dist/server/api-utils";
+import { fetchResponseMessages } from "../suggestions.api";
+import { ApiError } from "@/src/utils/ApiError";
 
-export const useFetchRequests = () => {
-  const [receivedRequests, setReceivedRequests] = useState<ReceivedRequests[]>(
-    []
-  );
+export const useFetchMessages = () => {
+  const [messages, setMessages] = useState<MessageProps[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchRequests = async () => {
+    const fetchMessagesFromSuggestions = async () => {
       setIsLoading(true);
-
       try {
-        setReceivedRequests(await fetchFriendRequests());
+        setMessages(await fetchResponseMessages());
       } catch (error) {
         if (error instanceof ApiError) {
           setError(error.message);
@@ -28,8 +25,8 @@ export const useFetchRequests = () => {
       }
     };
 
-    fetchRequests();
+    fetchMessagesFromSuggestions();
   }, []);
 
-  return { receivedRequests, isLoading, error };
+  return { messages, isLoading, error };
 };

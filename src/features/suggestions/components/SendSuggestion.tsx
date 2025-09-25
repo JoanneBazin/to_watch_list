@@ -2,72 +2,40 @@
 
 import { Button, Textarea } from "@/src/components/ui";
 import { CiCirclePlus } from "react-icons/ci";
-import { useEffect, useState } from "react";
-import { FriendsProps } from "@/src/lib/types";
+import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { FaUserCheck } from "react-icons/fa6";
+import { MediaItem } from "@/src/types";
+import { useCreateSuggestion } from "../hooks/useSuggestionsMutations";
+import { ApiError } from "@/src/utils/ApiError";
 
 interface SendSuggestProps {
-  friendId: FriendsProps["id"];
-  rowId: string;
+  friendId: string;
+  media: MediaItem;
 }
 
-const SendSuggestion = ({ friendId, rowId }: SendSuggestProps) => {
-  const [isSuggestion, setIsSuggestion] = useState<boolean>();
+const SendSuggestion = ({ friendId, media }: SendSuggestProps) => {
   const [sentSuggestion, setSentSuggestion] = useState<boolean>(false);
 
-  const [loading, setLoading] = useState<boolean>(true);
-  const [senderComment, setSenderComment] = useState<string>("");
-
-  useEffect(() => {
-    const fetchSentSuggestions = async () => {
-      try {
-        const response = await fetch(
-          `/api/suggestions/share/${rowId}/user/${friendId}`
-        );
-
-        if (!response.ok) {
-          throw new Error("HTTP error");
-        }
-
-        const result = await response.json();
-        setIsSuggestion(result);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchSentSuggestions();
-  }, [rowId, friendId]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [senderComment, setSenderComment] = useState("");
+  const { sendSuggestion } = useCreateSuggestion();
 
   const handleSendSuggestion = async () => {
+    setIsLoading(true);
     try {
-      const response = await fetch(
-        `/api/suggestions/share/${rowId}/user/${friendId}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ comment: senderComment }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("HTTP error");
-      }
-
-      const result = await response.json();
-      setSentSuggestion(result);
+      await sendSuggestion(media.id, friendId, senderComment);
+      setSentSuggestion(true);
     } catch (error) {
-      console.log(error);
+      setError((error as ApiError).message);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         <Loader2 />
-      ) : isSuggestion ? (
-        <FaUserCheck />
       ) : sentSuggestion ? (
         <span className="italic">Suggestion envoyée</span>
       ) : (

@@ -1,12 +1,14 @@
 "use client";
-import { Loader, UserCard, Input } from "@/src/components/ui";
-import { UserProps } from "@/src/lib/types";
-import React, { useEffect, useState } from "react";
+import { Input, Loader, UserCard } from "@/src/components/ui";
+import { useEffect, useState } from "react";
+import { fetchUserSearch } from "../social.api";
+import { SearchContact } from "@/src/types";
 
 const UserSearch = () => {
   const [query, setQuery] = useState<string>("");
-  const [result, setResult] = useState<UserProps[]>([]);
+  const [result, setResult] = useState<SearchContact[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!query) {
@@ -16,13 +18,13 @@ const UserSearch = () => {
 
     const fetchResult = async () => {
       setLoading(true);
+      setError(null);
 
       try {
-        const response = await fetch(`/api/search/${query}`);
-        const users = await response.json();
+        const users = await fetchUserSearch(query);
         setResult(users);
       } catch (error) {
-        console.log("Error searching user", error);
+        setError("Une erreur est survenue");
       } finally {
         setLoading(false);
       }
@@ -50,14 +52,7 @@ const UserSearch = () => {
         {loading ? (
           <Loader />
         ) : result.length > 0 ? (
-          result?.map((result) => (
-            <UserCard
-              key={result.id}
-              id={result.id}
-              name={result.name}
-              image={result.image}
-            />
-          ))
+          result?.map((result) => <UserCard key={result.id} user={result} />)
         ) : query && result.length < 1 ? (
           <p className="italic">Pas de résultats</p>
         ) : null}

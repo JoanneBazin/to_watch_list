@@ -41,10 +41,8 @@ const MediaHoverCard = ({ media }: { media: MediaItem }) => {
                     {suggest.senderComment}
                     <RiSingleQuotesR />
                   </p>
-                  {suggest.receiverComment ? (
-                    <p className="text-xs text-zinc-600">Réponse envoyée !</p>
-                  ) : (
-                    <SendResponseComment suggestId={suggest.id} />
+                  {!suggest.receiverComment && (
+                    <SendResponseComment suggestionId={suggest.id} />
                   )}
                 </div>
               ))}

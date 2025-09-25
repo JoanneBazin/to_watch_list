@@ -1,5 +1,4 @@
 "use client";
-import AddSuggestion from "@/src/features/suggestions/components/AddSuggestion";
 import DeleteFriend from "@/src/features/social/components/DeleteFriend";
 import { Avatar } from "@/src/components/ui/Avatar";
 import { Loader } from "@/src/components/ui/Loader";
@@ -12,57 +11,40 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/src/components/ui/dialog";
-
-import { FriendsProps, Item, UserProps } from "@/src/lib/types";
-import { useEffect, useState } from "react";
+import { useFetchFriendProfile } from "@/src/features/social/hooks/useFetchFriendProfile";
 
 const FriendProfile = ({ params }: { params: { userId: string } }) => {
-  const [profile, setProfile] = useState<FriendsProps>();
-  const [loading, setLoading] = useState(true);
-  const [userFilms, setUserFilms] = useState<Item[]>([]);
-  const [userSeries, setUserSeries] = useState<Item[]>([]);
-  const [userFriends, setUserFriends] = useState<UserProps[]>([]);
+  const { friendProfile, isLoading, error } = useFetchFriendProfile(
+    params.userId
+  );
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await fetch(`/api/social/friends/${params.userId}`);
+  const friendFilms =
+    friendProfile?.watchlist.filter((item) => item.type === "FILM") ?? [];
+  const friendSeries =
+    friendProfile?.watchlist.filter((item) => item.type === "SERIE") ?? [];
 
-        const result = await response.json();
-        setProfile(result.friend);
-        setUserFilms(result.friendFilms);
-        setUserSeries(result.friendSeries);
-        setUserFriends(result.userFriends);
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, [params.userId]);
-
-  if (!profile) {
-    return null;
+  if (!friendProfile) {
+    return <div>Profil introuvable</div>;
+  } else if (error) {
+    return <div>{error}</div>;
   }
 
   return (
     <div>
-      {loading ? (
+      {isLoading ? (
         <Loader />
       ) : (
         <div>
           <div className="flex gap-10 my-4 mx-20">
-            {profile.avatar ? (
+            {friendProfile.image ? (
               <Avatar
-                img={`data:image/*;base64,${profile.avatar}`}
+                img={`data:image/*;base64,${friendProfile.image}`}
                 size="large"
               />
             ) : (
               <Avatar size="large" img="/avatar.svg" />
             )}
-            <h2 className="text-4xl text-center m-12">{profile.name}</h2>
+            <h2 className="text-4xl text-center m-12">{friendProfile.name}</h2>
           </div>
 
           <div className="flex justify-between m-10 ">
@@ -78,13 +60,17 @@ const FriendProfile = ({ params }: { params: { userId: string } }) => {
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
-                        <DialogTitle>Film pour {profile.name}</DialogTitle>
+                        <DialogTitle>
+                          Film pour {friendProfile.name}
+                        </DialogTitle>
                       </DialogHeader>
-                      <AddSuggestion entry="FILM" receiverId={profile.id} />
+                      {/* <AddSuggestion entry="FILM" receiverId={friendProfile.id} /> */}
                     </DialogContent>
                   </Dialog>
                 </div>
-                <FriendsWatchlist medias={userFilms} />
+                {friendFilms.length > 0 && (
+                  <FriendsWatchlist medias={friendFilms} />
+                )}
               </div>
 
               <div>
@@ -98,20 +84,24 @@ const FriendProfile = ({ params }: { params: { userId: string } }) => {
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
-                        <DialogTitle>Série pour {profile.name}</DialogTitle>
+                        <DialogTitle>
+                          Série pour {friendProfile.name}
+                        </DialogTitle>
                       </DialogHeader>
-                      <AddSuggestion entry="SERIE" receiverId={profile.id} />
+                      {/* <AddSuggestion entry="SERIE" receiverId={friendProfile.id} /> */}
                     </DialogContent>
                   </Dialog>
                 </div>
-                <FriendsWatchlist medias={userSeries} />
+                {friendSeries.length > 0 && (
+                  <FriendsWatchlist medias={friendSeries} />
+                )}
               </div>
             </div>
             <div>
               <h4 className="text-lg font-semibold my-6">Amis</h4>
               <ul>
-                {userFriends ? (
-                  userFriends.map((friend) => (
+                {friendProfile.contacts.length > 0 ? (
+                  friendProfile.contacts.map((friend) => (
                     <li key={friend.id}>{friend.name}</li>
                   ))
                 ) : (
@@ -122,7 +112,7 @@ const FriendProfile = ({ params }: { params: { userId: string } }) => {
           </div>
 
           <div>
-            <DeleteFriend friendId={profile.id} />
+            <DeleteFriend friendId={friendProfile.id} />
           </div>
         </div>
       )}

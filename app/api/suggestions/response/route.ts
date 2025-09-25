@@ -27,6 +27,7 @@ export async function GET(req: Request) {
       },
       receiver: {
         select: {
+          id: true,
           name: true,
           image: true,
         },

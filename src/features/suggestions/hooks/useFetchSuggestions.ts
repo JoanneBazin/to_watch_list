@@ -1,22 +1,20 @@
 "use client";
-import { ReceivedRequests } from "@/src/types";
+import { PendingSuggestions } from "@/src/types";
 import { useEffect, useState } from "react";
-import { fetchFriendRequests } from "../social.api";
-import { ApiError } from "next/dist/server/api-utils";
+import { fetchPendingSuggestions } from "../suggestions.api";
+import { ApiError } from "@/src/utils/ApiError";
 
-export const useFetchRequests = () => {
-  const [receivedRequests, setReceivedRequests] = useState<ReceivedRequests[]>(
-    []
-  );
+export const useFetchSuggestions = () => {
+  const [suggestions, setSuggestions] = useState<PendingSuggestions[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchRequests = async () => {
+    const fetchReceivedSuggestions = async () => {
       setIsLoading(true);
 
       try {
-        setReceivedRequests(await fetchFriendRequests());
+        setSuggestions(await fetchPendingSuggestions());
       } catch (error) {
         if (error instanceof ApiError) {
           setError(error.message);
@@ -28,8 +26,8 @@ export const useFetchRequests = () => {
       }
     };
 
-    fetchRequests();
+    fetchReceivedSuggestions();
   }, []);
 
-  return { receivedRequests, isLoading, error };
+  return { suggestions, isLoading, error };
 };

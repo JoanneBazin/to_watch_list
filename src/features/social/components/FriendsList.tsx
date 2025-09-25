@@ -1,5 +1,5 @@
 "use client";
-import { Loader, Avatar } from "@/src/components/ui";
+import { Avatar } from "@/src/components/ui";
 import Link from "next/link";
 import { useUserStore } from "../../user/user.store";
 

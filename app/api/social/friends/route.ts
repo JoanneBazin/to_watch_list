@@ -18,6 +18,12 @@ export async function GET(req: NextRequest) {
           id: true,
           name: true,
           image: true,
+          suggestionsReceived: {
+            where: { senderId: userId },
+            select: {
+              mediaId: true,
+            },
+          },
         },
       },
       receiver: {
@@ -25,25 +31,27 @@ export async function GET(req: NextRequest) {
           id: true,
           name: true,
           image: true,
+          suggestionsReceived: {
+            where: { senderId: userId },
+            select: {
+              mediaId: true,
+            },
+          },
         },
       },
     },
   });
 
   const userFriends = friends.map((request) => {
-    if (request.sender.id === userId) {
-      return {
-        id: request.receiver.id,
-        name: request.receiver.name,
-        avatar: request.receiver.image,
-      };
-    } else {
-      return {
-        id: request.sender.id,
-        name: request.sender.name,
-        avatar: request.sender.image,
-      };
-    }
+    const friend =
+      request.sender.id === userId ? request.receiver : request.sender;
+
+    return {
+      id: friend.id,
+      name: friend.name,
+      image: friend.image,
+      suggestionsFromUser: friend.suggestionsReceived.map((r) => r.mediaId),
+    };
   });
 
   return NextResponse.json(userFriends);

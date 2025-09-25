@@ -1,22 +1,20 @@
 "use client";
-import { ReceivedRequests } from "@/src/types";
+import { FriendProfile } from "@/src/types";
 import { useEffect, useState } from "react";
-import { fetchFriendRequests } from "../social.api";
+import { fetchFriendProfile } from "../social.api";
 import { ApiError } from "next/dist/server/api-utils";
 
-export const useFetchRequests = () => {
-  const [receivedRequests, setReceivedRequests] = useState<ReceivedRequests[]>(
-    []
-  );
+export const useFetchFriendProfile = (id: string) => {
+  const [friendProfile, setFriendProfile] = useState<FriendProfile>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchRequests = async () => {
+    const fetchFriend = async () => {
       setIsLoading(true);
 
       try {
-        setReceivedRequests(await fetchFriendRequests());
+        setFriendProfile(await fetchFriendProfile(id));
       } catch (error) {
         if (error instanceof ApiError) {
           setError(error.message);
@@ -27,9 +25,8 @@ export const useFetchRequests = () => {
         setIsLoading(false);
       }
     };
+    fetchFriend();
+  }, [id]);
 
-    fetchRequests();
-  }, []);
-
-  return { receivedRequests, isLoading, error };
+  return { friendProfile, isLoading, error };
 };

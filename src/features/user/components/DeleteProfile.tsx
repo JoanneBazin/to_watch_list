@@ -13,21 +13,19 @@ import {
   Button,
 } from "@/src/components/ui";
 import { signOut } from "@/src/lib/auth-client";
+import { deleteAccount } from "../hooks/useUserMutation";
+import { useState } from "react";
+import { ApiError } from "@/src/utils/ApiError";
 
-const DeleteProfile = ({ userId }: { userId: string }) => {
+const DeleteProfile = () => {
+  const { deleteUser } = deleteAccount();
+  const [error, setError] = useState<string | null>(null);
   const handleDelete = async () => {
     try {
-      const response = await fetch(`/api/users/${userId}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete");
-      }
-
+      await deleteUser();
       signOut();
     } catch (error) {
-      console.log(error);
+      setError((error as ApiError).message);
     }
   };
 
@@ -47,7 +45,7 @@ const DeleteProfile = ({ userId }: { userId: string }) => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Annuler</AlertDialogCancel>
-          <AlertDialogAction onClick={() => handleDelete()}>
+          <AlertDialogAction onClick={handleDelete}>
             Supprimer
           </AlertDialogAction>
         </AlertDialogFooter>

@@ -1,5 +1,5 @@
+import ReceivedMessages from "@/src/features/social/components/ReceivedMessages";
 import SuggestionsList from "@/src/features/suggestions/components/SuggestionsList";
-import ReceivedMessages from "../../components/features/social/ReceivedMessages";
 
 export default function MessagesPage() {
   return (

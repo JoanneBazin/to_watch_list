@@ -15,22 +15,60 @@ export async function GET(
   const session = await requireAuth(req);
   const userId = session.user.id;
 
-  const allUsers = await prisma.user.findMany({
+  const users = await prisma.user.findMany({
     where: {
       id: {
         not: userId,
+      },
+      name: {
+        contains: query,
+        mode: "insensitive",
       },
     },
     select: {
       name: true,
       image: true,
       id: true,
+      friendRequestSent: {
+        where: { receiverId: userId, status: { not: "REFUSED" } },
+        select: { id: true, status: true },
+      },
+      friendRequestReceived: {
+        where: { senderId: userId, status: { not: "REFUSED" } },
+        select: { id: true, status: true },
+      },
     },
   });
 
-  const usersList = allUsers.filter((user) =>
-    user.name.toLowerCase().includes(query.toLowerCase())
-  );
+  const usersList = users.map((user) => {
+    let friendshipStatus:
+      | "none"
+      | "friends"
+      | "pending_sent"
+      | "pending_received" = "none";
+    let requestId;
+
+    if (user.friendRequestSent.length > 0) {
+      friendshipStatus =
+        user.friendRequestSent[0].status === "ACCEPTED"
+          ? "friends"
+          : "pending_sent";
+      requestId = user.friendRequestSent[0].id;
+    } else if (user.friendRequestReceived.length > 0) {
+      friendshipStatus =
+        user.friendRequestReceived[0].status === "ACCEPTED"
+          ? "friends"
+          : "pending_received";
+    }
+
+    return {
+      id: user.id,
+      name: user.name,
+      image: user.image,
+      friendshipStatus,
+      requestId,
+    };
+  });
 
   return NextResponse.json(usersList);
 }

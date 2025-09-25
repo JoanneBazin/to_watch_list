@@ -62,17 +62,3 @@ export async function PUT(
   });
   return NextResponse.json({ success: true });
 }
-
-export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  const id = params.id;
-  const deleteUser = await prisma.user.delete({
-    where: {
-      id: id,
-    },
-  });
-
-  return NextResponse.json({ success: true });
-}

@@ -13,23 +13,22 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/src/components/ui";
+import { useState } from "react";
+import { useDeleteFriend } from "../hooks/useSocialMutations";
+import { ApiError } from "@/src/utils/ApiError";
 
 const DeleteFriend = ({ friendId }: { friendId: string }) => {
   const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+  const { deleteContact } = useDeleteFriend();
 
   const handleDelete = async () => {
+    setError(null);
     try {
-      const response = await fetch(`/api/social/friends/${friendId}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete");
-      }
-
-      router.push("/");
+      await deleteContact(friendId);
+      router.push("/dashboard");
     } catch (error) {
-      console.log(error);
+      setError((error as ApiError).message);
     }
   };
 
@@ -49,7 +48,7 @@ const DeleteFriend = ({ friendId }: { friendId: string }) => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Annuler</AlertDialogCancel>
-          <AlertDialogAction onClick={() => handleDelete()}>
+          <AlertDialogAction onClick={handleDelete}>
             Supprimer
           </AlertDialogAction>
         </AlertDialogFooter>

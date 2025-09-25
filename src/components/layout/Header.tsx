@@ -7,9 +7,11 @@ import Image from "next/image";
 import ReceivedMessages from "@/src/features/social/components/ReceivedMessages";
 import { useSession } from "@/src/lib/auth-client";
 import { Avatar, Button, Logo, SignOutBtn, Skeleton } from "../ui";
+import { useUserStore } from "@/src/features/user/user.store";
 
 const Header = () => {
   const { data: session, isPending } = useSession();
+  const user = useUserStore((s) => s.user);
 
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -111,7 +113,7 @@ const Header = () => {
             </Link>
 
             <div className="md:flex">
-              <button onClick={() => setIsMessageOpen(!isMessageOpen)}>
+              <Link href="/messages">
                 <Image
                   src="/icon_message.svg"
                   alt="message icon"
@@ -119,7 +121,7 @@ const Header = () => {
                   height={30}
                   className="md:block md:relative md:mr-2"
                 />
-              </button>
+              </Link>
 
               {isMessageOpen && (
                 <div className="absolute top-10 right-12 w-40 bg-zinc-900 opacity-90 p-2 rounded-md shadow-md flex flex-col z-10">
@@ -137,7 +139,7 @@ const Header = () => {
                     img={`data:image/*;base64,${user.avatar}`}
                     size="small"
                   /> */}
-                {session.user.name}
+                {user?.name}
               </button>
 
               {isProfileOpen && (
