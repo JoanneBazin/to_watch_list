@@ -15,12 +15,10 @@ export interface MediaItem {
 }
 
 export interface MediaStore {
-  films: MediaItem[];
-  series: MediaItem[];
+  watchlist: MediaItem[];
   sentSuggestions: SuggestionsProps[];
   receivedSuggestions: SuggestionsProps[];
-  setFilms: (medias: MediaItem[]) => void;
-  setSeries: (medias: MediaItem[]) => void;
+  setWatchlist: (watchlist: MediaItem[]) => void;
   setSentsuggestions: (suggestions: SuggestionsProps[]) => void;
   setReceivedsuggestions: (suggestions: SuggestionsProps[]) => void;
   reset: () => void;
@@ -31,4 +29,22 @@ export interface MediaTableProps {
   type: EntryType;
 }
 
+export interface AddEntryFormProps {
+  entry: EntryType;
+  isSuggestedMedia: boolean;
+  receiverId?: string;
+}
+
+export interface MediaCardProps {
+  media: MediaItem;
+  children?: React.ReactNode;
+}
+
 export type EntryType = "FILM" | "SERIE";
+
+export type AddEntryFormValue = Omit<
+  MediaItem,
+  "id" | "addedAt" | "watched"
+> & {
+  senderComment?: string;
+};

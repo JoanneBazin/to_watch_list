@@ -40,7 +40,7 @@ export const useCreateSuggestion = () => {
 };
 
 export const useUpdateSuggestionStatus = () => {
-  const { films, series, setFilms, setSeries } = useMediaStore.getState();
+  const { watchlist, setWatchlist } = useMediaStore.getState();
 
   const respondToSuggestion = async (
     mediaId: string,
@@ -49,25 +49,14 @@ export const useUpdateSuggestionStatus = () => {
     try {
       const result = await updateReceivedSuggestions(mediaId, status);
       if (status === "ACCEPTED") {
-        if (result.type === "FILM") {
-          setFilms([
-            ...films,
-            {
-              ...result,
-              addedAt: new Date(),
-              watched: false,
-            },
-          ]);
-        } else {
-          setSeries([
-            ...series,
-            {
-              ...result,
-              addedAt: new Date(),
-              watched: false,
-            },
-          ]);
-        }
+        setWatchlist([
+          ...watchlist,
+          {
+            ...result,
+            addedAt: new Date(),
+            watched: false,
+          },
+        ]);
       }
     } catch (error) {
       handleActionError(error, "UpdateSuggestion");
@@ -78,11 +67,25 @@ export const useUpdateSuggestionStatus = () => {
 };
 
 export const useUpdateSuggestionResponse = () => {
-  const { films, series, setFilms, setSeries } = useMediaStore.getState();
+  const { watchlist, setWatchlist } = useMediaStore.getState();
 
   const addResponseComment = async (suggestionId: string, comment: string) => {
     try {
-      await updateSuggestionResponse(suggestionId, comment);
+      const result = await updateSuggestionResponse(suggestionId, comment);
+      setWatchlist(
+        watchlist.map((media) =>
+          media.id === result.mediaId
+            ? {
+                ...media,
+                suggestions: media.suggestions?.map((s) =>
+                  s.id === result.id
+                    ? { ...s, receiverComment: result.receiverComment }
+                    : s
+                ),
+              }
+            : media
+        )
+      );
     } catch (error) {
       handleActionError(error, "UpdateSuggestion");
     }

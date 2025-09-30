@@ -1,18 +1,18 @@
 "use client";
 import React from "react";
+import Link from "next/link";
+import { SearchContact } from "@/src/types";
+import SendFriendRequest from "@/src/features/social/components/SendFriendRequest";
 import {
+  Avatar,
+  Button,
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../ui/card";
-import { Button } from "./button";
-import Link from "next/link";
-import { Avatar } from "./Avatar";
-import { SearchContact } from "@/src/types";
-import ValidateFriendRequest from "../../features/social/components/ValidateFriendRequest";
-import SendFriendRequest from "@/src/features/social/components/SendFriendRequest";
+} from "@/src/components/ui";
+import ValidateFriendRequest from "./ValidateFriendRequest";
 
 const UserCard = ({ user }: { user: SearchContact }) => {
   let actionSection;

@@ -6,128 +6,62 @@ export async function GET(req: Request) {
   const session = await requireAuth(req);
   const userId = session.user.id;
 
-  const medias = await Promise.allSettled([
-    prisma.usersWatchList.findMany({
-      where: {
-        AND: [
-          { userId: userId },
-          {
-            media: {
-              type: "FILM",
-            },
-          },
-          {
-            OR: [
-              {
-                suggestions: {
-                  none: {},
-                },
-              },
-              {
-                suggestions: {
-                  some: {
-                    status: "ACCEPTED",
-                  },
-                },
-              },
-            ],
-          },
-        ],
-      },
-      select: {
-        media: true,
-        addedAt: true,
-        watched: true,
-        suggestions: {
-          select: {
-            id: true,
-            senderComment: true,
-            receiverComment: true,
-            sender: {
-              select: {
-                name: true,
+  const medias = await prisma.usersWatchList.findMany({
+    where: {
+      AND: [
+        { userId: userId },
+        {
+          OR: [
+            {
+              suggestions: {
+                none: {},
               },
             },
-          },
-        },
-      },
-      orderBy: [
-        {
-          watched: "asc",
-        },
-        {
-          addedAt: "desc",
+            {
+              suggestions: {
+                some: {
+                  status: "ACCEPTED",
+                },
+              },
+            },
+          ],
         },
       ],
-    }),
-    prisma.usersWatchList.findMany({
-      where: {
-        AND: [
-          { userId: userId },
-          {
-            media: {
-              type: "SERIE",
-            },
-          },
-          {
-            OR: [
-              {
-                suggestions: {
-                  none: {},
-                },
-              },
-              {
-                suggestions: {
-                  some: {
-                    status: "ACCEPTED",
-                  },
-                },
-              },
-            ],
-          },
-        ],
-      },
-      select: {
-        media: true,
-        addedAt: true,
-        watched: true,
-        suggestions: {
-          select: {
-            id: true,
-            senderComment: true,
-            receiverComment: true,
-            sender: {
-              select: {
-                name: true,
-              },
+    },
+    select: {
+      media: true,
+      addedAt: true,
+      watched: true,
+      suggestions: {
+        select: {
+          id: true,
+          senderComment: true,
+          receiverComment: true,
+          sender: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
             },
           },
         },
       },
-      orderBy: [
-        {
-          watched: "asc",
-        },
-        {
-          addedAt: "desc",
-        },
-      ],
-    }),
-  ]);
+    },
+    orderBy: [
+      {
+        watched: "asc",
+      },
+      {
+        addedAt: "desc",
+      },
+    ],
+  });
 
-  const filmsList = medias[0].status === "fulfilled" ? medias[0].value : [];
-  const seriesList = medias[1].status === "fulfilled" ? medias[1].value : [];
-
-  const films = filmsList.map((film) => ({
-    ...film,
-    ...film.media,
-    media: undefined,
-  }));
-  const series = seriesList.map((serie) => ({
-    ...serie,
-    ...serie.media,
+  const watchlist = medias.map((item) => ({
+    ...item,
+    ...item.media,
     media: undefined,
   }));
 
-  return NextResponse.json({ films, series });
+  return NextResponse.json(watchlist);
 }

@@ -1,7 +1,9 @@
 "use client";
 
 import { Button } from "@/src/components/ui";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useAddMedia } from "../hooks/useWatchlistMutations";
+import { ApiError } from "@/src/utils/ApiError";
 
 interface AddMediaProps {
   mediaId: string;
@@ -9,54 +11,26 @@ interface AddMediaProps {
 
 const AddMedia = ({ mediaId }: AddMediaProps) => {
   const [added, setAdded] = useState<boolean>(false);
-  const [existantMedia, setExistantMedia] = useState<boolean>();
-
-  useEffect(() => {
-    const fetchMedia = async () => {
-      try {
-        const response = await fetch(`/api/media/${mediaId}`);
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch watchlist");
-        }
-
-        const result = await response.json();
-        setExistantMedia(result);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchMedia();
-  }, [mediaId]);
+  const [error, setError] = useState<string | null>(null);
+  const { addNewUserMedia } = useAddMedia();
 
   const handleAdd = async () => {
+    setError(null);
     try {
-      const response = await fetch(`/api/media/${mediaId}/user`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to add");
-      }
-
-      const result = await response.json();
-
-      if (result.success) {
-        setAdded(true);
-      }
+      await addNewUserMedia(mediaId);
+      setAdded(true);
     } catch (error) {
-      console.log(error);
+      setError((error as ApiError).message);
     }
   };
+
   return (
     <>
       {added ? (
         <span className="italic">Ajouté à ma liste</span>
-      ) : existantMedia ? null : (
+      ) : (
         <Button onClick={handleAdd} variant="outline" className="px-6 my-4">
-          +
+          Ajouter à ma watchlist
         </Button>
       )}
     </>

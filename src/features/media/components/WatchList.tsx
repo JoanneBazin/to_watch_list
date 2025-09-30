@@ -22,8 +22,9 @@ import { useMediaStore } from "../media.store";
 
 export default function WatchList() {
   const { isLoading, error } = useFetchWatchList();
-  const films = useMediaStore((s) => s.films);
-  const series = useMediaStore((s) => s.series);
+  const watchlist = useMediaStore((s) => s.watchlist);
+  const films = watchlist.filter((media) => media.type === "FILM");
+  const series = watchlist.filter((media) => media.type === "SERIE");
 
   return (
     <div>
@@ -43,7 +44,7 @@ export default function WatchList() {
                 <DialogHeader>
                   <DialogTitle>Nouveau Film</DialogTitle>
                 </DialogHeader>
-                <AddEntryForm entry="FILM" />
+                <AddEntryForm entry="FILM" isSuggestedMedia={false} />
               </DialogContent>
             </Dialog>
             <section className="container mx-auto py-10">
@@ -62,7 +63,7 @@ export default function WatchList() {
                 <DialogHeader>
                   <DialogTitle>Nouvelle Série</DialogTitle>
                 </DialogHeader>
-                <AddEntryForm entry="SERIE" />
+                <AddEntryForm entry="SERIE" isSuggestedMedia={false} />
               </DialogContent>
             </Dialog>
             <section className="container mx-auto py-10">

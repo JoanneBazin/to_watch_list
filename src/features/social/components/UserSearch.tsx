@@ -1,8 +1,9 @@
 "use client";
-import { Input, Loader, UserCard } from "@/src/components/ui";
+import { Input, Loader } from "@/src/components/ui";
 import { useEffect, useState } from "react";
 import { fetchUserSearch } from "../social.api";
 import { SearchContact } from "@/src/types";
+import { UserCard } from "./UserCard";
 
 const UserSearch = () => {
   const [query, setQuery] = useState<string>("");

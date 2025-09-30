@@ -12,6 +12,7 @@ import {
   DialogTrigger,
 } from "@/src/components/ui/dialog";
 import { useFetchFriendProfile } from "@/src/features/social/hooks/useFetchFriendProfile";
+import AddEntryForm from "@/src/features/media/components/AddEntryForm";
 
 const FriendProfile = ({ params }: { params: { userId: string } }) => {
   const { friendProfile, isLoading, error } = useFetchFriendProfile(
@@ -64,7 +65,11 @@ const FriendProfile = ({ params }: { params: { userId: string } }) => {
                           Film pour {friendProfile.name}
                         </DialogTitle>
                       </DialogHeader>
-                      {/* <AddSuggestion entry="FILM" receiverId={friendProfile.id} /> */}
+                      <AddEntryForm
+                        entry="FILM"
+                        isSuggestedMedia={true}
+                        receiverId={friendProfile.id}
+                      />
                     </DialogContent>
                   </Dialog>
                 </div>

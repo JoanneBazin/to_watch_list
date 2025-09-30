@@ -4,7 +4,7 @@ import { fetchWatchlist } from "../media.api";
 import { useMediaStore } from "../media.store";
 
 export const useFetchWatchList = () => {
-  const { setFilms, setSeries } = useMediaStore();
+  const { setWatchlist } = useMediaStore();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -12,9 +12,7 @@ export const useFetchWatchList = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const { films, series } = await fetchWatchlist();
-        setFilms(films);
-        setSeries(series);
+        setWatchlist(await fetchWatchlist());
       } catch (error) {
         setError(
           error instanceof Error ? error.message : "Une erreur est survenue"
@@ -24,7 +22,7 @@ export const useFetchWatchList = () => {
       }
     };
     fetchData();
-  }, [setFilms, setSeries]);
+  }, [setWatchlist]);
 
   return { isLoading, error };
 };

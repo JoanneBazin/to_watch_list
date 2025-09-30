@@ -1,11 +1,11 @@
 "use server";
 
 import { prisma } from "@/src/lib/prisma";
-import { MediaItem } from "@/src/types";
+import { AddEntryFormValue, MediaItem } from "@/src/types";
 import { ApiError } from "@/src/utils/ApiError";
 import { requireAuth } from "@/src/utils/requireAuth";
 
-export const addToWatchlist = async (media: MediaItem) => {
+export const createMedia = async (media: AddEntryFormValue) => {
   const session = await requireAuth();
 
   const userId = session.user.id;
@@ -31,6 +31,45 @@ export const addToWatchlist = async (media: MediaItem) => {
       },
     },
   });
+};
+
+export const addToWatchlist = async (mediaId: string) => {
+  const session = await requireAuth();
+  const userId = session.user.id;
+
+  const existantMedia = await prisma.usersWatchList.findUnique({
+    where: {
+      userId_mediaId: {
+        userId: userId,
+        mediaId: mediaId,
+      },
+    },
+    include: {
+      media: true,
+    },
+  });
+
+  if (existantMedia) {
+    await prisma.suggestion.updateMany({
+      where: {
+        AND: [{ receiverId: userId }, { mediaId: mediaId }],
+      },
+      data: {
+        status: "ACCEPTED",
+      },
+    });
+    return existantMedia;
+  } else {
+    return await prisma.usersWatchList.create({
+      data: {
+        userId: userId,
+        mediaId: mediaId,
+      },
+      include: {
+        media: true,
+      },
+    });
+  }
 };
 
 export const updateMedia = async (mediaId: string, data: MediaItem) => {
@@ -75,7 +114,7 @@ export const updateWatched = async (mediaId: string) => {
     data: {
       watched: !current?.watched,
     },
-    select: { mediaId: true, watched: true },
+    select: { mediaId: true, watched: true, media: { select: { type: true } } },
   });
 };
 
@@ -91,6 +130,48 @@ export const deleteFromWatchlist = async (mediaId: string) => {
         mediaId,
       },
     },
-    select: { mediaId: true },
+    select: { mediaId: true, media: { select: { type: true } } },
+  });
+};
+
+export const addToContactWatchlist = async (
+  media: AddEntryFormValue,
+  receiverId: string
+) => {
+  const session = await requireAuth();
+  const userId = session.user.id;
+
+  return await prisma.$transaction(async (tx) => {
+    const newMedia = await tx.watchList.create({
+      data: {
+        title: media.title,
+        type: media.type,
+        synopsis: media.synopsis,
+        year: media.year,
+        real: media.real,
+        platform: media.platform,
+        categoryName: media.categoryName,
+        users: {
+          create: [
+            {
+              user: {
+                connect: {
+                  id: receiverId,
+                },
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    return await tx.suggestion.create({
+      data: {
+        senderId: userId,
+        receiverId: receiverId,
+        mediaId: newMedia.id,
+        senderComment: media.senderComment,
+      },
+    });
   });
 };

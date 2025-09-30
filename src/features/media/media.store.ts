@@ -2,19 +2,16 @@ import { MediaStore } from "@/src/types";
 import { create } from "zustand";
 
 export const useMediaStore = create<MediaStore>()((set) => ({
-  films: [],
-  series: [],
+  watchlist: [],
   sentSuggestions: [],
   receivedSuggestions: [],
-  setFilms: (films) => set({ films }),
-  setSeries: (series) => set({ series }),
+  setWatchlist: (watchlist) => set({ watchlist }),
   setSentsuggestions: (suggestions) => set({ sentSuggestions: suggestions }),
   setReceivedsuggestions: (suggestions) =>
     set({ receivedSuggestions: suggestions }),
   reset: () => {
     set({
-      films: [],
-      series: [],
+      watchlist: [],
       sentSuggestions: [],
       receivedSuggestions: [],
     });

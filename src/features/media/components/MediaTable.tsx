@@ -24,7 +24,6 @@ import {
   Button,
   Dialog,
   DialogTrigger,
-  MediaHoverCard,
   Table,
   TableBody,
   TableCell,
@@ -33,6 +32,8 @@ import {
   TableRow,
 } from "@/src/components/ui";
 import ShareMedia from "../../suggestions/components/ShareMedia";
+import { MediaCard } from "./MediaCard";
+import { MediaCardSuggestions } from "./MediaCardSuggestions";
 
 export const MediaTable = ({ data, type }: MediaTableProps) => {
   const { deleteItem } = useDeleteFromWatchlist();
@@ -43,7 +44,7 @@ export const MediaTable = ({ data, type }: MediaTableProps) => {
     setError(null);
 
     try {
-      await deleteItem(id, type);
+      await deleteItem(id);
     } catch (error) {
       setError((error as ApiError).message);
     }
@@ -53,7 +54,7 @@ export const MediaTable = ({ data, type }: MediaTableProps) => {
     setError(null);
 
     try {
-      await updateWatchedItem(id, type);
+      await updateWatchedItem(id);
     } catch (error) {
       setError((error as ApiError).message);
     }
@@ -65,14 +66,11 @@ export const MediaTable = ({ data, type }: MediaTableProps) => {
       header: "Titre",
       cell: ({ row }) => {
         return (
-          <Dialog key={row.id}>
-            <DialogTrigger asChild>
-              <div className="cursor-pointer font-bold">
-                {row.original.title}
-              </div>
-            </DialogTrigger>
-            <MediaHoverCard media={row.original} />
-          </Dialog>
+          <MediaCard media={row.original}>
+            {row.original.suggestions && (
+              <MediaCardSuggestions suggestions={row.original.suggestions} />
+            )}
+          </MediaCard>
         );
       },
     },

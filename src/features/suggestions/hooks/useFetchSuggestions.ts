@@ -1,11 +1,11 @@
 "use client";
-import { PendingSuggestions } from "@/src/types";
+import { SuggestionsProps } from "@/src/types";
 import { useEffect, useState } from "react";
 import { fetchPendingSuggestions } from "../suggestions.api";
 import { ApiError } from "@/src/utils/ApiError";
 
 export const useFetchSuggestions = () => {
-  const [suggestions, setSuggestions] = useState<PendingSuggestions[]>([]);
+  const [suggestions, setSuggestions] = useState<SuggestionsProps[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 

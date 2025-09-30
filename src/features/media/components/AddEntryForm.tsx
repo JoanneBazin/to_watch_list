@@ -3,19 +3,29 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useState } from "react";
 import { useFetchCategories } from "@/src/features/media/hooks/useFetchCategories";
-import { EntryType, MediaItem } from "@/src/types";
+import { AddEntryFormProps, AddEntryFormValue } from "@/src/types";
 import { useAddMedia } from "@/src/features/media/hooks/useWatchlistMutations";
 import { ApiError } from "@/src/utils/ApiError";
-import { Button, DialogFooter, Input, Label } from "@/src/components/ui";
+import {
+  Button,
+  DialogFooter,
+  Input,
+  Label,
+  Textarea,
+} from "@/src/components/ui";
 
-const AddEntryForm = ({ entry }: { entry: EntryType }) => {
-  const { handleSubmit, register, reset } = useForm<MediaItem>();
-  const { addNewItem } = useAddMedia();
+const AddEntryForm = ({
+  entry,
+  isSuggestedMedia,
+  receiverId,
+}: AddEntryFormProps) => {
+  const { handleSubmit, register, reset } = useForm<AddEntryFormValue>();
+  const { createNewUserMedia, createNewContactMedia } = useAddMedia();
   const [error, setError] = useState<string | null>(null);
 
   const { categories } = useFetchCategories();
 
-  const onSubmit: SubmitHandler<MediaItem> = async (data) => {
+  const onSubmit: SubmitHandler<AddEntryFormValue> = async (data) => {
     const reqData = {
       ...data,
       year: Number(data.year),
@@ -23,7 +33,11 @@ const AddEntryForm = ({ entry }: { entry: EntryType }) => {
     };
 
     try {
-      await addNewItem(reqData, entry);
+      if (isSuggestedMedia && receiverId) {
+        await createNewContactMedia(reqData, receiverId);
+      } else {
+        await createNewUserMedia(reqData);
+      }
 
       reset();
     } catch (error) {
@@ -49,7 +63,7 @@ const AddEntryForm = ({ entry }: { entry: EntryType }) => {
           <Label htmlFor="synopsis" className="text-right">
             Synopsis
           </Label>
-          <Input
+          <Textarea
             id="synopsis"
             {...register("synopsis")}
             className="col-span-3"
@@ -99,6 +113,19 @@ const AddEntryForm = ({ entry }: { entry: EntryType }) => {
               ))}
           </select>
         </div>
+
+        {isSuggestedMedia && (
+          <div>
+            <Label htmlFor="senderComment" className="text-right">
+              Laissez un commentaire ?
+            </Label>
+            <Textarea
+              id="senderComment"
+              {...register("senderComment")}
+              className="col-span-3"
+            />
+          </div>
+        )}
       </div>
       <DialogFooter>
         <Button type="submit">Ajouter</Button>

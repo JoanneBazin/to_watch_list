@@ -85,10 +85,15 @@ export const updateSuggestionResponse = async (
     throw new ApiError(404, "Suggestion introuvable");
   }
 
-  await prisma.suggestion.update({
+  return await prisma.suggestion.update({
     where: {
       id: suggestion.id,
     },
     data: { receiverComment: comment },
+    select: {
+      id: true,
+      mediaId: true,
+      receiverComment: true,
+    },
   });
 };

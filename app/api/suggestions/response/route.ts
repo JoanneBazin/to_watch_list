@@ -38,8 +38,9 @@ export async function GET(req: Request) {
   const messages = receivedMessages.map((message) => ({
     ...message,
     receiver: {
+      id: message.receiver.id,
       name: message.receiver.name,
-      avatar: message.receiver.image,
+      image: message.receiver.image,
     },
   }));
 

@@ -46,50 +46,11 @@ export async function GET(req: Request) {
       id: suggest.id,
       senderComment: suggest.senderComment,
       sender: {
+        id: suggest.sender.id,
         name: suggest.sender.name,
-        avatar: suggest.sender.image,
+        image: suggest.sender.image,
       },
     })),
   }));
   return NextResponse.json(receivedSuggestions);
-}
-
-export async function POST(req: Request) {
-  const session = await requireAuth(req);
-  const userId = session.user.id;
-
-  const data = await req.json();
-
-  const addSuggestion = await prisma.watchList.create({
-    data: {
-      title: data.title,
-      type: data.type,
-      synopsis: data.synopsis,
-      year: data.year,
-      real: data.real,
-      platform: data.platform,
-      categoryName: data.categoryName,
-      users: {
-        create: [
-          {
-            user: {
-              connect: {
-                id: data.receiverId,
-              },
-            },
-          },
-        ],
-      },
-    },
-  });
-
-  const addNewSuggestion = await prisma.suggestion.create({
-    data: {
-      senderId: userId,
-      receiverId: data.receiverId,
-      mediaId: addSuggestion.id,
-      senderComment: data.comment,
-    },
-  });
-  return NextResponse.json(addSuggestion);
 }
