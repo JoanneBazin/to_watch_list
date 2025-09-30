@@ -7,7 +7,7 @@ export const requireAuth = async (req?: Request) => {
   const session = await auth.api.getSession({ headers: requestHeaders });
 
   if (!session) {
-    throw new ApiError(401, "Non autorisé");
+    throw new ApiError(401, "Authentification requise");
   }
 
   return session;

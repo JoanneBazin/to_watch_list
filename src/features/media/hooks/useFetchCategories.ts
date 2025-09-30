@@ -1,28 +1,26 @@
 "use client";
 import { CategoryProps } from "@/src/lib/types";
 import { useEffect, useState } from "react";
+import { fetchMediaCategories } from "../media.api";
+import { ApiError } from "@/src/utils/ApiError";
 
 export function useFetchCategories() {
   const [categories, setCategories] = useState<CategoryProps[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchCategories = async () => {
+    setIsLoading(true);
     try {
-      const response = await fetch("/api/category");
-      if (!response.ok) {
-        throw new Error("Error network");
-      }
-      const result = await response.json();
-      setCategories(result);
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
+      setCategories(await fetchMediaCategories());
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setError(error.message);
       } else {
-        setError("Unknown error");
+        setError("Erreur inattendue");
       }
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -30,11 +28,5 @@ export function useFetchCategories() {
     fetchCategories();
   }, []);
 
-  const refetch = () => {
-    setLoading(true);
-    setError(null);
-    fetchCategories();
-  };
-
-  return { categories, loading, error, refetch };
+  return { categories, isLoading, error };
 }

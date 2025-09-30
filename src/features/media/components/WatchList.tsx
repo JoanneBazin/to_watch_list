@@ -13,7 +13,6 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/src/components/ui";
-import { useFetchWatchList } from "../hooks/useFetchWatchList";
 
 import { MediaTable } from "@/src/features/media/components/MediaTable";
 import CategorieList from "@/src/features/media/components/CategorieList";
@@ -21,7 +20,6 @@ import AddEntryForm from "@/src/features/media/components/AddEntryForm";
 import { useMediaStore } from "../media.store";
 
 export default function WatchList() {
-  const { isLoading, error } = useFetchWatchList();
   const watchlist = useMediaStore((s) => s.watchlist);
   const films = watchlist.filter((media) => media.type === "FILM");
   const series = watchlist.filter((media) => media.type === "SERIE");
@@ -48,7 +46,7 @@ export default function WatchList() {
               </DialogContent>
             </Dialog>
             <section className="container mx-auto py-10">
-              {isLoading ? <Loader /> : <MediaTable data={films} type="FILM" />}
+              <MediaTable data={films} type="FILM" />
             </section>
           </div>
         </TabsContent>
@@ -67,11 +65,7 @@ export default function WatchList() {
               </DialogContent>
             </Dialog>
             <section className="container mx-auto py-10">
-              {isLoading ? (
-                <Loader />
-              ) : (
-                <MediaTable data={series} type="SERIE" />
-              )}
+              <MediaTable data={series} type="SERIE" />
             </section>
           </div>
         </TabsContent>

@@ -1,56 +1,59 @@
 import { prisma } from "@/src/lib/prisma";
+import { handleApiRoute } from "@/src/utils/handleApiRoute";
 import { requireAuth } from "@/src/utils/requireAuth";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
-  const session = await requireAuth(req);
-  const userId = session.user.id;
+  return handleApiRoute(async () => {
+    const session = await requireAuth(req);
+    const userId = session.user.id;
 
-  const suggestion = await prisma.usersWatchList.findMany({
-    where: {
-      AND: [
-        {
-          userId: userId,
-        },
-        {
-          suggestions: {
-            some: {
-              status: "PENDING",
+    const suggestion = await prisma.usersWatchList.findMany({
+      where: {
+        AND: [
+          {
+            userId: userId,
+          },
+          {
+            suggestions: {
+              some: {
+                status: "PENDING",
+              },
             },
           },
-        },
-      ],
-    },
-    select: {
-      media: true,
-      suggestions: {
-        select: {
-          id: true,
-          senderComment: true,
+        ],
+      },
+      select: {
+        media: true,
+        suggestions: {
+          select: {
+            id: true,
+            senderComment: true,
 
-          sender: {
-            select: {
-              id: true,
-              name: true,
-              image: true,
+            sender: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+              },
             },
           },
         },
       },
-    },
+    });
+
+    const receivedSuggestions = suggestion.map((result) => ({
+      ...result.media,
+      suggestions: result.suggestions.map((suggest) => ({
+        id: suggest.id,
+        senderComment: suggest.senderComment,
+        sender: {
+          id: suggest.sender.id,
+          name: suggest.sender.name,
+          image: suggest.sender.image,
+        },
+      })),
+    }));
+    return NextResponse.json(receivedSuggestions);
   });
-
-  const receivedSuggestions = suggestion.map((result) => ({
-    ...result.media,
-    suggestions: result.suggestions.map((suggest) => ({
-      id: suggest.id,
-      senderComment: suggest.senderComment,
-      sender: {
-        id: suggest.sender.id,
-        name: suggest.sender.name,
-        image: suggest.sender.image,
-      },
-    })),
-  }));
-  return NextResponse.json(receivedSuggestions);
 }

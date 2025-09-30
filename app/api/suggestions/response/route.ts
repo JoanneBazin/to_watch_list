@@ -1,48 +1,51 @@
 import { prisma } from "@/src/lib/prisma";
+import { handleApiRoute } from "@/src/utils/handleApiRoute";
 import { requireAuth } from "@/src/utils/requireAuth";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
-  const session = await requireAuth(req);
-  const userId = session.user.id;
+  return handleApiRoute(async () => {
+    const session = await requireAuth(req);
+    const userId = session.user.id;
 
-  const receivedMessages = await prisma.suggestion.findMany({
-    where: {
-      AND: [
-        { senderId: userId },
-        {
-          receiverComment: {
-            not: null,
+    const receivedMessages = await prisma.suggestion.findMany({
+      where: {
+        AND: [
+          { senderId: userId },
+          {
+            receiverComment: {
+              not: null,
+            },
+          },
+        ],
+      },
+      select: {
+        id: true,
+        receiverComment: true,
+        media: {
+          select: {
+            title: true,
           },
         },
-      ],
-    },
-    select: {
-      id: true,
-      receiverComment: true,
-      media: {
-        select: {
-          title: true,
+        receiver: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
         },
       },
+    });
+
+    const messages = receivedMessages.map((message) => ({
+      ...message,
       receiver: {
-        select: {
-          id: true,
-          name: true,
-          image: true,
-        },
+        id: message.receiver.id,
+        name: message.receiver.name,
+        image: message.receiver.image,
       },
-    },
+    }));
+
+    return NextResponse.json(messages);
   });
-
-  const messages = receivedMessages.map((message) => ({
-    ...message,
-    receiver: {
-      id: message.receiver.id,
-      name: message.receiver.name,
-      image: message.receiver.image,
-    },
-  }));
-
-  return NextResponse.json(messages);
 }

@@ -7,11 +7,25 @@ import { useEffect } from "react";
 import { fetchContactList } from "@/src/features/social/social.api";
 import { fetchUserCounts } from "@/src/features/user/user.api";
 import Header from "@/src/components/layout/Header";
+import { fetchWatchlist } from "@/src/features/media/media.api";
+import { useMediaStore } from "@/src/features/media/media.store";
+import { ApiError } from "@/src/utils/ApiError";
 
 const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const { data: session, isPending } = useSession();
-  const { setUser, setContacts, setCounts } = useUserStore();
+  const {
+    setUser,
+    setContacts,
+    setCounts,
+    setIsPending: setIsUserPending,
+    setError: setUserError,
+  } = useUserStore();
+  const {
+    setWatchlist,
+    setIsPending: setIsMediaPending,
+    setError: setMediaError,
+  } = useMediaStore();
 
   useEffect(() => {
     if (!isPending && !session) {
@@ -29,18 +43,49 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
       image: session.user.image ?? null,
     });
 
-    Promise.all([fetchContactList(), fetchUserCounts()])
-      .then(([contacts, counts]) => {
-        setContacts(contacts);
-        const userCounts = {
+    const fetchUserData = async () => {
+      setIsUserPending(true);
+      try {
+        setContacts(await fetchContactList());
+        const counts = await fetchUserCounts();
+        setCounts({
           friendRequests: counts._count.friendRequestReceived ?? 0,
-          suggestions: counts._count.suggestionsReceived,
-        };
+          suggestions: counts._count.suggestionsReceived ?? 0,
+        });
+      } catch (error) {
+        if (error instanceof ApiError) {
+          setUserError(error.message);
+        }
+      } finally {
+        setIsUserPending(false);
+      }
+    };
+    fetchUserData();
+  }, [
+    session,
+    setUser,
+    setContacts,
+    setCounts,
+    setUserError,
+    setIsUserPending,
+  ]);
 
-        setCounts(userCounts);
-      })
-      .catch(console.error);
-  }, [session, setUser, setContacts, setCounts]);
+  useEffect(() => {
+    const fetchMediaData = async () => {
+      setIsMediaPending(true);
+
+      try {
+        setWatchlist(await fetchWatchlist());
+      } catch (error) {
+        if (error instanceof ApiError) {
+          setMediaError(error.message);
+        }
+      } finally {
+        setIsMediaPending(false);
+      }
+    };
+    fetchMediaData();
+  }, [session, setWatchlist, setMediaError, setIsMediaPending]);
 
   if (!session?.user) return null;
 

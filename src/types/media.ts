@@ -16,11 +16,11 @@ export interface MediaItem {
 
 export interface MediaStore {
   watchlist: MediaItem[];
-  sentSuggestions: SuggestionsProps[];
-  receivedSuggestions: SuggestionsProps[];
+  isPending: boolean;
+  error: string | null;
   setWatchlist: (watchlist: MediaItem[]) => void;
-  setSentsuggestions: (suggestions: SuggestionsProps[]) => void;
-  setReceivedsuggestions: (suggestions: SuggestionsProps[]) => void;
+  setIsPending: (isPending: boolean) => void;
+  setError: (error: string | null) => void;
   reset: () => void;
 }
 
