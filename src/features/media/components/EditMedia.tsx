@@ -38,7 +38,7 @@ const EditMedia = ({ row }: { row: MediaItem }) => {
     console.log(reqData);
 
     try {
-      await updateItem(row.id, reqData, row.type);
+      await updateItem(row.id, reqData);
     } catch (error) {
       setError((error as ApiError).message);
     }
