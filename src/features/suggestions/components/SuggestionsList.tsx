@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { SuggestionsListProps } from "@/src/lib/types";
 import SuggestionResponse from "./SuggestionResponse";
 import {
   Avatar,
@@ -33,18 +31,19 @@ const SuggestionsList = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {suggestion.suggestions.map((suggest) => (
-                  <div key={suggest.id} className="my-4">
-                    <div className="flex gap-3">
-                      <Avatar
-                        size="small"
-                        img={`data:image/*;base64,${suggest.sender.image}`}
-                      />
-                      <p>envoyé par {suggest.sender.name}</p>
+                {suggestion.suggestions &&
+                  suggestion.suggestions.map((suggest) => (
+                    <div key={suggest.id} className="my-4">
+                      <div className="flex gap-3">
+                        <Avatar
+                          size="small"
+                          img={`data:image/*;base64,${suggest.sender.image}`}
+                        />
+                        <p>envoyé par {suggest.sender.name}</p>
+                      </div>
+                      <p className="italic mt-2">{suggest.senderComment}</p>
                     </div>
-                    <p className="italic mt-2">{suggest.senderComment}</p>
-                  </div>
-                ))}
+                  ))}
 
                 <SuggestionResponse mediaId={suggestion.id} />
               </CardContent>
