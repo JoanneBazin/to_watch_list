@@ -29,7 +29,10 @@ export const useUpdateRequest = () => {
     try {
       const result = await updateFriendRequestStatus(requestId, status);
       if (result.status === "ACCEPTED") {
-        setContacts([...contacts, result.sender]);
+        setContacts([
+          ...contacts,
+          { ...result.sender, suggestionsFromUser: [] },
+        ]);
       }
     } catch (error) {
       handleActionError(error, "UpdateFriendRequest");
