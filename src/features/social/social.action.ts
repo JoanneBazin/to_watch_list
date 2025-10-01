@@ -67,6 +67,7 @@ export const updateFriendRequestStatus = async (
     },
     data: { status },
     select: {
+      id: true,
       status: true,
       sender: {
         select: {

@@ -38,7 +38,7 @@ export const shareMediaSuggestion = async (
       mediaId: mediaId,
       senderComment: comment,
     },
-    select: { mediaId: true },
+    select: { id: true, mediaId: true },
   });
 };
 
