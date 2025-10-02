@@ -1,4 +1,4 @@
-import { handleActionError } from "@/src/utils/handleActionError";
+import { handleActionError } from "@/src/utils/errorHandlers";
 import { deleteUserAccount, updateUserName } from "../user.action";
 import { useUserStore } from "../user.store";
 

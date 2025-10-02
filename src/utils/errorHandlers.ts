@@ -12,3 +12,16 @@ export const handleActionError = (err: unknown, context?: string): never => {
     "Erreur inattendue, veuillez réessayer ultérieurement"
   );
 };
+
+export const handleError = (
+  error: unknown,
+  setError: (msg: string) => void
+): void => {
+  if (error instanceof ApiError) {
+    setError(error.message);
+  } else if (error instanceof Error) {
+    setError(error.message);
+  } else {
+    setError("Une erreur inattendue est survenue");
+  }
+};

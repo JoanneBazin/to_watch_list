@@ -7,9 +7,9 @@ import {
   updateWatched,
 } from "@/src/features/media/media.actions";
 import { AddEntryFormValue, MediaItem } from "@/src/types";
-import { handleActionError } from "@/src/utils/handleActionError";
 import { useMediaStore } from "../media.store";
 import { useUserStore } from "../../user/user.store";
+import { handleActionError } from "@/src/utils/errorHandlers";
 
 export const useAddMedia = () => {
   const { watchlist, setWatchlist } = useMediaStore.getState();
