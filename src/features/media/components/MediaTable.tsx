@@ -19,7 +19,6 @@ import {
   useToggleWatched,
 } from "@/src/features/media/hooks/useWatchlistMutations";
 import { useState } from "react";
-import { ApiError } from "@/src/utils/ApiError";
 import {
   Button,
   Dialog,
@@ -34,6 +33,7 @@ import {
 import ShareMedia from "../../suggestions/components/ShareMedia";
 import { MediaCard } from "./MediaCard";
 import { MediaCardSuggestions } from "./MediaCardSuggestions";
+import { handleError } from "@/src/utils/errorHandlers";
 
 export const MediaTable = ({ data, type }: MediaTableProps) => {
   const { deleteItem } = useDeleteFromWatchlist();
@@ -46,7 +46,7 @@ export const MediaTable = ({ data, type }: MediaTableProps) => {
     try {
       await deleteItem(id);
     } catch (error) {
-      setError((error as ApiError).message);
+      handleError(error, setError);
     }
   };
 
@@ -56,7 +56,7 @@ export const MediaTable = ({ data, type }: MediaTableProps) => {
     try {
       await updateWatchedItem(id);
     } catch (error) {
-      setError((error as ApiError).message);
+      handleError(error, setError);
     }
   };
 

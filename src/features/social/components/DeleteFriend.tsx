@@ -15,7 +15,7 @@ import {
 } from "@/src/components/ui";
 import { useState } from "react";
 import { useDeleteFriend } from "../hooks/useSocialMutations";
-import { ApiError } from "@/src/utils/ApiError";
+import { handleError } from "@/src/utils/errorHandlers";
 
 const DeleteFriend = ({ friendId }: { friendId: string }) => {
   const router = useRouter();
@@ -28,7 +28,7 @@ const DeleteFriend = ({ friendId }: { friendId: string }) => {
       await deleteContact(friendId);
       router.push("/dashboard");
     } catch (error) {
-      setError((error as ApiError).message);
+      handleError(error, setError);
     }
   };
 

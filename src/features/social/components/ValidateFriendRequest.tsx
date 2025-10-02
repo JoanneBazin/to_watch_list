@@ -8,7 +8,7 @@ import { FaCheck } from "react-icons/fa";
 import { ImCross } from "react-icons/im";
 import { RxCross1 } from "react-icons/rx";
 import { useUpdateRequest } from "../hooks/useSocialMutations";
-import { ApiError } from "@/src/utils/ApiError";
+import { handleError } from "@/src/utils/errorHandlers";
 
 const ValidateFriendRequest = ({
   requestId,
@@ -32,7 +32,7 @@ const ValidateFriendRequest = ({
         setDeleted(true);
       }
     } catch (error) {
-      setError((error as ApiError).message);
+      handleError(error, setError);
     } finally {
       setIsLoading(false);
     }

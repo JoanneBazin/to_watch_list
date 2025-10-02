@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import { useSendFriendRequest } from "../hooks/useSocialMutations";
-import { ApiError } from "@/src/utils/ApiError";
+import { handleError } from "@/src/utils/errorHandlers";
 
 const SendFriendRequest = ({ receiverId }: { receiverId: string }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -20,7 +20,7 @@ const SendFriendRequest = ({ receiverId }: { receiverId: string }) => {
       await addNewFriend(receiverId);
       setAdded(true);
     } catch (error) {
-      setError((error as ApiError).message);
+      handleError(error, setError);
       setAdded(false);
     } finally {
       setIsLoading(false);

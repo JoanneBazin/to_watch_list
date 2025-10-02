@@ -1,4 +1,5 @@
 import { ApiError } from "./ApiError";
+import { handleSignOut } from "./handleSignOut";
 
 export const handleActionError = (err: unknown, context?: string): never => {
   if (err instanceof ApiError) {
@@ -18,6 +19,11 @@ export const handleError = (
   setError: (msg: string) => void
 ): void => {
   if (error instanceof ApiError) {
+    if (error.status === 401) {
+      handleSignOut();
+      setError("Session expirée, veuillez vous reconnecter");
+      return;
+    }
     setError(error.message);
   } else if (error instanceof Error) {
     setError(error.message);

@@ -4,7 +4,7 @@ import { Avatar, Button, Input } from "@/src/components/ui";
 import { User } from "@/src/types";
 import { FormEvent, useRef, useState } from "react";
 import { useUpdateUser } from "../hooks/useUserMutation";
-import { ApiError } from "@/src/utils/ApiError";
+import { handleError } from "@/src/utils/errorHandlers";
 
 const EditProfile = ({ user }: { user: User }) => {
   const [image, setImage] = useState<string | null>(null);
@@ -24,7 +24,7 @@ const EditProfile = ({ user }: { user: User }) => {
     try {
       await updateName(name);
     } catch (error) {
-      setError((error as ApiError).message);
+      handleError(error, setError);
     }
   };
 

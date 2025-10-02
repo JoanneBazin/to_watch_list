@@ -2,7 +2,7 @@
 import { ReceivedRequests } from "@/src/types";
 import { useEffect, useState } from "react";
 import { fetchFriendRequests } from "../social.api";
-import { ApiError } from "next/dist/server/api-utils";
+import { handleError } from "@/src/utils/errorHandlers";
 
 export const useFetchRequests = () => {
   const [receivedRequests, setReceivedRequests] = useState<ReceivedRequests[]>(
@@ -18,11 +18,7 @@ export const useFetchRequests = () => {
       try {
         setReceivedRequests(await fetchFriendRequests());
       } catch (error) {
-        if (error instanceof ApiError) {
-          setError(error.message);
-        } else {
-          setError("Erreur inattendue");
-        }
+        handleError(error, setError);
       } finally {
         setIsLoading(false);
       }

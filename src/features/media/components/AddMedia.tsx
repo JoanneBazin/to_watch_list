@@ -3,7 +3,7 @@
 import { Button } from "@/src/components/ui";
 import { useState } from "react";
 import { useAddMedia } from "../hooks/useWatchlistMutations";
-import { ApiError } from "@/src/utils/ApiError";
+import { handleError } from "@/src/utils/errorHandlers";
 
 interface AddMediaProps {
   mediaId: string;
@@ -20,7 +20,7 @@ const AddMedia = ({ mediaId }: AddMediaProps) => {
       await addNewUserMedia(mediaId);
       setAdded(true);
     } catch (error) {
-      setError((error as ApiError).message);
+      handleError(error, setError);
     }
   };
 

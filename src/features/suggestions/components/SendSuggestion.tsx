@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { MediaItem } from "@/src/types";
 import { useCreateSuggestion } from "../hooks/useSuggestionsMutations";
-import { ApiError } from "@/src/utils/ApiError";
+import { handleError } from "@/src/utils/errorHandlers";
 
 interface SendSuggestProps {
   friendId: string;
@@ -27,7 +27,7 @@ const SendSuggestion = ({ friendId, media }: SendSuggestProps) => {
       await sendSuggestion(media.id, friendId, senderComment);
       setSentSuggestion(true);
     } catch (error) {
-      setError((error as ApiError).message);
+      handleError(error, setError);
     } finally {
       setIsLoading(false);
     }

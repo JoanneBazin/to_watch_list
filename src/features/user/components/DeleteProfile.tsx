@@ -15,7 +15,7 @@ import {
 import { signOut } from "@/src/lib/auth-client";
 import { deleteAccount } from "../hooks/useUserMutation";
 import { useState } from "react";
-import { ApiError } from "@/src/utils/ApiError";
+import { handleError } from "@/src/utils/errorHandlers";
 
 const DeleteProfile = () => {
   const { deleteUser } = deleteAccount();
@@ -25,7 +25,7 @@ const DeleteProfile = () => {
       await deleteUser();
       signOut();
     } catch (error) {
-      setError((error as ApiError).message);
+      handleError(error, setError);
     }
   };
 

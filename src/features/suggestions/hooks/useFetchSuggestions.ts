@@ -2,7 +2,7 @@
 import { MediaItem } from "@/src/types";
 import { useEffect, useState } from "react";
 import { fetchPendingSuggestions } from "../suggestions.api";
-import { ApiError } from "@/src/utils/ApiError";
+import { handleError } from "@/src/utils/errorHandlers";
 
 export const useFetchSuggestions = () => {
   const [suggestions, setSuggestions] = useState<MediaItem[]>([]);
@@ -16,11 +16,7 @@ export const useFetchSuggestions = () => {
       try {
         setSuggestions(await fetchPendingSuggestions());
       } catch (error) {
-        if (error instanceof ApiError) {
-          setError(error.message);
-        } else {
-          setError("Erreur inattendue");
-        }
+        handleError(error, setError);
       } finally {
         setIsLoading(false);
       }
