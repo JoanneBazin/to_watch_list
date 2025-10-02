@@ -10,7 +10,7 @@ import {
 } from "@/src/components/ui";
 import { useState } from "react";
 import { useUpdateSuggestionResponse } from "../hooks/useSuggestionsMutations";
-import { ApiError } from "@/src/utils/ApiError";
+import { handleError } from "@/src/utils/errorHandlers";
 
 const SendResponseComment = ({ suggestionId }: { suggestionId: string }) => {
   const [receiverComment, setReceiverComment] = useState<string>("");
@@ -24,7 +24,7 @@ const SendResponseComment = ({ suggestionId }: { suggestionId: string }) => {
       await addResponseComment(suggestionId, receiverComment);
       setCommentSent(true);
     } catch (error) {
-      setError((error as ApiError).message);
+      handleError(error, setError);
     }
   };
 

@@ -5,7 +5,6 @@ import { useState } from "react";
 import { useFetchCategories } from "@/src/features/media/hooks/useFetchCategories";
 import { AddEntryFormProps, AddEntryFormValue } from "@/src/types";
 import { useAddMedia } from "@/src/features/media/hooks/useWatchlistMutations";
-import { ApiError } from "@/src/utils/ApiError";
 import {
   Button,
   DialogFooter,
@@ -13,6 +12,7 @@ import {
   Label,
   Textarea,
 } from "@/src/components/ui";
+import { handleError } from "@/src/utils/errorHandlers";
 
 const AddEntryForm = ({
   entry,
@@ -41,7 +41,7 @@ const AddEntryForm = ({
 
       reset();
     } catch (error) {
-      setError((error as ApiError).message);
+      handleError(error, setError);
     }
   };
 

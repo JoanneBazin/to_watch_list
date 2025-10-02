@@ -1,9 +1,4 @@
 import { MediaItem } from "@/src/types";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "../../../components/ui";
 import AddMedia from "../../media/components/AddMedia";
 import { useMediaStore } from "../../media/media.store";
 import { MediaCard } from "../../media/components/MediaCard";

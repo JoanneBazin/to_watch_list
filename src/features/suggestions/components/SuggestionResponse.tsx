@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useUpdateSuggestionStatus } from "../hooks/useSuggestionsMutations";
 import { SuggestionsStatus } from "@/src/types";
-import { ApiError } from "@/src/utils/ApiError";
+import { handleError } from "@/src/utils/errorHandlers";
 
 const SuggestionResponse = ({ mediaId }: { mediaId: string }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -27,7 +27,7 @@ const SuggestionResponse = ({ mediaId }: { mediaId: string }) => {
         setDeletedSuggestion(true);
       }
     } catch (error) {
-      setError((error as ApiError).message);
+      handleError(error, setError);
     } finally {
       setIsLoading(false);
     }

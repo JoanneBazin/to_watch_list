@@ -2,7 +2,7 @@
 import { CategoryProps } from "@/src/lib/types";
 import { useEffect, useState } from "react";
 import { fetchMediaCategories } from "../media.api";
-import { ApiError } from "@/src/utils/ApiError";
+import { handleError } from "@/src/utils/errorHandlers";
 
 export function useFetchCategories() {
   const [categories, setCategories] = useState<CategoryProps[]>([]);
@@ -14,11 +14,7 @@ export function useFetchCategories() {
     try {
       setCategories(await fetchMediaCategories());
     } catch (error) {
-      if (error instanceof ApiError) {
-        setError(error.message);
-      } else {
-        setError("Erreur inattendue");
-      }
+      handleError(error, setError);
     } finally {
       setIsLoading(false);
     }

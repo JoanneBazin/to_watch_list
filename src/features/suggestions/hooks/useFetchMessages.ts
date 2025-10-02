@@ -2,7 +2,7 @@
 import { MessageProps } from "@/src/types";
 import { useEffect, useState } from "react";
 import { fetchResponseMessages } from "../suggestions.api";
-import { ApiError } from "@/src/utils/ApiError";
+import { handleError } from "@/src/utils/errorHandlers";
 
 export const useFetchMessages = () => {
   const [messages, setMessages] = useState<MessageProps[]>([]);
@@ -15,11 +15,7 @@ export const useFetchMessages = () => {
       try {
         setMessages(await fetchResponseMessages());
       } catch (error) {
-        if (error instanceof ApiError) {
-          setError(error.message);
-        } else {
-          setError("Erreur inattendue");
-        }
+        handleError(error, setError);
       } finally {
         setIsLoading(false);
       }

@@ -4,7 +4,6 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { MediaItem } from "@/src/types";
 import { useUpdateMedia } from "@/src/features/media/hooks/useWatchlistMutations";
 import { useState } from "react";
-import { ApiError } from "@/src/utils/ApiError";
 import {
   Button,
   DialogContent,
@@ -15,6 +14,7 @@ import {
   Label,
   Textarea,
 } from "@/src/components/ui";
+import { handleError } from "@/src/utils/errorHandlers";
 
 const EditMedia = ({ row }: { row: MediaItem }) => {
   const { handleSubmit, register, setValue } = useForm<MediaItem>();
@@ -40,7 +40,7 @@ const EditMedia = ({ row }: { row: MediaItem }) => {
     try {
       await updateItem(row.id, reqData);
     } catch (error) {
-      setError((error as ApiError).message);
+      handleError(error, setError);
     }
   };
 

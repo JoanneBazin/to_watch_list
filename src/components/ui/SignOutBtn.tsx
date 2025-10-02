@@ -1,14 +1,10 @@
 "use client";
 import { Button } from "@/src/components/ui/button";
-import { signOut } from "@/src/lib/auth-client";
+import { handleSignOut } from "@/src/utils/handleSignOut";
 
 const SignOutBtn = () => {
-  const handleLogOut = () => {
-    signOut();
-  };
-
   return (
-    <Button variant="outline" className=" px-2" onClick={handleLogOut}>
+    <Button variant="outline" className=" px-2" onClick={handleSignOut}>
       Déconnexion
     </Button>
   );

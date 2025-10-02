@@ -2,7 +2,7 @@
 import { FriendProfile } from "@/src/types";
 import { useEffect, useState } from "react";
 import { fetchFriendProfile } from "../social.api";
-import { ApiError } from "next/dist/server/api-utils";
+import { handleError } from "@/src/utils/errorHandlers";
 
 export const useFetchFriendProfile = (id: string) => {
   const [friendProfile, setFriendProfile] = useState<FriendProfile>();
@@ -16,11 +16,7 @@ export const useFetchFriendProfile = (id: string) => {
       try {
         setFriendProfile(await fetchFriendProfile(id));
       } catch (error) {
-        if (error instanceof ApiError) {
-          setError(error.message);
-        } else {
-          setError("Erreur inattendue");
-        }
+        handleError(error, setError);
       } finally {
         setIsLoading(false);
       }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { fetchUserSearch } from "../social.api";
 import { SearchContact } from "@/src/types";
 import { UserCard } from "./UserCard";
+import { handleError } from "@/src/utils/errorHandlers";
 
 const UserSearch = () => {
   const [query, setQuery] = useState<string>("");
@@ -25,7 +26,7 @@ const UserSearch = () => {
         const users = await fetchUserSearch(query);
         setResult(users);
       } catch (error) {
-        setError("Une erreur est survenue");
+        handleError(error, setError);
       } finally {
         setLoading(false);
       }
