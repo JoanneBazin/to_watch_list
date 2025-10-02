@@ -1,4 +1,3 @@
-import { handleActionError } from "@/src/utils/handleActionError";
 import {
   addFriendRequest,
   deleteFriend,
@@ -6,6 +5,7 @@ import {
 } from "../social.action";
 import { FriendRequestStatus } from "@/src/types";
 import { useUserStore } from "../../user/user.store";
+import { handleActionError } from "@/src/utils/errorHandlers";
 
 export const useSendFriendRequest = () => {
   const addNewFriend = async (receiverId: string) => {

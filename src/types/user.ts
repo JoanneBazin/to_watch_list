@@ -7,6 +7,12 @@ export interface User {
   image?: string | null;
 }
 
+export interface SessionUser extends User {
+  createdAt: Date;
+  updatedAt: Date;
+  emailVerified: boolean;
+}
+
 export interface UserStore {
   user: User | null;
   contacts: Contact[];

@@ -4,9 +4,9 @@ import {
   updateReceivedSuggestions,
   updateSuggestionResponse,
 } from "../suggestions.actions";
-import { handleActionError } from "@/src/utils/handleActionError";
 import { useMediaStore } from "../../media/media.store";
 import { useUserStore } from "../../user/user.store";
+import { handleActionError } from "@/src/utils/errorHandlers";
 
 export const useCreateSuggestion = () => {
   const { contacts, setContacts } = useUserStore.getState();
