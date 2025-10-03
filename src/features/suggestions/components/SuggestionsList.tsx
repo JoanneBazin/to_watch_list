@@ -35,10 +35,7 @@ const SuggestionsList = () => {
                   suggestion.suggestions.map((suggest) => (
                     <div key={suggest.id} className="my-4">
                       <div className="flex gap-3">
-                        <Avatar
-                          size="small"
-                          img={`data:image/*;base64,${suggest.sender.image}`}
-                        />
+                        <Avatar size="small" img={suggest.sender.image} />
                         <p>envoyé par {suggest.sender.name}</p>
                       </div>
                       <p className="italic mt-2">{suggest.senderComment}</p>

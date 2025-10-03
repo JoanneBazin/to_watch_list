@@ -56,12 +56,9 @@ const Header = () => {
               className={`block space-y-4 absolute top-16 right-2 w-auto bg-zinc-900 opacity-90 p-4 z-10 rounded-md`}
             >
               <div className="flex items-center justify-around">
-                <Avatar
-                  img={`data:image/*;base64,${session.user.image}`}
-                  size="small"
-                />
+                <Avatar img={user?.image} size="small" />
                 <Link href="/account" onClick={() => setIsOpen(false)}>
-                  {session.user.name}
+                  {user?.name}
                 </Link>
               </div>
 
@@ -135,10 +132,7 @@ const Header = () => {
                 className="font-bold hover:text-zinc-600 flex items-center gap-2"
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
               >
-                {/* <Avatar
-                    img={`data:image/*;base64,${user.avatar}`}
-                    size="small"
-                  /> */}
+                <Avatar img={user?.image} size="small" />
                 {user?.name}
               </button>
 

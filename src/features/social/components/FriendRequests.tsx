@@ -15,7 +15,7 @@ const FriendRequests = () => {
       ) : receivedRequests.length > 0 ? (
         receivedRequests.map((request, index) => (
           <div key={index} className="flex gap-4 items-center my-3">
-            <Avatar img={`data:image/*;base64,${request.sender.image}`} />
+            <Avatar img={request.sender.image} />
             <span className="mr-20">{request.sender.name}</span>
             <ValidateRequest
               requestId={request.id}

@@ -1,5 +1,9 @@
 import { handleActionError } from "@/src/utils/errorHandlers";
-import { deleteUserAccount, updateUserName } from "../user.action";
+import {
+  deleteUserAccount,
+  updateUserAvatar,
+  updateUserName,
+} from "../user.action";
 import { useUserStore } from "../user.store";
 
 export const useUpdateUser = () => {
@@ -14,7 +18,16 @@ export const useUpdateUser = () => {
     }
   };
 
-  return { updateName };
+  const updateAvatar = async (formData: FormData) => {
+    try {
+      const result = await updateUserAvatar(formData);
+      setUser(result);
+    } catch (error) {
+      handleActionError(error, "UpdateUser");
+    }
+  };
+
+  return { updateName, updateAvatar };
 };
 
 export const deleteAccount = () => {

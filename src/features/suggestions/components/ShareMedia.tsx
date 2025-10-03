@@ -46,10 +46,7 @@ const ShareMedia = ({ media }: { media: MediaItem }) => {
               key={contact.id}
               className="flex gap-4 items-center justify-start hover:bg-zinc-700 px-4"
             >
-              <Avatar
-                img={`data:image/*;base64,${contact.image}`}
-                size="small"
-              />
+              <Avatar img={contact.image} size="small" />
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value={contact.id}>
                   <AccordionTrigger>

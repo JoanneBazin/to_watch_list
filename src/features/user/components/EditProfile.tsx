@@ -7,13 +7,13 @@ import { useUpdateUser } from "../hooks/useUserMutation";
 import { handleError } from "@/src/utils/errorHandlers";
 
 const EditProfile = ({ user }: { user: User }) => {
-  const [image, setImage] = useState<string | null>(null);
+  const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const [name, setName] = useState<string>(user.name);
   const fileInput = useRef<HTMLInputElement>(null);
-  const { updateName } = useUpdateUser();
+  const { updateName, updateAvatar } = useUpdateUser();
 
   const handleEditName = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,51 +28,41 @@ const EditProfile = ({ user }: { user: User }) => {
     }
   };
 
-  const handleAddAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePreviewAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return null;
+    if (!file) return;
 
     setPreview(URL.createObjectURL(file));
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const result = reader.result;
-      if (result && typeof result === "string") {
-        setImage(result.split(",")[1]);
-      }
-    };
-    reader.readAsDataURL(file);
+    setImage(file);
   };
 
   const handleEditAvatar = async (e: FormEvent<HTMLFormElement>) => {
-    if (!image) return;
-
     e.preventDefault();
+    setError(null);
+    if (!image) {
+      setError("Aucun fichier sélectionné");
+      return;
+    }
+
+    if (!image.type.startsWith("image/")) {
+      setError("Le fichier sélectionné n'est pas une image");
+      return;
+    }
+
+    if (image.size > 5 * 1024 * 1024) {
+      setError("Le fichier sélectionné est trop volumineux (max 5MB)");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("avatar", image);
 
     try {
-      const response = await fetch(`/api/users/${user.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ file: image }),
-      });
-
-      if (!response.ok) {
-        throw new Error("HTTP error");
-      }
-
+      await updateAvatar(formData);
       setPreview(null);
-      if (fileInput.current) {
-        fileInput.current.value = "";
-      }
-
-      const updatedUserAvatar = {
-        ...user,
-        avatar: image,
-      };
-
-      // updateUser(updatedUserAvatar);
+      setImage(null);
     } catch (error) {
-      console.log(error);
+      handleError(error, setError);
     }
   };
 
@@ -99,7 +89,7 @@ const EditProfile = ({ user }: { user: User }) => {
               type="file"
               id="user_avatar"
               accept="image/*"
-              onChange={handleAddAvatar}
+              onChange={handlePreviewAvatar}
               ref={fileInput}
             />
             {preview && <Avatar img={preview} size="large" />}

@@ -1,10 +1,6 @@
+import { AvatarProps } from "@/src/types";
 import clsx from "clsx";
 import Image from "next/image";
-
-interface AvatarProps {
-  size?: "small" | "medium" | "large";
-  img: string | null;
-}
 
 export const Avatar = ({ size = "medium", img }: AvatarProps) => {
   let sizeAvatar: string;

@@ -38,10 +38,7 @@ const FriendProfile = ({ params }: { params: { userId: string } }) => {
         <div>
           <div className="flex gap-10 my-4 mx-20">
             {friendProfile.image ? (
-              <Avatar
-                img={`data:image/*;base64,${friendProfile.image}`}
-                size="large"
-              />
+              <Avatar img={friendProfile.image} size="large" />
             ) : (
               <Avatar size="large" img="/avatar.svg" />
             )}

@@ -12,7 +12,7 @@ const FriendsList = () => {
       {contacts.length > 0 ? (
         contacts.map((contact) => (
           <div key={contact.id} className="flex gap-4 items-center m-6">
-            <Avatar img={`data:image/*;base64,${contact.image}`} />
+            <Avatar img={contact.image} />
             <Link href={`/communauty/${contact.id}`}>{contact.name}</Link>
           </div>
         ))

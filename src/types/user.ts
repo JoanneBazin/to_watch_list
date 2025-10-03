@@ -29,3 +29,8 @@ export interface UserStore {
   setError: (error: string | null) => void;
   reset: () => void;
 }
+
+export interface AvatarProps {
+  size?: "small" | "medium" | "large";
+  img?: string | null;
+}
