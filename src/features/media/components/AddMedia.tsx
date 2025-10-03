@@ -2,8 +2,7 @@
 
 import { Button } from "@/src/components/ui";
 import { useState } from "react";
-import { useAddMedia } from "../hooks/useWatchlistMutations";
-import { handleError } from "@/src/utils/errorHandlers";
+import { useAddToWatchlist } from "../hooks/useWatchlistMutations";
 
 interface AddMediaProps {
   mediaId: string;
@@ -11,17 +10,11 @@ interface AddMediaProps {
 
 const AddMedia = ({ mediaId }: AddMediaProps) => {
   const [added, setAdded] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const { addNewUserMedia } = useAddMedia();
+  const { addMedia, isAddingMedia, addError } = useAddToWatchlist();
 
   const handleAdd = async () => {
-    setError(null);
-    try {
-      await addNewUserMedia(mediaId);
-      setAdded(true);
-    } catch (error) {
-      handleError(error, setError);
-    }
+    await addMedia(mediaId);
+    setAdded(true);
   };
 
   return (

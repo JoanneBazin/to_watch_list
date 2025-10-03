@@ -10,21 +10,17 @@ import {
 } from "@/src/components/ui";
 import { useState } from "react";
 import { useUpdateSuggestionResponse } from "../hooks/useSuggestionsMutations";
-import { handleError } from "@/src/utils/errorHandlers";
 
 const SendResponseComment = ({ suggestionId }: { suggestionId: string }) => {
   const [receiverComment, setReceiverComment] = useState<string>("");
   const [commentSent, setCommentSent] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const { addResponseComment } = useUpdateSuggestionResponse();
+  const { sendComment, isUpdating, updateError } =
+    useUpdateSuggestionResponse();
 
   const handleSendResponse = async () => {
-    setError(null);
-    try {
-      await addResponseComment(suggestionId, receiverComment);
+    await sendComment(suggestionId, receiverComment);
+    if (!updateError) {
       setCommentSent(true);
-    } catch (error) {
-      handleError(error, setError);
     }
   };
 

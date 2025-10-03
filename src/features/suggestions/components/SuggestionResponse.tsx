@@ -6,36 +6,27 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useUpdateSuggestionStatus } from "../hooks/useSuggestionsMutations";
 import { SuggestionsStatus } from "@/src/types";
-import { handleError } from "@/src/utils/errorHandlers";
 
 const SuggestionResponse = ({ mediaId }: { mediaId: string }) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
   const [acceptedSuggestion, setAcceptedSuggestion] = useState<boolean>(false);
   const [deletedSuggestion, setDeletedSuggestion] = useState<boolean>(false);
-  const { respondToSuggestion } = useUpdateSuggestionStatus();
+  const { updateSuggestion, isUpdating, updateError } =
+    useUpdateSuggestionStatus();
 
   const handleUpdateSuggestion = async (status: SuggestionsStatus) => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      await respondToSuggestion(mediaId, status);
+    await updateSuggestion(mediaId, status);
+    if (!updateError) {
       if (status === "ACCEPTED") {
         setAcceptedSuggestion(true);
       } else {
         setDeletedSuggestion(true);
       }
-    } catch (error) {
-      handleError(error, setError);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   return (
     <div className="my-2 mx-auto">
-      {isLoading ? (
+      {isUpdating ? (
         <Loader2 />
       ) : deletedSuggestion ? (
         <span className="italic ml-10">Suggestion ignorée</span>

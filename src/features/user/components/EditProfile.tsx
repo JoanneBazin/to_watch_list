@@ -9,23 +9,23 @@ import { handleError } from "@/src/utils/errorHandlers";
 const EditProfile = ({ user }: { user: User }) => {
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
+  const [fileError, setFileError] = useState<string | null>(null);
   const [name, setName] = useState<string>(user.name);
   const fileInput = useRef<HTMLInputElement>(null);
-  const { updateName, updateAvatar } = useUpdateUser();
+  const {
+    updateUsername,
+    isUpdatingName,
+    updateNameError,
+    updateUserImage,
+    isUpdatingImage,
+    updateImageError,
+  } = useUpdateUser();
 
   const handleEditName = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!name || name === user.name) return;
-    setError(null);
-
-    try {
-      await updateName(name);
-    } catch (error) {
-      handleError(error, setError);
-    }
+    await updateUsername(name);
   };
 
   const handlePreviewAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,32 +38,28 @@ const EditProfile = ({ user }: { user: User }) => {
 
   const handleEditAvatar = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError(null);
+
     if (!image) {
-      setError("Aucun fichier sélectionné");
+      setFileError("Aucun fichier sélectionné");
       return;
     }
 
     if (!image.type.startsWith("image/")) {
-      setError("Le fichier sélectionné n'est pas une image");
+      setFileError("Le fichier sélectionné n'est pas une image");
       return;
     }
 
     if (image.size > 5 * 1024 * 1024) {
-      setError("Le fichier sélectionné est trop volumineux (max 5MB)");
+      setFileError("Le fichier sélectionné est trop volumineux (max 5MB)");
       return;
     }
 
     const formData = new FormData();
     formData.append("avatar", image);
 
-    try {
-      await updateAvatar(formData);
-      setPreview(null);
-      setImage(null);
-    } catch (error) {
-      handleError(error, setError);
-    }
+    await updateUserImage(formData);
+    setPreview(null);
+    setImage(null);
   };
 
   return (

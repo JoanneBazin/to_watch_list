@@ -1,3 +1,5 @@
+"use client";
+
 import {
   addToContactWatchlist,
   addToWatchlist,
@@ -9,118 +11,143 @@ import {
 import { AddEntryFormValue, MediaItem } from "@/src/types";
 import { useMediaStore } from "../media.store";
 import { useUserStore } from "../../user/user.store";
-import { handleActionError } from "@/src/utils/errorHandlers";
+import { useAsyncAction } from "@/src/hooks/useAsyncAction";
+import { ApiError } from "next/dist/server/api-utils";
 
-export const useAddMedia = () => {
+export const useCreateMedia = () => {
   const { watchlist, setWatchlist } = useMediaStore.getState();
 
   const createNewUserMedia = async (media: AddEntryFormValue) => {
-    try {
-      const result = await createMedia(media);
-      const newItem: MediaItem = {
-        ...result,
-        addedAt: (result as MediaItem).addedAt ?? new Date().toISOString(),
-        watched: (result as MediaItem).watched ?? false,
-      };
+    const result = await createMedia(media);
+    if (!result) throw new ApiError(500, "Erreur lors de la création");
 
-      setWatchlist([...watchlist, newItem]);
-    } catch (error) {
-      handleActionError(error, "AddMedia");
-    }
+    const newItem: MediaItem = {
+      ...result,
+      addedAt: (result as MediaItem).addedAt ?? new Date().toISOString(),
+      watched: (result as MediaItem).watched ?? false,
+    };
+
+    setWatchlist([...watchlist, newItem]);
   };
+
+  const {
+    run: createNewMedia,
+    isLoading: isCreatingMedia,
+    error: createError,
+  } = useAsyncAction(createNewUserMedia);
+
+  return { createNewMedia, isCreatingMedia, createError };
+};
+
+export const useAddToWatchlist = () => {
+  const { watchlist, setWatchlist } = useMediaStore.getState();
 
   const addNewUserMedia = async (mediaId: string) => {
-    try {
-      const result = await addToWatchlist(mediaId);
-      setWatchlist([...watchlist, { ...result.media, ...result }]);
-    } catch (error) {
-      handleActionError(error, "AddMedia");
-    }
+    const result = await addToWatchlist(mediaId);
+    if (!result) throw new ApiError(500, "Erreur lors de l'ajout");
+    setWatchlist([...watchlist, { ...result.media, ...result }]);
   };
+
+  const {
+    run: addMedia,
+    isLoading: isAddingMedia,
+    error: addError,
+  } = useAsyncAction(addNewUserMedia);
+
+  return { addMedia, isAddingMedia, addError };
+};
+
+export const useCreateContactMedia = () => {
+  const { contacts, setContacts } = useUserStore.getState();
 
   const createNewContactMedia = async (
     suggestedMedia: AddEntryFormValue,
     receiverId: string
   ) => {
-    const { contacts, setContacts } = useUserStore.getState();
-
-    try {
-      const result = await addToContactWatchlist(suggestedMedia, receiverId);
-      setContacts(
-        contacts.map((c) =>
-          c.id === result.receiverId
-            ? {
-                ...c,
-                suggestionsFromUser: [
-                  ...(c.suggestionsFromUser || []),
-                  result.id,
-                ],
-              }
-            : c
-        )
-      );
-    } catch (error) {
-      handleActionError(error, "AddcontactMedia");
-    }
+    const result = await addToContactWatchlist(suggestedMedia, receiverId);
+    if (!result) throw new ApiError(500, "Erreur lors de l'ajout");
+    setContacts(
+      contacts.map((c) =>
+        c.id === result.receiverId
+          ? {
+              ...c,
+              suggestionsFromUser: [
+                ...(c.suggestionsFromUser || []),
+                result.id,
+              ],
+            }
+          : c
+      )
+    );
   };
+  const {
+    run: sendingMedia,
+    isLoading: isSendingMedia,
+    error: sendingError,
+  } = useAsyncAction(createNewContactMedia);
 
-  return { createNewUserMedia, addNewUserMedia, createNewContactMedia };
+  return { sendingMedia, isSendingMedia, sendingError };
 };
 
 export const useUpdateMedia = () => {
   const { watchlist, setWatchlist } = useMediaStore.getState();
 
   const updateItem = async (id: string, data: MediaItem) => {
-    try {
-      const result = await updateMedia(id, data);
-
-      setWatchlist(
-        watchlist.map((media) =>
-          media.id === result.id ? { ...media, ...result } : media
-        )
-      );
-    } catch (error) {
-      handleActionError(error, "UpdateMedia");
-    }
+    const result = await updateMedia(id, data);
+    if (!result) throw new ApiError(500, "Erreur lors de la mise à jour");
+    setWatchlist(
+      watchlist.map((media) =>
+        media.id === result.id ? { ...media, ...result } : media
+      )
+    );
   };
 
-  return { updateItem };
+  const {
+    run: updateWatchlistMedia,
+    isLoading: isUpdatingMedia,
+    error: updateError,
+  } = useAsyncAction(updateItem);
+
+  return { updateWatchlistMedia, isUpdatingMedia, updateError };
 };
 
 export const useToggleWatched = () => {
   const { watchlist, setWatchlist } = useMediaStore.getState();
 
   const updateWatchedItem = async (id: string) => {
-    try {
-      const result = await updateWatched(id);
-
-      setWatchlist(
-        watchlist.map((media) =>
-          media.id === result.mediaId
-            ? { ...media, watched: result.watched }
-            : media
-        )
-      );
-    } catch (error) {
-      handleActionError(error, "UpdateWatched");
-    }
+    const result = await updateWatched(id);
+    if (!result) throw new ApiError(500, "Erreur lors de la mise à jour");
+    setWatchlist(
+      watchlist.map((media) =>
+        media.id === result.mediaId
+          ? { ...media, watched: result.watched }
+          : media
+      )
+    );
   };
+  const {
+    run: toggleWatched,
+    isLoading: isTogglingWatched,
+    error: toggleError,
+  } = useAsyncAction(updateWatchedItem);
 
-  return { updateWatchedItem };
+  return { toggleWatched, isTogglingWatched, toggleError };
 };
 
 export const useDeleteFromWatchlist = () => {
   const { watchlist, setWatchlist } = useMediaStore.getState();
 
   const deleteItem = async (id: string) => {
-    try {
-      const result = await deleteFromWatchlist(id);
-
-      setWatchlist(watchlist.filter((media) => media.id !== result.mediaId));
-    } catch (error) {
-      handleActionError(error, "DeleteMedia");
-    }
+    const result = await deleteFromWatchlist(id);
+    if (!result) throw new ApiError(500, "Erreur lors de la suppression");
+    setWatchlist(watchlist.filter((media) => media.id !== result.mediaId));
   };
 
-  return { deleteItem };
+  const {
+    run: deleteMedia,
+    isLoading: isDeletingMedia,
+    error: deleteError,
+  } = useAsyncAction(deleteItem);
+
+  return { deleteMedia, isDeletingMedia, deleteError };
 };

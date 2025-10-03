@@ -6,7 +6,6 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { MediaItem } from "@/src/types";
 import { useCreateSuggestion } from "../hooks/useSuggestionsMutations";
-import { handleError } from "@/src/utils/errorHandlers";
 
 interface SendSuggestProps {
   friendId: string;
@@ -15,26 +14,18 @@ interface SendSuggestProps {
 
 const SendSuggestion = ({ friendId, media }: SendSuggestProps) => {
   const [sentSuggestion, setSentSuggestion] = useState<boolean>(false);
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [senderComment, setSenderComment] = useState("");
-  const { sendSuggestion } = useCreateSuggestion();
+  const { shareMedia, isSharing, shareError } = useCreateSuggestion();
 
   const handleSendSuggestion = async () => {
-    setIsLoading(true);
-    try {
-      await sendSuggestion(media.id, friendId, senderComment);
+    await shareMedia(media.id, friendId, senderComment);
+    if (!shareError) {
       setSentSuggestion(true);
-    } catch (error) {
-      handleError(error, setError);
-    } finally {
-      setIsLoading(false);
     }
   };
   return (
     <>
-      {isLoading ? (
+      {isSharing ? (
         <Loader2 />
       ) : sentSuggestion ? (
         <span className="italic">Suggestion envoyée</span>

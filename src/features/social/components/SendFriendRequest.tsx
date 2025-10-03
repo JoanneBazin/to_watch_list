@@ -5,26 +5,14 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import { useSendFriendRequest } from "../hooks/useSocialMutations";
-import { handleError } from "@/src/utils/errorHandlers";
 
 const SendFriendRequest = ({ receiverId }: { receiverId: string }) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [added, setAdded] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const { addNewFriend } = useSendFriendRequest();
+  const { addFriend, isAddingFriend, addingError } = useSendFriendRequest();
 
   const handleAddContact = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      await addNewFriend(receiverId);
-      setAdded(true);
-    } catch (error) {
-      handleError(error, setError);
-      setAdded(false);
-    } finally {
-      setIsLoading(false);
-    }
+    await addFriend(receiverId);
+    setAdded(true);
   };
 
   return (
@@ -33,7 +21,7 @@ const SendFriendRequest = ({ receiverId }: { receiverId: string }) => {
         <span>
           <FaCheckCircle className="text-2xl text-zinc-500 bg-zinc-800" />
         </span>
-      ) : isLoading ? (
+      ) : isAddingFriend ? (
         <Button>
           <Loader2 className="h-4 w-4 animate-spin" />
         </Button>

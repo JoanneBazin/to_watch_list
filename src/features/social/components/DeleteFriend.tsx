@@ -13,23 +13,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/src/components/ui";
-import { useState } from "react";
 import { useDeleteFriend } from "../hooks/useSocialMutations";
-import { handleError } from "@/src/utils/errorHandlers";
 
 const DeleteFriend = ({ friendId }: { friendId: string }) => {
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
-  const { deleteContact } = useDeleteFriend();
+  const { deleteContact, isDeleting, deleteError } = useDeleteFriend();
 
   const handleDelete = async () => {
-    setError(null);
-    try {
-      await deleteContact(friendId);
-      router.push("/dashboard");
-    } catch (error) {
-      handleError(error, setError);
-    }
+    await deleteContact(friendId);
+    router.push("/dashboard");
   };
 
   return (
