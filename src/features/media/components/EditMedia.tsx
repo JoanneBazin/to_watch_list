@@ -18,8 +18,8 @@ import { handleError } from "@/src/utils/errorHandlers";
 
 const EditMedia = ({ row }: { row: MediaItem }) => {
   const { handleSubmit, register, setValue } = useForm<MediaItem>();
-  const { updateItem } = useUpdateMedia();
-  const [error, setError] = useState<string | null>(null);
+  const { updateWatchlistMedia, isUpdatingMedia, updateError } =
+    useUpdateMedia();
 
   setValue("synopsis", row.synopsis);
   setValue("real", row.real);
@@ -35,13 +35,7 @@ const EditMedia = ({ row }: { row: MediaItem }) => {
       year: Number(data.year),
       type: row.type,
     };
-    console.log(reqData);
-
-    try {
-      await updateItem(row.id, reqData);
-    } catch (error) {
-      handleError(error, setError);
-    }
+    await updateWatchlistMedia(row.id, reqData);
   };
 
   return (

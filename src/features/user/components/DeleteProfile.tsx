@@ -12,21 +12,12 @@ import {
   AlertDialogTrigger,
   Button,
 } from "@/src/components/ui";
-import { signOut } from "@/src/lib/auth-client";
-import { deleteAccount } from "../hooks/useUserMutation";
-import { useState } from "react";
-import { handleError } from "@/src/utils/errorHandlers";
+import { useDeleteAccount } from "../hooks/useUserMutation";
 
 const DeleteProfile = () => {
-  const { deleteUser } = deleteAccount();
-  const [error, setError] = useState<string | null>(null);
+  const { deleteAccount, isDeleting, deleteError } = useDeleteAccount();
   const handleDelete = async () => {
-    try {
-      await deleteUser();
-      signOut();
-    } catch (error) {
-      handleError(error, setError);
-    }
+    await deleteAccount();
   };
 
   return (

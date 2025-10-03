@@ -7,7 +7,7 @@ export const handleActionError = (err: unknown, context?: string): never => {
     throw err;
   }
 
-  console.error(`[${context}] Erreur inattendue : ${err}`);
+  console.error(`[${context}] Unexpected error : ${err}`);
   throw new ApiError(
     500,
     "Erreur inattendue, veuillez réessayer ultérieurement"
@@ -20,8 +20,8 @@ export const handleError = (
 ): void => {
   if (error instanceof ApiError) {
     if (error.status === 401) {
-      handleSignOut();
       setError("Session expirée, veuillez vous reconnecter");
+      handleSignOut();
       return;
     }
     setError(error.message);

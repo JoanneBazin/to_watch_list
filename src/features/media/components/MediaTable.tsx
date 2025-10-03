@@ -36,15 +36,16 @@ import { MediaCardSuggestions } from "./MediaCardSuggestions";
 import { handleError } from "@/src/utils/errorHandlers";
 
 export const MediaTable = ({ data, type }: MediaTableProps) => {
-  const { deleteItem } = useDeleteFromWatchlist();
-  const { updateWatchedItem } = useToggleWatched();
+  const { deleteMedia, isDeletingMedia, deleteError } =
+    useDeleteFromWatchlist();
+  const { toggleWatched, isTogglingWatched, toggleError } = useToggleWatched();
   const [error, setError] = useState<string | null>(null);
 
   const handleDelete = async (id: string) => {
     setError(null);
 
     try {
-      await deleteItem(id);
+      await deleteMedia(id);
     } catch (error) {
       handleError(error, setError);
     }
@@ -54,7 +55,7 @@ export const MediaTable = ({ data, type }: MediaTableProps) => {
     setError(null);
 
     try {
-      await updateWatchedItem(id);
+      await toggleWatched(id);
     } catch (error) {
       handleError(error, setError);
     }

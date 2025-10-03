@@ -7,7 +7,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  Loader,
   Tabs,
   TabsContent,
   TabsList,

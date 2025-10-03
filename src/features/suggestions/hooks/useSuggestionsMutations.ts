@@ -6,7 +6,8 @@ import {
 } from "../suggestions.actions";
 import { useMediaStore } from "../../media/media.store";
 import { useUserStore } from "../../user/user.store";
-import { handleActionError } from "@/src/utils/errorHandlers";
+import { ApiError } from "@/src/utils/ApiError";
+import { useAsyncAction } from "@/src/hooks/useAsyncAction";
 
 export const useCreateSuggestion = () => {
   const { contacts, setContacts } = useUserStore.getState();
@@ -16,27 +17,30 @@ export const useCreateSuggestion = () => {
     friendId: string,
     comment?: string
   ) => {
-    try {
-      const result = await shareMediaSuggestion(mediaId, friendId, comment);
-      setContacts(
-        contacts.map((contact) =>
-          contact.id === friendId
-            ? {
-                ...contact,
-                suggestionsFromUser: [
-                  ...(contact.suggestionsFromUser || []),
-                  result.mediaId,
-                ],
-              }
-            : contact
-        )
-      );
-    } catch (error) {
-      handleActionError(error, "UpdateSuggestion");
-    }
+    const result = await shareMediaSuggestion(mediaId, friendId, comment);
+    if (!result) throw new ApiError(500, "Erreur lors de l'envoi'");
+    setContacts(
+      contacts.map((contact) =>
+        contact.id === friendId
+          ? {
+              ...contact,
+              suggestionsFromUser: [
+                ...(contact.suggestionsFromUser || []),
+                result.mediaId,
+              ],
+            }
+          : contact
+      )
+    );
   };
 
-  return { sendSuggestion };
+  const {
+    run: shareMedia,
+    isLoading: isSharing,
+    error: shareError,
+  } = useAsyncAction(sendSuggestion);
+
+  return { shareMedia, isSharing, shareError };
 };
 
 export const useUpdateSuggestionStatus = () => {
@@ -46,50 +50,58 @@ export const useUpdateSuggestionStatus = () => {
     mediaId: string,
     status: SuggestionsStatus
   ) => {
-    try {
-      const result = await updateReceivedSuggestions(mediaId, status);
-      if (status === "ACCEPTED") {
-        setWatchlist([
-          ...watchlist,
-          {
-            ...result,
-            addedAt: new Date(),
-            watched: false,
-          },
-        ]);
-      }
-    } catch (error) {
-      handleActionError(error, "UpdateSuggestion");
+    const result = await updateReceivedSuggestions(mediaId, status);
+    if (!result) throw new ApiError(500, "Erreur lors de la mise à jour");
+
+    if (status === "ACCEPTED") {
+      setWatchlist([
+        ...watchlist,
+        {
+          ...result,
+          addedAt: new Date(),
+          watched: false,
+        },
+      ]);
     }
   };
 
-  return { respondToSuggestion };
+  const {
+    run: updateSuggestion,
+    isLoading: isUpdating,
+    error: updateError,
+  } = useAsyncAction(respondToSuggestion);
+
+  return { updateSuggestion, isUpdating, updateError };
 };
 
 export const useUpdateSuggestionResponse = () => {
   const { watchlist, setWatchlist } = useMediaStore.getState();
 
   const addResponseComment = async (suggestionId: string, comment: string) => {
-    try {
-      const result = await updateSuggestionResponse(suggestionId, comment);
-      setWatchlist(
-        watchlist.map((media) =>
-          media.id === result.mediaId
-            ? {
-                ...media,
-                suggestions: media.suggestions?.map((s) =>
-                  s.id === result.id
-                    ? { ...s, receiverComment: result.receiverComment }
-                    : s
-                ),
-              }
-            : media
-        )
-      );
-    } catch (error) {
-      handleActionError(error, "UpdateSuggestion");
-    }
+    const result = await updateSuggestionResponse(suggestionId, comment);
+    if (!result) throw new ApiError(500, "Erreur lors de la mise à jour");
+
+    setWatchlist(
+      watchlist.map((media) =>
+        media.id === result.mediaId
+          ? {
+              ...media,
+              suggestions: media.suggestions?.map((s) =>
+                s.id === result.id
+                  ? { ...s, receiverComment: result.receiverComment }
+                  : s
+              ),
+            }
+          : media
+      )
+    );
   };
 
-  return { addResponseComment };
+  const {
+    run: sendComment,
+    isLoading: isUpdating,
+    error: updateError,
+  } = useAsyncAction(addResponseComment);
+
+  return { sendComment, isUpdating, updateError };
 };

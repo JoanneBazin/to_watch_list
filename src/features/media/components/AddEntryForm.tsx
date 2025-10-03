@@ -1,10 +1,8 @@
 "use client";
 
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useState } from "react";
 import { useFetchCategories } from "@/src/features/media/hooks/useFetchCategories";
 import { AddEntryFormProps, AddEntryFormValue } from "@/src/types";
-import { useAddMedia } from "@/src/features/media/hooks/useWatchlistMutations";
 import {
   Button,
   DialogFooter,
@@ -13,6 +11,10 @@ import {
   Textarea,
 } from "@/src/components/ui";
 import { handleError } from "@/src/utils/errorHandlers";
+import {
+  useCreateContactMedia,
+  useCreateMedia,
+} from "../hooks/useWatchlistMutations";
 
 const AddEntryForm = ({
   entry,
@@ -20,8 +22,9 @@ const AddEntryForm = ({
   receiverId,
 }: AddEntryFormProps) => {
   const { handleSubmit, register, reset } = useForm<AddEntryFormValue>();
-  const { createNewUserMedia, createNewContactMedia } = useAddMedia();
-  const [error, setError] = useState<string | null>(null);
+  const { createNewMedia, isCreatingMedia, createError } = useCreateMedia();
+  const { sendingMedia, isSendingMedia, sendingError } =
+    useCreateContactMedia();
 
   const { categories } = useFetchCategories();
 
@@ -32,17 +35,12 @@ const AddEntryForm = ({
       type: entry,
     };
 
-    try {
-      if (isSuggestedMedia && receiverId) {
-        await createNewContactMedia(reqData, receiverId);
-      } else {
-        await createNewUserMedia(reqData);
-      }
-
-      reset();
-    } catch (error) {
-      handleError(error, setError);
+    if (isSuggestedMedia && receiverId) {
+      await sendingMedia(reqData, receiverId);
+    } else {
+      await createNewMedia(reqData);
     }
+    reset();
   };
 
   return (

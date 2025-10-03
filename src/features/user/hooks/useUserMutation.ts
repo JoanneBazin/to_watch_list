@@ -5,39 +5,59 @@ import {
   updateUserName,
 } from "../user.action";
 import { useUserStore } from "../user.store";
+import { ApiError } from "@/src/utils/ApiError";
+import { useAsyncAction } from "@/src/hooks/useAsyncAction";
+import { handleSignOut } from "@/src/utils/handleSignOut";
 
 export const useUpdateUser = () => {
   const { user, setUser } = useUserStore.getState();
 
   const updateName = async (name: string) => {
-    try {
-      const result = await updateUserName(name);
-      setUser(result);
-    } catch (error) {
-      handleActionError(error, "UpdateUser");
-    }
+    const result = await updateUserName(name);
+    if (!result) throw new ApiError(500, "Erreur lors de la mise à jour");
+    setUser(result);
   };
 
   const updateAvatar = async (formData: FormData) => {
-    try {
-      const result = await updateUserAvatar(formData);
-      setUser(result);
-    } catch (error) {
-      handleActionError(error, "UpdateUser");
-    }
+    const result = await updateUserAvatar(formData);
+    if (!result) throw new ApiError(500, "Erreur lors de la mise à jour");
+
+    setUser(result);
   };
 
-  return { updateName, updateAvatar };
+  const {
+    run: updateUsername,
+    isLoading: isUpdatingName,
+    error: updateNameError,
+  } = useAsyncAction(updateName);
+
+  const {
+    run: updateUserImage,
+    isLoading: isUpdatingImage,
+    error: updateImageError,
+  } = useAsyncAction(updateAvatar);
+
+  return {
+    updateUsername,
+    isUpdatingName,
+    updateNameError,
+    updateUserImage,
+    isUpdatingImage,
+    updateImageError,
+  };
 };
 
-export const deleteAccount = () => {
+export const useDeleteAccount = () => {
   const deleteUser = async () => {
-    try {
-      await deleteUserAccount();
-    } catch (error) {
-      handleActionError(error, "DeleteUser");
-    }
+    await deleteUserAccount();
+    handleSignOut();
   };
 
-  return { deleteUser };
+  const {
+    run: deleteAccount,
+    isLoading: isDeleting,
+    error: deleteError,
+  } = useAsyncAction(deleteUser);
+
+  return { deleteAccount, isDeleting, deleteError };
 };
