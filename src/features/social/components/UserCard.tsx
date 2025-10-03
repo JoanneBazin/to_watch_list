@@ -47,7 +47,7 @@ const UserCard = ({ user }: { user: SearchContact }) => {
       </CardHeader>
       <CardContent>
         {user.image ? (
-          <Avatar img={`data:image/*;base64,${user.image}`} />
+          <Avatar img={user.image} />
         ) : (
           <Avatar img="/avatar.svg" />
         )}

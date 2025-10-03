@@ -16,7 +16,7 @@ const UserProfile = () => {
           <div className="flex flex-col gap-6 justify-center items-center">
             <span className="text-3xl">Welcome back {user.name}</span>
             {user.image ? (
-              <Avatar size="large" img={`data:image/*;base64,${user.image}`} />
+              <Avatar size="large" img={user.image} />
             ) : (
               <Avatar size="large" img="/avatar.svg" />
             )}
