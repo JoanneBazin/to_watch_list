@@ -32,6 +32,7 @@ export const useCreateSuggestion = () => {
           : contact
       )
     );
+    return true;
   };
 
   const {

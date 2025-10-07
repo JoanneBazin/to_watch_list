@@ -1,33 +1,25 @@
 "use client";
 
-import { Button, Textarea } from "@/src/components/ui";
+import { Button, Loader, Textarea } from "@/src/components/ui";
 import { CiCirclePlus } from "react-icons/ci";
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
-import { MediaItem } from "@/src/types";
+import { SendSuggestionProps } from "@/src/types";
 import { useCreateSuggestion } from "../hooks/useSuggestionsMutations";
 
-interface SendSuggestProps {
-  friendId: string;
-  media: MediaItem;
-}
-
-const SendSuggestion = ({ friendId, media }: SendSuggestProps) => {
+const SendSuggestion = ({ contactId, mediaId }: SendSuggestionProps) => {
   const [sentSuggestion, setSentSuggestion] = useState<boolean>(false);
   const [senderComment, setSenderComment] = useState("");
   const { shareMedia, isSharing, shareError } = useCreateSuggestion();
 
   const handleSendSuggestion = async () => {
-    await shareMedia(media.id, friendId, senderComment);
-    if (!shareError) {
+    const success = await shareMedia(mediaId, contactId, senderComment);
+    if (success) {
       setSentSuggestion(true);
     }
   };
   return (
     <>
-      {isSharing ? (
-        <Loader2 />
-      ) : sentSuggestion ? (
+      {sentSuggestion ? (
         <span className="italic">Suggestion envoyée</span>
       ) : (
         <div>
@@ -42,9 +34,16 @@ const SendSuggestion = ({ friendId, media }: SendSuggestProps) => {
             onClick={handleSendSuggestion}
             variant="outline"
           >
-            <CiCirclePlus className="text-lg mr-2" />
-            Envoyer ce titre
+            {isSharing ? (
+              <Loader />
+            ) : (
+              <>
+                <CiCirclePlus className="text-lg mr-2" />
+                <p>Envoyer ce titre</p>
+              </>
+            )}
           </Button>
+          {shareError && <p className="error-message pt-4">{shareError}</p>}
         </div>
       )}
     </>

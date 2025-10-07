@@ -28,6 +28,7 @@ export const useCreateMedia = () => {
     };
 
     setWatchlist([...watchlist, newItem]);
+    return true;
   };
 
   const {
@@ -79,7 +80,9 @@ export const useCreateContactMedia = () => {
           : c
       )
     );
+    return true;
   };
+
   const {
     run: sendingMedia,
     isLoading: isSendingMedia,
@@ -100,6 +103,7 @@ export const useUpdateMedia = () => {
         media.id === result.id ? { ...media, ...result } : media
       )
     );
+    return true;
   };
 
   const {

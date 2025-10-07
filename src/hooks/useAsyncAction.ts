@@ -15,8 +15,10 @@ export const useAsyncAction = <TArgs extends any[], TResult>(
 
     try {
       const result = await action(...args);
+      return result;
     } catch (error) {
       handleError(error, setError);
+      return null;
     } finally {
       setIsLoading(false);
     }

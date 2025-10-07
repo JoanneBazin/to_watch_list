@@ -12,8 +12,7 @@ import { RxCross1 } from "react-icons/rx";
 import { FaCheck } from "react-icons/fa6";
 import { BiSolidEditAlt } from "react-icons/bi";
 
-import EditMedia from "./EditMedia";
-import { MediaItem, MediaTableProps } from "@/src/types";
+import { MediaItem } from "@/src/types";
 import {
   useDeleteFromWatchlist,
   useToggleWatched,
@@ -21,8 +20,7 @@ import {
 import { useState } from "react";
 import {
   Button,
-  Dialog,
-  DialogTrigger,
+  Modal,
   Table,
   TableBody,
   TableCell,
@@ -33,32 +31,20 @@ import {
 import ShareMedia from "../../suggestions/components/ShareMedia";
 import { MediaCard } from "./MediaCard";
 import { MediaCardSuggestions } from "./MediaCardSuggestions";
-import { handleError } from "@/src/utils/errorHandlers";
+import EditMediaForm from "./EditMediaForm";
 
-export const MediaTable = ({ data, type }: MediaTableProps) => {
+export const MediaTable = ({ data }: { data: MediaItem[] }) => {
   const { deleteMedia, isDeletingMedia, deleteError } =
     useDeleteFromWatchlist();
   const { toggleWatched, isTogglingWatched, toggleError } = useToggleWatched();
-  const [error, setError] = useState<string | null>(null);
+  const [openId, setOpenId] = useState<string | null>(null);
 
   const handleDelete = async (id: string) => {
-    setError(null);
-
-    try {
-      await deleteMedia(id);
-    } catch (error) {
-      handleError(error, setError);
-    }
+    await deleteMedia(id);
   };
 
   const handleToggleWatched = async (id: string) => {
-    setError(null);
-
-    try {
-      await toggleWatched(id);
-    } catch (error) {
-      handleError(error, setError);
-    }
+    await toggleWatched(id);
   };
 
   const columns: ColumnDef<MediaItem>[] = [
@@ -68,9 +54,10 @@ export const MediaTable = ({ data, type }: MediaTableProps) => {
       cell: ({ row }) => {
         return (
           <MediaCard media={row.original}>
-            {row.original.suggestions && (
-              <MediaCardSuggestions suggestions={row.original.suggestions} />
-            )}
+            {row.original.suggestions &&
+              row.original.suggestions.length > 0 && (
+                <MediaCardSuggestions suggestions={row.original.suggestions} />
+              )}
           </MediaCard>
         );
       },
@@ -124,8 +111,8 @@ export const MediaTable = ({ data, type }: MediaTableProps) => {
     {
       id: "edit",
       cell: ({ row }) => (
-        <Dialog>
-          <DialogTrigger asChild>
+        <Modal
+          trigger={
             <Button
               variant="outline"
               className={
@@ -136,10 +123,16 @@ export const MediaTable = ({ data, type }: MediaTableProps) => {
             >
               <BiSolidEditAlt />
             </Button>
-          </DialogTrigger>
-
-          <EditMedia row={row.original} />
-        </Dialog>
+          }
+          title={`Modifier ${row.original.title}`}
+          open={openId === row.original.id}
+          setOpen={(isOpen) => setOpenId(isOpen ? row.original.id : null)}
+        >
+          <EditMediaForm
+            media={row.original}
+            onSuccess={() => setOpenId(null)}
+          />
+        </Modal>
       ),
     },
 
@@ -156,53 +149,65 @@ export const MediaTable = ({ data, type }: MediaTableProps) => {
   });
 
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getCoreRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                className={
-                  row.original.watched
-                    ? "bg-zinc-900 text-zinc-700 italic"
-                    : "hover:bg-muted/50"
-                }
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+    <>
+      <div className="flex justify-center">
+        {toggleError && <p className="error-message pb-4">{toggleError}</p>}
+        {deleteError && <p className="error-message pb-4">{deleteError}</p>}
+      </div>
+      <div className="border border-r-radius mt-10">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </div>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getCoreRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  className={
+                    row.original.watched
+                      ? "bg-zinc-900 text-zinc-700 italic"
+                      : "hover:bg-muted/50"
+                  }
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </>
   );
 };
