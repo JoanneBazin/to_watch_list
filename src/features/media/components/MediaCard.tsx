@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
   Badge,
+  DialogDescription,
 } from "@/src/components/ui";
 
 const MediaCard = ({ media, children }: MediaCardProps) => {
@@ -22,6 +23,9 @@ const MediaCard = ({ media, children }: MediaCardProps) => {
             <p className="font-bold my-2">{media.title}</p>
             <Badge variant="outline">{media.categoryName}</Badge>
           </DialogTitle>
+          <DialogDescription className="sr-only">
+            Informations sur {media.title}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="flex gap-4 justify-between">

@@ -29,4 +29,14 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  section {
+    padding: 0px 50px;
+  }
+}
+
+@layer utilities {
+  .error-message {
+    @apply text-destructive text-sm;
+  }
 }

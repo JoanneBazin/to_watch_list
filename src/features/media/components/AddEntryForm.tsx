@@ -1,5 +1,3 @@
-"use client";
-
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useFetchCategories } from "@/src/features/media/hooks/useFetchCategories";
 import { AddEntryFormProps, AddEntryFormValue } from "@/src/types";
@@ -8,9 +6,9 @@ import {
   DialogFooter,
   Input,
   Label,
+  Loader,
   Textarea,
 } from "@/src/components/ui";
-import { handleError } from "@/src/utils/errorHandlers";
 import {
   useCreateContactMedia,
   useCreateMedia,
@@ -19,9 +17,10 @@ import {
 const AddEntryForm = ({
   entry,
   isSuggestedMedia,
+  onSuccess,
   receiverId,
 }: AddEntryFormProps) => {
-  const { handleSubmit, register, reset } = useForm<AddEntryFormValue>();
+  const { handleSubmit, register } = useForm<AddEntryFormValue>();
   const { createNewMedia, isCreatingMedia, createError } = useCreateMedia();
   const { sendingMedia, isSendingMedia, sendingError } =
     useCreateContactMedia();
@@ -34,13 +33,17 @@ const AddEntryForm = ({
       year: Number(data.year),
       type: entry,
     };
+    let success: boolean | null = false;
 
     if (isSuggestedMedia && receiverId) {
-      await sendingMedia(reqData, receiverId);
+      success = (await sendingMedia(reqData, receiverId)) ?? null;
     } else {
-      await createNewMedia(reqData);
+      success = (await createNewMedia(reqData)) ?? null;
     }
-    reset();
+
+    if (success) {
+      onSuccess();
+    }
   };
 
   return (
@@ -125,8 +128,20 @@ const AddEntryForm = ({
           </div>
         )}
       </div>
-      <DialogFooter>
-        <Button type="submit">Ajouter</Button>
+      <DialogFooter className="relative">
+        <Button type="submit">
+          {isCreatingMedia || isSendingMedia ? <Loader /> : "Ajouter"}
+        </Button>
+        {createError && (
+          <p className="absolute error-message top-2 left-0 max-w-[300px]">
+            {createError}
+          </p>
+        )}
+        {sendingError && (
+          <p className="absolute error-message top-2 left-0 max-w-[300px]">
+            {sendingError}
+          </p>
+        )}
       </DialogFooter>
     </form>
   );

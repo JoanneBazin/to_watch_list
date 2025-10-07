@@ -4,7 +4,6 @@ import { Avatar, Button, Input } from "@/src/components/ui";
 import { User } from "@/src/types";
 import { FormEvent, useRef, useState } from "react";
 import { useUpdateUser } from "../hooks/useUserMutation";
-import { handleError } from "@/src/utils/errorHandlers";
 
 const EditProfile = ({ user }: { user: User }) => {
   const [image, setImage] = useState<File | null>(null);

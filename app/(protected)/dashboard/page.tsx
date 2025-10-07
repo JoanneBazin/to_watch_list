@@ -1,43 +1,78 @@
 "use client";
 
-import WatchList from "@/src/features/media/components/WatchList";
-import { useState } from "react";
+import { useMediaStore } from "@/src/features/media/media.store";
+import { useDashboard } from "./layout";
+import CategorieList from "@/src/features/media/components/CategorieList";
+import { Button, Modal, Skeleton } from "@/src/components/ui";
+import AddEntryForm from "@/src/features/media/components/AddEntryForm";
+import { MediaTable } from "@/src/features/media/components/MediaTable";
+import { useMemo, useState } from "react";
 
 const DashboardPage = () => {
-  const [categ, setCateg] = useState("");
+  const [open, setOpen] = useState(false);
+  const { section } = useDashboard();
+  const { watchlist, isPending, error } = useMediaStore();
+  const { films, series } = useMemo(() => {
+    const films = [];
+    const series = [];
 
-  const handleAdd = async () => {
-    try {
-      const response = await fetch("/api/category", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: categ }),
-      });
-      if (!response.ok) {
-        console.log("oups");
-      }
-      console.log("Categ crée");
-      setCateg("");
-    } catch (error) {
-      console.log(error);
+    for (const media of watchlist) {
+      if (media.type === "FILM") films.push(media);
+      else if (media.type === "SERIE") series.push(media);
     }
-  };
+
+    return { films, series };
+  }, [watchlist]);
+
+  if (section === "categories") {
+    return (
+      <section>
+        <CategorieList />
+      </section>
+    );
+  }
+
+  if (section === "series") {
+    return (
+      <section>
+        <Modal
+          trigger={<Button variant="outline">Ajouter une série</Button>}
+          title="Nouvelle série"
+          open={open}
+          setOpen={setOpen}
+        >
+          <AddEntryForm
+            entry="SERIE"
+            isSuggestedMedia={false}
+            onSuccess={() => setOpen(false)}
+          />
+        </Modal>
+        <MediaTable data={series} />
+      </section>
+    );
+  }
+
   return (
-    <>
-      <div>
-        <h1 className="font-semibold text-center text-3xl m-8">Watch List</h1>
-        <WatchList />
-      </div>
-      <div className="mx-12">
-        <h2>Ajout catégorie</h2>
-        <input
-          type="text"
-          value={categ}
-          onChange={(e) => setCateg(e.target.value)}
+    <section>
+      <Modal
+        trigger={<Button variant="outline">Ajouter un film</Button>}
+        title="Nouveau film"
+        open={open}
+        setOpen={setOpen}
+      >
+        <AddEntryForm
+          entry="FILM"
+          isSuggestedMedia={false}
+          onSuccess={() => setOpen(false)}
         />
-        <button onClick={handleAdd}>Add</button>
-      </div>
-    </>
+      </Modal>
+      {isPending && (
+        <Skeleton className="h-48 w-full mt-10 border border-r-radius" />
+      )}
+      {error && <p>{error}</p>}
+
+      {!isPending && !error && <MediaTable data={films} />}
+    </section>
   );
 };
 
