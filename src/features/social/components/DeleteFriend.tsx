@@ -12,6 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
+  Loader,
 } from "@/src/components/ui";
 import { useDeleteFriend } from "../hooks/useSocialMutations";
 
@@ -19,15 +20,18 @@ const DeleteFriend = ({ friendId }: { friendId: string }) => {
   const router = useRouter();
   const { deleteContact, isDeleting, deleteError } = useDeleteFriend();
 
-  const handleDelete = async () => {
-    await deleteContact(friendId);
-    router.push("/dashboard");
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    const success = await deleteContact(friendId);
+    if (success) {
+      router.push("/dashboard");
+    }
   };
 
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button className="italic bg-zinc-900 text-zinc-600 m-4">
+        <Button className="absolute bg-zinc-900 text-zinc-600 m-4">
           Supprimer ce contact
         </Button>
       </AlertDialogTrigger>
@@ -38,11 +42,14 @@ const DeleteFriend = ({ friendId }: { friendId: string }) => {
             Ce contact et les données associées seront définitivement supprimées
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Annuler</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDelete}>
-            Supprimer
-          </AlertDialogAction>
+        <AlertDialogFooter className="flex gap-4 items-center">
+          {deleteError && <p className="error-message">{deleteError}</p>}
+          <div className="flex gap-2">
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={(e) => handleDelete(e)}>
+              {isDeleting ? <Loader /> : "Supprimer"}
+            </AlertDialogAction>
+          </div>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

@@ -2,7 +2,6 @@
 import React from "react";
 import Link from "next/link";
 import { SearchContact } from "@/src/types";
-import SendFriendRequest from "@/src/features/social/components/SendFriendRequest";
 import {
   Avatar,
   Button,
@@ -12,7 +11,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/src/components/ui";
-import ValidateFriendRequest from "./ValidateFriendRequest";
+import ValidateFriendRequest from "./requests/ValidateFriendRequest";
+import SendFriendRequest from "./requests/SendFriendRequest";
 
 const UserCard = ({ user }: { user: SearchContact }) => {
   let actionSection;
@@ -21,7 +21,7 @@ const UserCard = ({ user }: { user: SearchContact }) => {
     case "friends":
       actionSection = (
         <Button variant="outline">
-          <Link href={`/communauty/${user.id}`}>Profil</Link>
+          <Link href={`/user/${user.id}`}>Profil</Link>
         </Button>
       );
       break;
@@ -46,11 +46,7 @@ const UserCard = ({ user }: { user: SearchContact }) => {
         <CardTitle className="text-center">{user.name}</CardTitle>
       </CardHeader>
       <CardContent>
-        {user.image ? (
-          <Avatar img={user.image} />
-        ) : (
-          <Avatar img="/avatar.svg" />
-        )}
+        <Avatar img={user.image} />
       </CardContent>
       <CardFooter className="flex justify-center">{actionSection}</CardFooter>
     </Card>

@@ -1,45 +1,16 @@
 "use client";
 import { Input, Loader } from "@/src/components/ui";
-import { useEffect, useState } from "react";
-import { fetchUserSearch } from "../social.api";
-import { SearchContact } from "@/src/types";
+import { useState } from "react";
 import { UserCard } from "./UserCard";
-import { handleError } from "@/src/utils/errorHandlers";
+import { useFetchSearchedUser } from "../hooks/useFetchSearchedUser";
 
 const UserSearch = () => {
   const [query, setQuery] = useState<string>("");
-  const [result, setResult] = useState<SearchContact[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!query) {
-      setResult([]);
-      return;
-    }
-
-    const fetchResult = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const users = await fetchUserSearch(query);
-        setResult(users);
-      } catch (error) {
-        handleError(error, setError);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const debounceFetch = setTimeout(fetchResult, 800);
-
-    return () => clearTimeout(debounceFetch);
-  }, [query]);
+  const { users, isLoading, error } = useFetchSearchedUser(query);
 
   return (
-    <div className="m-4">
-      <h2 className="m-6 text-2xl font-semibold">Rechercher</h2>
+    <section className="m-4">
+      <h2 className="sr-only">Rechercher un contact</h2>
       <div className="m-6">
         <Input
           className="w-2/3"
@@ -50,16 +21,17 @@ const UserSearch = () => {
         />
       </div>
 
-      <div className=" grid grid-cols-2 gap-4 m-6">
-        {loading ? (
-          <Loader />
-        ) : result.length > 0 ? (
-          result?.map((result) => <UserCard key={result.id} user={result} />)
-        ) : query && result.length < 1 ? (
-          <p className="italic">Pas de résultats</p>
-        ) : null}
+      <div className="py-6">
+        {isLoading && <Loader />}
+        {error && <p className="ml-12 italic text-gray-500">{error}</p>}
+        <div className=" grid grid-cols-2 gap-4 m-6">
+          {!isLoading &&
+            !error &&
+            users.length > 0 &&
+            users.map((user) => <UserCard key={user.id} user={user} />)}
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

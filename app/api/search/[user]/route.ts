@@ -43,6 +43,10 @@ export async function GET(
       },
     });
 
+    if (users.length < 1) {
+      throw new ApiError(404, "Pas de résultat");
+    }
+
     const usersList = users.map((user) => {
       let friendshipStatus:
         | "none"

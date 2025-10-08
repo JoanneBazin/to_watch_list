@@ -11,6 +11,7 @@ import { ApiError } from "@/src/utils/ApiError";
 export const useSendFriendRequest = () => {
   const addNewFriend = async (receiverId: string) => {
     await addFriendRequest(receiverId);
+    return true;
   };
 
   const {
@@ -34,6 +35,7 @@ export const useUpdateRequest = () => {
     if (result.status === "ACCEPTED") {
       setContacts([...contacts, { ...result.sender, suggestionsFromUser: [] }]);
     }
+    return true;
   };
 
   const {
@@ -53,6 +55,7 @@ export const useDeleteFriend = () => {
     if (!result?.success)
       throw new ApiError(500, "Erreur lors de la suppression");
     setContacts(contacts.filter((contact) => contact.id !== friendId));
+    return true;
   };
 
   const {

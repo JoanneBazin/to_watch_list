@@ -1,32 +1,22 @@
 "use client";
 
-import { Button } from "@/src/components/ui";
-import { useState } from "react";
+import { Button, Loader } from "@/src/components/ui";
 import { useAddToWatchlist } from "../hooks/useWatchlistMutations";
 
-interface AddMediaProps {
-  mediaId: string;
-}
-
-const AddMedia = ({ mediaId }: AddMediaProps) => {
-  const [added, setAdded] = useState<boolean>(false);
+const AddMedia = ({ mediaId }: { mediaId: string }) => {
   const { addMedia, isAddingMedia, addError } = useAddToWatchlist();
 
   const handleAdd = async () => {
     await addMedia(mediaId);
-    setAdded(true);
   };
 
   return (
-    <>
-      {added ? (
-        <span className="italic">Ajouté à ma liste</span>
-      ) : (
-        <Button onClick={handleAdd} variant="outline" className="px-6 my-4">
-          Ajouter à ma watchlist
-        </Button>
-      )}
-    </>
+    <div className="flex justify-between gap-2 items-center">
+      {addError && <p className="error-message">{addError}</p>}
+      <Button onClick={handleAdd} variant="outline" className="px-6 py-2 my-4">
+        {isAddingMedia ? <Loader /> : "Ajouter à ma watchlist"}
+      </Button>
+    </div>
   );
 };
 
