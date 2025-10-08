@@ -1,12 +1,12 @@
 "use client";
 
 import { useMediaStore } from "@/src/features/media/media.store";
-import { useDashboard } from "./layout";
 import { Button, Modal, Skeleton } from "@/src/components/ui";
 import { MediaTable } from "@/src/features/media/components/MediaTable";
 import { useMemo, useState } from "react";
 import CategoryFilter from "@/src/features/media/components/CategoryFilter";
 import AddEntryForm from "@/src/features/media/components/form/AddEntryForm";
+import { useDashboard } from "@/src/features/media/DashboardContext";
 
 const DashboardPage = () => {
   const [open, setOpen] = useState(false);

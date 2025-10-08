@@ -49,10 +49,3 @@ export type AddEntryFormValue = Omit<
 > & {
   senderComment?: string;
 };
-
-export type DashboardSection = "films" | "series" | "categories";
-
-export interface DashboardContextType {
-  section: DashboardSection;
-  setSection: (section: DashboardSection) => void;
-}
