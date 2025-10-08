@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
   Button,
+  Loader,
   Textarea,
 } from "@/src/components/ui";
 import { useState } from "react";
@@ -17,42 +18,43 @@ const SendResponseComment = ({ suggestionId }: { suggestionId: string }) => {
   const { sendComment, isUpdating, updateError } =
     useUpdateSuggestionResponse();
 
-  const handleSendResponse = async () => {
-    await sendComment(suggestionId, receiverComment);
-    if (!updateError) {
+  const handleSendResponse = async (e: React.MouseEvent) => {
+    const success = await sendComment(suggestionId, receiverComment);
+    if (success) {
       setCommentSent(true);
     }
   };
 
-  return (
-    <>
-      {commentSent ? (
-        <p className="text-xs text-zinc-600">Réponse envoyée !</p>
-      ) : (
-        <Accordion type="single">
-          <AccordionItem className="w-full" value={suggestionId}>
-            <AccordionTrigger>
-              <span className="mr-6 text-xs">Renvoyer un commentaire</span>
-            </AccordionTrigger>
-            <AccordionContent>
-              <Textarea
-                onChange={(e) => setReceiverComment(e.target.value)}
-                name="comment"
-                placeholder="Laisser un commentaire ?"
-              />
+  if (commentSent) {
+    return <p className="text-xs text-zinc-600">Réponse envoyée !</p>;
+  }
 
-              <Button
-                className="mt-2"
-                onClick={() => handleSendResponse()}
-                variant="outline"
-              >
-                Envoyer
-              </Button>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      )}
-    </>
+  return (
+    <Accordion type="single">
+      <AccordionItem className="w-full" value={suggestionId}>
+        <AccordionTrigger>
+          <span className="mr-6 text-xs">Renvoyer un commentaire</span>
+        </AccordionTrigger>
+        <AccordionContent>
+          <Textarea
+            onChange={(e) => setReceiverComment(e.target.value)}
+            name="comment"
+            placeholder="Laisser un commentaire ?"
+          />
+          {updateError && (
+            <p className="error-message text-xs my-2">{updateError}</p>
+          )}
+
+          <Button
+            className="mt-2"
+            onClick={handleSendResponse}
+            variant="outline"
+          >
+            {isUpdating ? <Loader /> : "Envoyer"}
+          </Button>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 };
 

@@ -15,14 +15,12 @@ const MediaCard = ({ media, children }: MediaCardProps) => {
 
       <div className="flex gap-4 justify-between">
         <div>
-          {media.real ? <p className="font-semibold">{media.real}</p> : null}
-          {media.year ? <p className="text-xs">{media.year}</p> : null}
-          {media.synopsis ? (
-            <p className="text-gray-500">{media.synopsis}</p>
-          ) : null}
-          {media.platform ? (
+          {media.real && <p className="font-semibold">{media.real}</p>}
+          {media.year && <p className="text-xs">{media.year}</p>}
+          {media.synopsis && <p className="text-gray-500">{media.synopsis}</p>}
+          {media.platform && (
             <p className="italic">Disponible sur {media.platform}</p>
-          ) : null}
+          )}
         </div>
 
         {children}

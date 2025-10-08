@@ -9,16 +9,18 @@ export const MediaCardSuggestions = ({
   suggestions: SuggestionsProps[];
 }) => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-4">
       Suggestion envoyée par{" "}
       {suggestions.map((suggest) => (
         <div key={suggest.id}>
           <span className="font-semibold">{suggest.sender.name}</span>
-          <p className="flex my-2">
-            <RiSingleQuotesL />
-            {suggest.senderComment}
-            <RiSingleQuotesR />
-          </p>
+          {suggest.senderComment && (
+            <p className="flex my-2">
+              <RiSingleQuotesL />
+              {suggest.senderComment}
+              <RiSingleQuotesR />
+            </p>
+          )}
           {!suggest.receiverComment && (
             <SendResponseComment suggestionId={suggest.id} />
           )}

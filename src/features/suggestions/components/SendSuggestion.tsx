@@ -17,36 +17,30 @@ const SendSuggestion = ({ contactId, mediaId }: SendSuggestionProps) => {
       setSentSuggestion(true);
     }
   };
-  return (
-    <>
-      {sentSuggestion ? (
-        <span className="italic">Suggestion envoyée</span>
-      ) : (
-        <div>
-          <Textarea
-            onChange={(e) => setSenderComment(e.target.value)}
-            name="comment"
-            placeholder="Laisser un commentaire ?"
-          />
 
-          <Button
-            className="mt-2"
-            onClick={handleSendSuggestion}
-            variant="outline"
-          >
-            {isSharing ? (
-              <Loader />
-            ) : (
-              <>
-                <CiCirclePlus className="text-lg mr-2" />
-                <p>Envoyer ce titre</p>
-              </>
-            )}
-          </Button>
-          {shareError && <p className="error-message pt-4">{shareError}</p>}
-        </div>
-      )}
-    </>
+  if (sentSuggestion) {
+    return <span className="italic">Suggestion envoyée</span>;
+  }
+  return (
+    <div>
+      <Textarea
+        onChange={(e) => setSenderComment(e.target.value)}
+        name="comment"
+        placeholder="Laisser un commentaire ?"
+      />
+
+      <Button className="mt-2" onClick={handleSendSuggestion} variant="outline">
+        {isSharing ? (
+          <Loader />
+        ) : (
+          <>
+            <CiCirclePlus className="text-lg mr-2" />
+            <p>Envoyer ce titre</p>
+          </>
+        )}
+      </Button>
+      {shareError && <p className="error-message pt-4">{shareError}</p>}
+    </div>
   );
 };
 
