@@ -2,34 +2,35 @@
 
 import { SectionNavButton } from "@/src/components/ui";
 import {
-  DashboardProvider,
-  useDashboard,
-} from "@/src/features/media/DashboardContext";
+  CommunautyProvider,
+  useCommunauty,
+} from "@/src/features/social/CommunautyContext";
 
-const DashboardLayoutContent = ({
+const CommunautyLayoutContent = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  const { section, setSection } = useDashboard();
+  const { section, setSection } = useCommunauty();
+
   return (
     <div>
       <nav className="flex gap-6 justify-center p-10">
         <SectionNavButton
-          label="Films"
-          value="films"
+          label="Contacts"
+          value="contacts"
           section={section}
           setSection={setSection}
         />
         <SectionNavButton
-          label="Séries"
-          value="series"
+          label="Demandes en attente"
+          value="requests"
           section={section}
           setSection={setSection}
         />
         <SectionNavButton
-          label="Catégories"
-          value="categories"
+          label="Parcourir"
+          value="search"
           section={section}
           setSection={setSection}
         />
@@ -39,14 +40,14 @@ const DashboardLayoutContent = ({
   );
 };
 
-export default function DashboardLayout({
+export default function CommunautyLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <DashboardProvider defaultSection="films">
-      <DashboardLayoutContent>{children}</DashboardLayoutContent>
-    </DashboardProvider>
+    <CommunautyProvider defaultSection="contacts">
+      <CommunautyLayoutContent>{children}</CommunautyLayoutContent>
+    </CommunautyProvider>
   );
 }
