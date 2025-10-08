@@ -31,7 +31,7 @@ import {
 import ShareMedia from "../../suggestions/components/ShareMedia";
 import { MediaCard } from "./MediaCard";
 import { MediaCardSuggestions } from "./MediaCardSuggestions";
-import EditMediaForm from "./EditMediaForm";
+import EditMediaForm from "./form/EditMediaForm";
 
 export const MediaTable = ({ data }: { data: MediaItem[] }) => {
   const { deleteMedia, isDeletingMedia, deleteError } =
