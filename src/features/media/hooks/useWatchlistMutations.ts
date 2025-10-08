@@ -47,6 +47,7 @@ export const useAddToWatchlist = () => {
     const result = await addToWatchlist(mediaId);
     if (!result) throw new ApiError(500, "Erreur lors de l'ajout");
     setWatchlist([...watchlist, { ...result.media, ...result }]);
+    return true;
   };
 
   const {

@@ -8,27 +8,13 @@ import { useCommunauty } from "@/src/features/social/CommunautyContext";
 const CommunautyPage = () => {
   const { section } = useCommunauty();
 
-  if (section === "requests") {
-    return (
-      <section>
-        <FriendRequests />
-      </section>
-    );
-  }
-
-  if (section === "search") {
-    return (
-      <section>
-        <UserSearch />
-      </section>
-    );
-  }
   return (
-    <section>
-      <h2 className="m-10 p-8 text-3xl border rounded-md">Communauté</h2>
-
-      <FriendsList />
-    </section>
+    <main>
+      <h1 className="sr-only">Communauté</h1>
+      {section === "contacts" && <FriendsList />}
+      {section === "requests" && <FriendRequests />}
+      {section === "search" && <UserSearch />}
+    </main>
   );
 };
 

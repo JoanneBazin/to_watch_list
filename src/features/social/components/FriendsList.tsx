@@ -1,25 +1,28 @@
 "use client";
-import { Avatar } from "@/src/components/ui";
+import { Avatar, Loader } from "@/src/components/ui";
 import Link from "next/link";
 import { useUserStore } from "../../user/user.store";
 
 const FriendsList = () => {
-  const contacts = useUserStore((s) => s.contacts);
+  const { contacts, isPending, error } = useUserStore();
 
   return (
-    <div>
-      <h2 className="m-6 text-2xl font-semibold">Contacts</h2>
-      {contacts.length > 0 ? (
+    <section>
+      <h2 className="sr-only">Liste des contacts</h2>
+      {isPending && <Loader />}
+      {error && <p className="error-message text-center my-16">{error}</p>}
+      {!isPending && !error && contacts.length < 1 && (
+        <p className="italic m-10">Pas de contacts</p>
+      )}
+
+      {contacts.length > 0 &&
         contacts.map((contact) => (
           <div key={contact.id} className="flex gap-4 items-center m-6">
             <Avatar img={contact.image} />
-            <Link href={`/communauty/${contact.id}`}>{contact.name}</Link>
+            <Link href={`/user/${contact.id}`}>{contact.name}</Link>
           </div>
-        ))
-      ) : (
-        <p className="italic m-10">Pas de contacts</p>
-      )}
-    </div>
+        ))}
+    </section>
   );
 };
 
