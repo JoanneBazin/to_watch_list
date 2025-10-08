@@ -55,15 +55,10 @@ export const useUpdateSuggestionStatus = () => {
     if (!result) throw new ApiError(500, "Erreur lors de la mise à jour");
 
     if (status === "ACCEPTED") {
-      setWatchlist([
-        ...watchlist,
-        {
-          ...result,
-          addedAt: new Date(),
-          watched: false,
-        },
-      ]);
+      const newMedia = { ...result, ...result.media, media: undefined };
+      setWatchlist([...watchlist, newMedia]);
     }
+    return true;
   };
 
   const {
@@ -96,6 +91,7 @@ export const useUpdateSuggestionResponse = () => {
           : media
       )
     );
+    return true;
   };
 
   const {

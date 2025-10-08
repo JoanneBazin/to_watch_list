@@ -5,6 +5,7 @@ import { SuggestionsStatus } from "@/src/types";
 import { ApiError } from "@/src/utils/ApiError";
 import { handleActionError } from "@/src/utils/errorHandlers";
 import { requireAuth } from "@/src/utils/requireAuth";
+import { date } from "better-auth";
 
 export const shareMediaSuggestion = async (
   mediaId: string,
@@ -56,8 +57,8 @@ export const updateReceivedSuggestions = async (
     const userId = session.user.id;
 
     const suggestion = await prisma.suggestion.findFirst({
-      where: { mediaId: mediaId, receiverId: userId },
-      select: { media: true },
+      where: { mediaId, receiverId: userId },
+      select: { id: true },
     });
 
     if (!suggestion) {
@@ -66,13 +67,35 @@ export const updateReceivedSuggestions = async (
 
     await prisma.suggestion.updateMany({
       where: {
-        mediaId: mediaId,
+        mediaId,
         receiverId: userId,
       },
       data: { status },
     });
 
-    return { ...suggestion.media };
+    return prisma.usersWatchList.update({
+      where: { userId_mediaId: { userId, mediaId } },
+      data: { addedAt: new Date(Date.now()) },
+      select: {
+        media: true,
+        addedAt: true,
+        watched: true,
+        suggestions: {
+          select: {
+            id: true,
+            senderComment: true,
+            receiverComment: true,
+            sender: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+              },
+            },
+          },
+        },
+      },
+    });
   } catch (error) {
     handleActionError(error, "Update suggestion status");
   }

@@ -1,56 +1,31 @@
 "use client";
 
-import SuggestionResponse from "./SuggestionResponse";
-import {
-  Avatar,
-  Badge,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Loader,
-} from "@/src/components/ui";
+import { Loader } from "@/src/components/ui";
 import { useFetchSuggestions } from "../hooks/useFetchSuggestions";
+import { SuggestionCard } from "./SuggestionCard";
 
 const SuggestionsList = () => {
   const { suggestions, isLoading, error } = useFetchSuggestions();
 
   return (
-    <div>
-      {isLoading ? (
-        <Loader />
-      ) : suggestions.length > 0 ? (
+    <section>
+      <h2 className="sr-only">Suggestions reçues</h2>
+      {isLoading && <Loader />}
+      {error && <p className="error-message text-center my-16">{error}</p>}
+      {!isLoading && !error && suggestions.length < 1 && (
+        <p className="my-16 italic text-gray-500 text-center">
+          Pas de suggestions en attente
+        </p>
+      )}
+
+      {suggestions.length > 0 && (
         <div className="grid grid-cols-2 gap-4 mx-4 my-10">
           {suggestions.map((suggestion) => (
-            <Card key={suggestion.id}>
-              <CardHeader>
-                <CardTitle className="flex justify-between items-center">
-                  <span>{suggestion.title}</span>
-
-                  <Badge>{suggestion.type}</Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {suggestion.suggestions &&
-                  suggestion.suggestions.map((suggest) => (
-                    <div key={suggest.id} className="my-4">
-                      <div className="flex gap-3">
-                        <Avatar size="small" img={suggest.sender.image} />
-                        <p>envoyé par {suggest.sender.name}</p>
-                      </div>
-                      <p className="italic mt-2">{suggest.senderComment}</p>
-                    </div>
-                  ))}
-
-                <SuggestionResponse mediaId={suggestion.id} />
-              </CardContent>
-            </Card>
+            <SuggestionCard media={suggestion} key={suggestion.id} />
           ))}
         </div>
-      ) : (
-        <div className="italic my-6">Pas de suggestions</div>
       )}
-    </div>
+    </section>
   );
 };
 
