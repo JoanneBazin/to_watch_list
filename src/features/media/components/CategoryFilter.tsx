@@ -28,37 +28,40 @@ const CategoryFilter = () => {
   }, [selectedCategory, watchlist]);
 
   return (
-    <div className="flex flex-col gap-8 my-10 mx-auto w-[80vw]">
-      <Select
-        onValueChange={(value) =>
-          setSelectedCategory(value === "ALL" ? null : value)
-        }
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Filtrer par catégorie" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <ScrollArea className="max-h-60 rounded-md ">
-              <SelectItem value="ALL">Toutes les catégories</SelectItem>
-              {categories.map((category) => (
-                <SelectItem value={category} key={category}>
-                  {category}
-                </SelectItem>
-              ))}
-            </ScrollArea>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+    <section>
+      <h2 className="sr-only">Section tri par catégorie</h2>
+      <div className="flex flex-col gap-8 my-10 mx-auto w-[80vw]">
+        <Select
+          onValueChange={(value) =>
+            setSelectedCategory(value === "ALL" ? null : value)
+          }
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Filtrer par catégorie" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <ScrollArea className="max-h-60 rounded-md ">
+                <SelectItem value="ALL">Toutes les catégories</SelectItem>
+                {categories.map((category) => (
+                  <SelectItem value={category} key={category}>
+                    {category}
+                  </SelectItem>
+                ))}
+              </ScrollArea>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
 
-      <div className="w-full">
-        {mediasSelection.length > 0 ? (
-          <MediaTable data={mediasSelection} />
-        ) : (
-          <p>Pas de titres disponibles</p>
-        )}
+        <div className="w-full">
+          {mediasSelection.length > 0 ? (
+            <MediaTable data={mediasSelection} />
+          ) : (
+            <p>Pas de titres disponibles</p>
+          )}
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 
