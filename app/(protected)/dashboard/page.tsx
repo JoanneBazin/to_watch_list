@@ -2,11 +2,11 @@
 
 import { useMediaStore } from "@/src/features/media/media.store";
 import { useDashboard } from "./layout";
-import CategorieList from "@/src/features/media/components/CategorieList";
 import { Button, Modal, Skeleton } from "@/src/components/ui";
-import AddEntryForm from "@/src/features/media/components/AddEntryForm";
 import { MediaTable } from "@/src/features/media/components/MediaTable";
 import { useMemo, useState } from "react";
+import CategoryFilter from "@/src/features/media/components/CategoryFilter";
+import AddEntryForm from "@/src/features/media/components/form/AddEntryForm";
 
 const DashboardPage = () => {
   const [open, setOpen] = useState(false);
@@ -27,7 +27,7 @@ const DashboardPage = () => {
   if (section === "categories") {
     return (
       <section>
-        <CategorieList />
+        <CategoryFilter />
       </section>
     );
   }
