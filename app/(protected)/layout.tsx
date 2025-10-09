@@ -3,9 +3,9 @@
 import { useSession } from "@/src/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import Header from "@/src/components/layout/Header";
 import { useUserHydratation } from "@/src/features/user/hooks/useUserHydratation";
 import { useMediaHydratation } from "@/src/features/media/hooks/useMediaHydratation";
+import PrivateHeader from "@/src/components/layout/PrivateHeader";
 
 const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -26,7 +26,7 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      <Header />
+      <PrivateHeader />
       {children}
     </>
   );
