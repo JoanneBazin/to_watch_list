@@ -17,10 +17,7 @@ export const updateUserName = async (name: string) => {
       },
       data: { name },
       select: {
-        id: true,
         name: true,
-        email: true,
-        image: true,
       },
     });
   } catch (error) {
@@ -52,9 +49,6 @@ export const updateUserAvatar = async (formData: FormData) => {
       },
       data: { image: imageUrl },
       select: {
-        id: true,
-        name: true,
-        email: true,
         image: true,
       },
     });

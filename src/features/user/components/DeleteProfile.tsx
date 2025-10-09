@@ -11,12 +11,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
   Button,
+  Loader,
 } from "@/src/components/ui";
 import { useDeleteAccount } from "../hooks/useUserMutation";
 
 const DeleteProfile = () => {
   const { deleteAccount, isDeleting, deleteError } = useDeleteAccount();
-  const handleDelete = async () => {
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault();
     await deleteAccount();
   };
 
@@ -34,11 +37,15 @@ const DeleteProfile = () => {
             Ce compte et les données associées seront définitivement supprimées
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Annuler</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDelete}>
-            Supprimer
-          </AlertDialogAction>
+        <AlertDialogFooter className="flex gap-4 items-center">
+          {deleteError && <p className="error-message">{deleteError}</p>}
+
+          <div className="flex gap-2">
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={(e) => handleDelete(e)}>
+              {isDeleting ? <Loader /> : "Supprimer"}
+            </AlertDialogAction>
+          </div>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
