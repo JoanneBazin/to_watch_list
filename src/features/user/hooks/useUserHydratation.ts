@@ -18,7 +18,7 @@ export const useUserHydratation = (user: SessionUser | undefined) => {
       id: user.id,
       name: user.name,
       email: user.email,
-      image: user.image ?? null,
+      image: user.image ? `${user.image}?t=${Date.now()}` : null,
     });
 
     const hydrateStore = async () => {

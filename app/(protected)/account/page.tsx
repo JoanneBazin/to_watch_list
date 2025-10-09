@@ -1,7 +1,52 @@
-import UserProfile from "@/src/features/user/components/UserProfile";
+"use client";
+
+import { Avatar, Button, SignOutBtn } from "@/src/components/ui";
+import DeleteProfile from "@/src/features/user/components/DeleteProfile";
+import EditUserAvatar from "@/src/features/user/components/EditUserAvatar";
+import { EditUserName } from "@/src/features/user/components/EditUserName";
+import { useUserStore } from "@/src/features/user/user.store";
+import Link from "next/link";
 
 const Account = () => {
-  return <UserProfile />;
+  const user = useUserStore((s) => s.user);
+
+  if (!user) {
+    return (
+      <main>
+        <div className="flex flex-col items-center justify-center gap-6">
+          <p className="font-semibold text-gray-500">
+            Pas de session connectée
+          </p>
+          <Button variant="outline">
+            <Link href="/">Retour à l&apos;accueil</Link>
+          </Button>
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main className="min-h-[90vh] flex flex-col">
+      <h1 className="sr-only">Profil du compte</h1>
+      <div className="flex gap-6 justify-center items-center my-12">
+        <Avatar size="large" img={user.image} />
+        <h2 className="text-3xl">{user.name}</h2>
+      </div>
+
+      <section className="flex-1 flex flex-col justify-between">
+        <div className="w-1/3 flex flex-col gap-4 mx-auto my-4">
+          <h2 className="font-semibold text-2xl mb-4">Modifier le profil</h2>
+          <EditUserName username={user.name} />
+          <EditUserAvatar userAvatar={user.image} />
+        </div>
+
+        <div className="flex flex-col justify-end items-end gap-4">
+          <DeleteProfile />
+          <SignOutBtn />
+        </div>
+      </section>
+    </main>
+  );
 };
 
 export default Account;
