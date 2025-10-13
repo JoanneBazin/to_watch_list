@@ -1,28 +1,33 @@
 "use server";
 
 import { prisma } from "@/src/lib/prisma";
-import { AddEntryFormValue, MediaItem } from "@/src/types";
 import { ApiError } from "@/src/utils/ApiError";
 import { handleActionError } from "@/src/utils/errorHandlers";
 import { requireAuth } from "@/src/utils/requireAuth";
+import {
+  MediaFormData,
+  mediaServerSchema,
+  UpdateMediaFormData,
+  updateMediaServerSchema,
+} from "./media.schema";
+import { strictValidateSchema } from "@/src/utils/validateSchema";
 
-export const createMedia = async (media: AddEntryFormValue) => {
+export const createMedia = async (media: MediaFormData) => {
   try {
-    if (!media.title || !media.type || !media.categoryName) {
-      throw new ApiError(400, "Champs requis manquants");
-    }
+    const { data } = strictValidateSchema(mediaServerSchema, media);
+
     const session = await requireAuth();
     const userId = session.user.id;
 
     return await prisma.watchList.create({
       data: {
-        title: media.title,
-        type: media.type,
-        synopsis: media.synopsis,
-        year: media.year,
-        real: media.real,
-        platform: media.platform,
-        categoryName: media.categoryName,
+        title: data.title,
+        type: data.type,
+        synopsis: data.synopsis,
+        year: data.year,
+        real: data.real,
+        platform: data.platform,
+        categoryName: data.categoryName,
         users: {
           create: [
             {
@@ -86,19 +91,22 @@ export const addToWatchlist = async (mediaId: string) => {
   }
 };
 
-export const updateMedia = async (mediaId: string, data: MediaItem) => {
+export const updateMedia = async (
+  mediaId: string,
+  media: UpdateMediaFormData
+) => {
   try {
+    const { data } = strictValidateSchema(updateMediaServerSchema, media);
+
     if (!mediaId) throw new ApiError(400, "Media ID manquant");
 
     await requireAuth();
-
-    const { suggestions, ...mediaData } = data;
 
     return await prisma.watchList.update({
       where: {
         id: mediaId,
       },
-      data: mediaData,
+      data,
     });
   } catch (error) {
     handleActionError(error, "Update media");
@@ -170,13 +178,11 @@ export const deleteFromWatchlist = async (mediaId: string) => {
 };
 
 export const addToContactWatchlist = async (
-  media: AddEntryFormValue,
+  media: MediaFormData,
   receiverId: string
 ) => {
   try {
-    if (!media.title || !media.type || !media.categoryName) {
-      throw new ApiError(400, "Champs requis manquants");
-    }
+    const { data } = strictValidateSchema(mediaServerSchema, media);
 
     const session = await requireAuth();
     const userId = session.user.id;
@@ -184,13 +190,13 @@ export const addToContactWatchlist = async (
     return await prisma.$transaction(async (tx) => {
       const newMedia = await tx.watchList.create({
         data: {
-          title: media.title,
-          type: media.type,
-          synopsis: media.synopsis,
-          year: media.year,
-          real: media.real,
-          platform: media.platform,
-          categoryName: media.categoryName,
+          title: data.title,
+          type: data.type,
+          synopsis: data.synopsis,
+          year: data.year,
+          real: data.real,
+          platform: data.platform,
+          categoryName: data.categoryName,
           users: {
             create: [
               {
@@ -210,7 +216,7 @@ export const addToContactWatchlist = async (
           senderId: userId,
           receiverId: receiverId,
           mediaId: newMedia.id,
-          senderComment: media.senderComment,
+          senderComment: data.senderComment,
         },
       });
     });

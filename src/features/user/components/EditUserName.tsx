@@ -4,11 +4,19 @@ import { Button, Input, Loader } from "@/src/components/ui";
 
 export const EditUserName = ({ username }: { username: string }) => {
   const [name, setName] = useState<string>(username);
+  const [validationError, setValidationError] = useState<string | null>(null);
   const { updateUsername, isUpdatingName, updateNameError } = useUpdateUser();
 
   const handleEditName = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setValidationError(null);
+
     if (!name || name === username) return;
+    if (name.length > 20) {
+      setValidationError("Le nom est trop long");
+      return;
+    }
+
     await updateUsername(name);
   };
 
@@ -25,6 +33,7 @@ export const EditUserName = ({ username }: { username: string }) => {
         </Button>
       </form>
       {updateNameError && <p className="error-message">{updateNameError}</p>}
+      {validationError && <p className="error-message">{validationError}</p>}
     </div>
   );
 };

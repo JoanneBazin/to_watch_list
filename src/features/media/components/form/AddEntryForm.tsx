@@ -1,6 +1,7 @@
-import { SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useFetchCategories } from "@/src/features/media/hooks/useFetchCategories";
-import { AddEntryFormProps, AddEntryFormValue } from "@/src/types";
+import { AddEntryFormProps } from "@/src/types";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,
   DialogFooter,
@@ -12,7 +13,8 @@ import {
 import {
   useCreateContactMedia,
   useCreateMedia,
-} from "../hooks/useWatchlistMutations";
+} from "../../hooks/useWatchlistMutations";
+import { MediaFormData, mediaSchema } from "../../media.schema";
 
 const AddEntryForm = ({
   entry,
@@ -20,19 +22,25 @@ const AddEntryForm = ({
   onSuccess,
   receiverId,
 }: AddEntryFormProps) => {
-  const { handleSubmit, register } = useForm<AddEntryFormValue>();
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<MediaFormData>({
+    resolver: zodResolver(mediaSchema),
+  });
   const { createNewMedia, isCreatingMedia, createError } = useCreateMedia();
   const { sendingMedia, isSendingMedia, sendingError } =
     useCreateContactMedia();
 
   const { categories } = useFetchCategories();
 
-  const onSubmit: SubmitHandler<AddEntryFormValue> = async (data) => {
+  const onSubmit = async (data: MediaFormData) => {
     const reqData = {
       ...data,
-      year: Number(data.year),
       type: entry,
     };
+
     let success: boolean | null = false;
 
     if (isSuggestedMedia && receiverId) {
@@ -48,18 +56,17 @@ const AddEntryForm = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      <input type="hidden" value={entry} {...register("type")} />
       <div className="grid gap-4 py-4">
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="title" className="text-right">
             Titre
           </Label>
-          <Input
-            id="title"
-            {...register("title")}
-            className="col-span-3"
-            required
-          />
+          <Input id="title" {...register("title")} className="col-span-3" />
         </div>
+        {errors.title && (
+          <p className="error-message text-end">{errors.title.message}</p>
+        )}
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="synopsis" className="text-right">
             Synopsis
@@ -97,12 +104,15 @@ const AddEntryForm = ({
             className="col-span-3"
           />
         </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div></div>
+        <div className="grid grid-cols-2 gap-4 items-center">
+          <div>
+            {errors.categoryName && (
+              <p className="error-message">{errors.categoryName.message}</p>
+            )}
+          </div>
           <select
             id="category"
             {...register("categoryName")}
-            required
             className="flex gap-2 h-10 w-full cursor-default items-center rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <option value="">Catégorie</option>

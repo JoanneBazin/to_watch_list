@@ -11,6 +11,8 @@ export const updateUserName = async (name: string) => {
     const session = await requireAuth();
     const userId = session.user.id;
 
+    if (name.length > 20) throw new ApiError(400, "Le nom est trop long");
+
     return await prisma.user.update({
       where: {
         id: userId,

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { signUp } from "@/src/lib/auth-client";
 import { SignUpData, signUpSchema } from "../auth.schema";
-import { validate } from "@/src/utils/validateSchema";
 import { handleError } from "@/src/utils/errorHandlers";
+import { safeValidateSchema } from "@/src/utils/validateSchema";
 
 export const useSignUp = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -18,7 +18,7 @@ export const useSignUp = () => {
     setAuthError(null);
     setValidationErrors({});
 
-    const result = validate(signUpSchema, user);
+    const result = safeValidateSchema(signUpSchema, user);
     if (!result.success) {
       setValidationErrors({
         email: result.errors?.email?.[0],
