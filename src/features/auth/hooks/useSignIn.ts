@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { signIn } from "@/src/lib/auth-client";
 import { SignInData, signInSchema } from "../auth.schema";
-import { validate } from "@/src/utils/validateSchema";
 import { handleError } from "@/src/utils/errorHandlers";
+import { safeValidateSchema } from "@/src/utils/validateSchema";
 
 export const useSignIn = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -18,7 +18,7 @@ export const useSignIn = () => {
     setAuthError(null);
     setValidationErrors({});
 
-    const result = validate(signInSchema, user);
+    const result = safeValidateSchema(signInSchema, user);
     if (!result.success) {
       setValidationErrors({
         email: result.errors?.email?.[0],

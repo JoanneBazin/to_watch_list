@@ -1,7 +1,7 @@
 "use client";
 
-import { SubmitHandler, useForm } from "react-hook-form";
-import { EditMediaFormProps, MediaItem } from "@/src/types";
+import { useForm } from "react-hook-form";
+import { EditMediaFormProps } from "@/src/types";
 import { useUpdateMedia } from "@/src/features/media/hooks/useWatchlistMutations";
 import {
   Button,
@@ -11,27 +11,23 @@ import {
   Loader,
   Textarea,
 } from "@/src/components/ui";
+import { UpdateMediaFormData, updateMediaSchema } from "../../media.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const EditMediaForm = ({ media, onSuccess }: EditMediaFormProps) => {
-  const { handleSubmit, register, setValue } = useForm<MediaItem>();
+  const { handleSubmit, register, setValue } = useForm<UpdateMediaFormData>({
+    resolver: zodResolver(updateMediaSchema),
+  });
   const { updateWatchlistMedia, isUpdatingMedia, updateError } =
     useUpdateMedia();
 
   setValue("synopsis", media.synopsis);
   setValue("real", media.real);
   setValue("platform", media.platform);
+  setValue("year", String(media.year));
 
-  if (media.year) {
-    setValue("year", media.year);
-  }
-
-  const onSubmit: SubmitHandler<MediaItem> = async (data) => {
-    const reqData = {
-      ...data,
-      year: Number(data.year),
-      type: media.type,
-    };
-    const success = await updateWatchlistMedia(media.id, reqData);
+  const onSubmit = async (data: UpdateMediaFormData) => {
+    const success = await updateWatchlistMedia(media.id, data);
     if (success) {
       onSuccess();
     }

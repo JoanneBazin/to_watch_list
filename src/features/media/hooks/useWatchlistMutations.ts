@@ -8,26 +8,27 @@ import {
   updateMedia,
   updateWatched,
 } from "@/src/features/media/media.actions";
-import { AddEntryFormValue, MediaItem } from "@/src/types";
 import { useMediaStore } from "../media.store";
 import { useUserStore } from "../../user/user.store";
 import { useAsyncAction } from "@/src/hooks/useAsyncAction";
 import { ApiError } from "next/dist/server/api-utils";
+import { MediaFormData, UpdateMediaFormData } from "../media.schema";
+import { MediaItem } from "@/src/types";
 
 export const useCreateMedia = () => {
   const { watchlist, setWatchlist } = useMediaStore.getState();
 
-  const createNewUserMedia = async (media: AddEntryFormValue) => {
+  const createNewUserMedia = async (media: MediaFormData) => {
     const result = await createMedia(media);
     if (!result) throw new ApiError(500, "Erreur lors de la création");
 
     const newItem: MediaItem = {
       ...result,
-      addedAt: (result as MediaItem).addedAt ?? new Date().toISOString(),
-      watched: (result as MediaItem).watched ?? false,
+      addedAt: new Date(),
+      watched: false,
     };
 
-    setWatchlist([...watchlist, newItem]);
+    setWatchlist([newItem, ...watchlist]);
     return true;
   };
 
@@ -63,7 +64,7 @@ export const useCreateContactMedia = () => {
   const { contacts, setContacts } = useUserStore.getState();
 
   const createNewContactMedia = async (
-    suggestedMedia: AddEntryFormValue,
+    suggestedMedia: MediaFormData,
     receiverId: string
   ) => {
     const result = await addToContactWatchlist(suggestedMedia, receiverId);
@@ -96,7 +97,7 @@ export const useCreateContactMedia = () => {
 export const useUpdateMedia = () => {
   const { watchlist, setWatchlist } = useMediaStore.getState();
 
-  const updateItem = async (id: string, data: MediaItem) => {
+  const updateItem = async (id: string, data: UpdateMediaFormData) => {
     const result = await updateMedia(id, data);
     if (!result) throw new ApiError(500, "Erreur lors de la mise à jour");
     setWatchlist(
