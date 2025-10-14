@@ -13,8 +13,8 @@ export const SectionNavButton = <T extends string>({
       className={clsx(
         "px-4",
         section === value
-          ? "text-white font-semibold text-4xl"
-          : "text-2xl hover:text-white"
+          ? "text-accent-foreground font-semibold text-xl sm:text-2xl lg:text-4xl"
+          : "text-lg sm:text-xl lg:text-2xl hover:text-accent"
       )}
     >
       {label}

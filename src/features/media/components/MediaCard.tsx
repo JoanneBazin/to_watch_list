@@ -5,7 +5,9 @@ const MediaCard = ({ media, children }: MediaCardProps) => {
   return (
     <Modal
       trigger={
-        <div className="cursor-pointer font-bold p-2">{media.title}</div>
+        <div className="cursor-pointer text-xs sm:text-sm sm:font-bold sm:p-2">
+          {media.title}
+        </div>
       }
       title={media.title}
     >
@@ -13,7 +15,7 @@ const MediaCard = ({ media, children }: MediaCardProps) => {
         {media.categoryName}
       </Badge>
 
-      <div className="flex gap-4 justify-between">
+      <div className="flex flex-col sm:flex-row gap-4 justify-between">
         <div>
           {media.real && <p className="font-semibold">{media.real}</p>}
           {media.year && <p className="text-xs">{media.year}</p>}

@@ -51,7 +51,7 @@ export const MediaTable = ({ data }: { data: MediaItem[] }) => {
         );
       },
       meta: {
-        className: "w-4/5",
+        className: "w-4/5 sm:w-2/5",
       },
     },
     {
@@ -60,14 +60,14 @@ export const MediaTable = ({ data }: { data: MediaItem[] }) => {
       cell: ({ getValue }) =>
         format(new Date(getValue() as Date), "dd-MM-yyyy"),
       meta: {
-        className: "hidden sm:table-cell text-xs",
+        className: "hidden sm:table-cell text-xs sm:w-1/5",
       },
     },
     {
       accessorKey: "categoryName",
       header: "Catégorie",
       meta: {
-        className: "hidden sm:table-cell text-xs",
+        className: "hidden sm:table-cell text-xs sm:w-1/5",
       },
     },
 
@@ -82,7 +82,7 @@ export const MediaTable = ({ data }: { data: MediaItem[] }) => {
         />
       ),
       meta: {
-        className: "px-0 py-1 sm:p-4",
+        className: "px-0 py-1 md:p-4",
       },
     },
 
@@ -96,7 +96,7 @@ export const MediaTable = ({ data }: { data: MediaItem[] }) => {
         />
       ),
       meta: {
-        className: "hidden sm:table-cell p-4",
+        className: "hidden md:table-cell p-4",
       },
     },
 
@@ -104,7 +104,7 @@ export const MediaTable = ({ data }: { data: MediaItem[] }) => {
       id: "edit",
       cell: ({ row }) => <EditMediaDialog media={row.original} />,
       meta: {
-        className: "hidden sm:table-cell p-4",
+        className: "hidden md:table-cell p-4",
       },
     },
 
@@ -112,7 +112,7 @@ export const MediaTable = ({ data }: { data: MediaItem[] }) => {
       id: "suggest",
       cell: ({ row }) => <ShareMediaDialog media={row.original} />,
       meta: {
-        className: "hidden sm:table-cell p-4",
+        className: "hidden md:table-cell p-4",
       },
     },
 
@@ -122,7 +122,7 @@ export const MediaTable = ({ data }: { data: MediaItem[] }) => {
         <MediaOptions media={row.original} onError={setUpdateError} />
       ),
       meta: {
-        className: "sm:hidden p-0",
+        className: "md:hidden p-0",
       },
     },
   ];

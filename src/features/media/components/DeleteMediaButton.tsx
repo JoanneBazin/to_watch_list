@@ -29,8 +29,8 @@ export const DeleteMediaButton = ({
       onClick={handleDelete}
       className={clsx(
         "table-button",
-        watched && "bg-zinc-900 hover:bg-zinc-800 border-black",
-        mobile && "px-0"
+        watched && "bg-accent-dark text-black hover:bg-muted border-black",
+        mobile && "p-0 text-destructive"
       )}
     >
       {mobile ? "Supprimer de la liste" : <RxCross1 />}

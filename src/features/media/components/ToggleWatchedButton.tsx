@@ -27,8 +27,8 @@ export const ToggleWatchedButton = ({
       variant="outline"
       onClick={handleToggleWatched}
       className={clsx(
-        "table-button border-background sm:border-input",
-        watched && "bg-zinc-900 hover:bg-zinc-800 border-black"
+        "table-button border-background md:border-input",
+        watched && "bg-accent-dark text-black hover:bg-muted md:border-black"
       )}
     >
       <FaCheck />
