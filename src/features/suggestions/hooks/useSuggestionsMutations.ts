@@ -45,6 +45,7 @@ export const useCreateSuggestion = () => {
 
 export const useUpdateSuggestionStatus = () => {
   const { watchlist, setWatchlist } = useMediaStore.getState();
+  const { counts, setCounts } = useUserStore();
 
   const respondToSuggestion = async (
     mediaId: string,
@@ -57,6 +58,7 @@ export const useUpdateSuggestionStatus = () => {
       const newMedia = { ...result, ...result.media, media: undefined };
       setWatchlist([...watchlist, newMedia]);
     }
+    setCounts({ ...counts, suggestions: counts.suggestions - 1 });
   };
 
   const {

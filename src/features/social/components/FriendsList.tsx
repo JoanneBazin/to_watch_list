@@ -7,21 +7,24 @@ const FriendsList = () => {
   const { contacts, isPending, error } = useUserStore();
 
   return (
-    <section>
+    <section className="max-w-[768px] mx-auto">
       <h2 className="sr-only">Liste des contacts</h2>
       {isPending && <Loader />}
       {error && <p className="error-message text-center my-16">{error}</p>}
       {!isPending && !error && contacts.length < 1 && (
-        <p className="italic m-10">Pas de contacts</p>
+        <p className="my-10 italic text-accent text-center">Pas de contacts</p>
       )}
 
-      {contacts.length > 0 &&
-        contacts.map((contact) => (
-          <div key={contact.id} className="flex gap-4 items-center m-6">
-            <Avatar img={contact.image} />
-            <Link href={`/user/${contact.id}`}>{contact.name}</Link>
-          </div>
-        ))}
+      {contacts.length > 0 && (
+        <div className="flex flex-col gap-5 my-6">
+          {contacts.map((contact) => (
+            <div key={contact.id} className="flex gap-5 items-center">
+              <Avatar img={contact.image} />
+              <Link href={`/user/${contact.id}`}>{contact.name}</Link>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 };

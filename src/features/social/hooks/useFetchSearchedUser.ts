@@ -18,6 +18,7 @@ export const useFetchSearchedUser = (query: string) => {
     const fetchUsers = async () => {
       setIsLoading(true);
       setError(null);
+      setUsers([]);
       try {
         setUsers(await fetchUserSearch(query));
       } catch (error) {

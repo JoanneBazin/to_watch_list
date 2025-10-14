@@ -3,9 +3,9 @@ import DeleteFriend from "@/src/features/social/components/DeleteFriend";
 import { Avatar } from "@/src/components/ui/Avatar";
 import { Loader } from "@/src/components/ui/Loader";
 import { useFetchFriendProfile } from "@/src/features/social/hooks/useFetchFriendProfile";
-import FriendFilmsList from "@/src/features/social/components/FriendFilmsList";
-import FriendSeriesList from "@/src/features/social/components/FriendSeriesList";
-import { FriendContactList } from "@/src/features/social/components/FriendContactList";
+import FriendFilmsList from "@/src/features/social/components/friendProfile/FriendFilmsList";
+import FriendSeriesList from "@/src/features/social/components/friendProfile/FriendSeriesList";
+import { FriendContactList } from "@/src/features/social/components/friendProfile/FriendContactList";
 
 const FriendProfilePage = ({ params }: { params: { userId: string } }) => {
   const { friendProfile, isLoading, error } = useFetchFriendProfile(
