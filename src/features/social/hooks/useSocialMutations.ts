@@ -23,7 +23,7 @@ export const useSendFriendRequest = () => {
 };
 
 export const useUpdateRequest = () => {
-  const { contacts, setContacts } = useUserStore.getState();
+  const { contacts, setContacts, counts, setCounts } = useUserStore.getState();
 
   const updateFriendStatus = async (
     requestId: string,
@@ -34,6 +34,7 @@ export const useUpdateRequest = () => {
     if (result.status === "ACCEPTED") {
       setContacts([...contacts, { ...result.sender, suggestionsFromUser: [] }]);
     }
+    setCounts({ ...counts, friendRequests: counts.friendRequests - 1 });
   };
 
   const {

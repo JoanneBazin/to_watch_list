@@ -19,9 +19,7 @@ const SendFriendRequest = ({ receiverId }: { receiverId: string }) => {
 
   if (added) {
     return (
-      <span>
-        <FaCheckCircle className="text-2xl text-zinc-500 bg-zinc-800" />
-      </span>
+      <span className="text-sm italic text-accent">Demande en attente</span>
     );
   }
 
@@ -30,7 +28,7 @@ const SendFriendRequest = ({ receiverId }: { receiverId: string }) => {
   }
 
   return (
-    <Button onClick={handleAddContact}>
+    <Button variant={"outline"} onClick={handleAddContact}>
       {isAddingFriend ? <Loader /> : "Ajouter"}
     </Button>
   );

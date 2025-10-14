@@ -2,11 +2,8 @@ import { Button, Loader } from "@/src/components/ui";
 import { FriendRequestStatus, ValidateFriendRequestProps } from "@/src/types";
 import Link from "next/link";
 import { useState } from "react";
-import { FaCheckCircle } from "react-icons/fa";
-import { FaCheck } from "react-icons/fa";
-import { ImCross } from "react-icons/im";
-import { RxCross1 } from "react-icons/rx";
 import { useUpdateRequest } from "../../hooks/useSocialMutations";
+import { Check, X } from "lucide-react";
 
 const ValidateFriendRequest = ({
   requestId,
@@ -27,43 +24,49 @@ const ValidateFriendRequest = ({
     }
   };
 
+  if (isUpdating) {
+    return <Loader />;
+  }
+
   if (added) {
     return (
-      <div className="flex gap-2  items-center">
-        <FaCheckCircle className="text-2xl text-zinc-500 bg-zinc-800 text-center my-2" />
-        <Button variant="outline">
-          <Link href={`/user/${senderId}`}>Profil</Link>
+      <div className="flex gap-2 items-center">
+        <Button variant="ghost" className="text-xs md:text-sm px-2">
+          <Link href={`/user/${senderId}`}>Voir le profil</Link>
         </Button>
       </div>
     );
   }
 
   if (deleted) {
-    return <RxCross1 className="text-2xl" />;
+    return;
   }
 
   return (
-    <div className="flex gap-8 items-center">
-      <div className="flex gap-4">
+    <div className="flex flex-col">
+      <div className="flex gap-2 items-center justify-end">
         <Button
-          variant="outline"
+          aria-label="Accepter la demande d'amis"
+          variant="ghost"
+          className="px-2"
           onClick={() => {
             handleRespondToFriendRequest("ACCEPTED");
           }}
         >
-          <FaCheck />
+          <Check />
         </Button>
         <Button
-          variant="outline"
+          aria-label="Refuser la demande d'amis"
+          variant="ghost"
+          className="px-2 text-destructive"
           onClick={() => {
             handleRespondToFriendRequest("REFUSED");
           }}
         >
-          <ImCross />
+          <X />
         </Button>
       </div>
-      {isUpdating && <Loader />}
-      {updateError && <p className="error-message">{updateError}</p>}
+      {updateError && <p className="error-message italic">{updateError}</p>}
     </div>
   );
 };

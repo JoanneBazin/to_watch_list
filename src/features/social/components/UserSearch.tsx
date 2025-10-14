@@ -9,28 +9,27 @@ const UserSearch = () => {
   const { users, isLoading, error } = useFetchSearchedUser(query);
 
   return (
-    <section className="m-4">
+    <section className="max-w-[768px] mx-auto">
       <h2 className="sr-only">Rechercher un contact</h2>
-      <div className="m-6">
+      <div className="mt-5 mb-3 sm:my-5">
         <Input
-          className="w-2/3"
+          className="w-3/4 sm:w-2/3"
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Rechercher un contact"
         />
       </div>
+      {isLoading && <Loader />}
+      {error && <p className="ml-4 italic text-accent">{error}</p>}
 
-      <div className="py-6">
-        {isLoading && <Loader />}
-        {error && <p className="ml-12 italic text-gray-500">{error}</p>}
-        <div className=" grid grid-cols-2 gap-4 m-6">
-          {!isLoading &&
-            !error &&
-            users.length > 0 &&
-            users.map((user) => <UserCard key={user.id} user={user} />)}
+      {!error && users.length > 0 && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-5 my-4">
+          {users.map((user) => (
+            <UserCard key={user.id} user={user} />
+          ))}
         </div>
-      </div>
+      )}
     </section>
   );
 };

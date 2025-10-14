@@ -5,6 +5,7 @@ import {
   CommunautyProvider,
   useCommunauty,
 } from "@/src/features/social/CommunautyContext";
+import { useUserStore } from "@/src/features/user/user.store";
 
 const CommunautyLayoutContent = ({
   children,
@@ -12,22 +13,30 @@ const CommunautyLayoutContent = ({
   children: React.ReactNode;
 }) => {
   const { section, setSection } = useCommunauty();
+  const { friendRequests } = useUserStore((s) => s.counts);
 
   return (
     <div>
-      <nav className="flex gap-6 justify-center p-10">
+      <nav className="flex sm:gap-6 items-center justify-center p-6 sm:p-10">
         <SectionNavButton
           label="Contacts"
           value="contacts"
           section={section}
           setSection={setSection}
         />
-        <SectionNavButton
-          label="Demandes en attente"
-          value="requests"
-          section={section}
-          setSection={setSection}
-        />
+        <div className="relative">
+          <SectionNavButton
+            label="Demandes en attente"
+            value="requests"
+            section={section}
+            setSection={setSection}
+          />
+          {friendRequests > 0 && (
+            <span className="absolute right-1 -top-1 text-xs lg:text-sm text-accent-foreground">
+              {friendRequests}
+            </span>
+          )}
+        </div>
         <SectionNavButton
           label="Parcourir"
           value="search"

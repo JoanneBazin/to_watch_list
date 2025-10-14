@@ -20,8 +20,8 @@ const UserCard = ({ user }: { user: SearchContact }) => {
   switch (user.friendshipStatus) {
     case "friends":
       actionSection = (
-        <Button variant="outline">
-          <Link href={`/user/${user.id}`}>Profil</Link>
+        <Button variant="ghost" className="text-xs md:text-sm">
+          <Link href={`/user/${user.id}`}>Voir le profil</Link>
         </Button>
       );
       break;
@@ -32,7 +32,7 @@ const UserCard = ({ user }: { user: SearchContact }) => {
       break;
     case "pending_received":
       actionSection = (
-        <span className="text-sm italic">Demande en attente</span>
+        <span className="text-sm italic text-accent">Demande en attente</span>
       );
       break;
     case "none":
@@ -41,12 +41,12 @@ const UserCard = ({ user }: { user: SearchContact }) => {
   }
 
   return (
-    <Card className="flex flex-col p-2 mx-auto items-center justify-center">
+    <Card className="flex flex-col items-center border-accent-dark">
       <CardHeader>
         <CardTitle className="text-center">{user.name}</CardTitle>
       </CardHeader>
       <CardContent>
-        <Avatar img={user.image} />
+        <Avatar img={user.image} size="large" />
       </CardContent>
       <CardFooter className="flex justify-center">{actionSection}</CardFooter>
     </Card>

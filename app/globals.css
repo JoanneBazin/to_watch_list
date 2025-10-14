@@ -44,7 +44,8 @@
 
 @layer utilities {
   .error-message {
-    @apply text-destructive text-sm;
+    @apply text-destructive text-xs;
+    @apply md:text-sm;
   }
 
   .table-button {
