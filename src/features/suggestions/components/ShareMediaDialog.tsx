@@ -9,32 +9,44 @@ import {
   Button,
   Modal,
 } from "@/src/components/ui";
-import { MediaItem } from "@/src/types";
+import { MediaDialogProps } from "@/src/types";
 import { useUserStore } from "../../user/user.store";
 import { IoShareSocial } from "react-icons/io5";
 import SendSuggestion from "./SendSuggestion";
 import { useState } from "react";
+import clsx from "clsx";
 
-const ShareMedia = ({ media }: { media: MediaItem }) => {
+const ShareMediaDialog = ({
+  media,
+  mobile = false,
+  open,
+  onOpenChange,
+}: MediaDialogProps) => {
   const contacts = useUserStore((s) => s.contacts);
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+
+  const isOpen = open !== undefined ? open : internalOpen;
+  const setIsOpen = onOpenChange ?? setInternalOpen;
 
   return (
     <Modal
       trigger={
-        <Button
-          variant="outline"
-          className={
-            media.watched ? "bg-zinc-900 hover:bg-zinc-800 border-black" : ""
-          }
-        >
-          <IoShareSocial />
-        </Button>
+        mobile ? null : (
+          <Button
+            variant="outline"
+            className={clsx(
+              "table-button",
+              media.watched && "bg-zinc-900 hover:bg-zinc-800 border-black"
+            )}
+          >
+            <IoShareSocial />
+          </Button>
+        )
       }
       title={`Envoyer ${media.title} sur la
             watch list de :`}
-      open={open}
-      setOpen={setOpen}
+      open={isOpen}
+      setOpen={setIsOpen}
     >
       {contacts.length > 0 ? (
         contacts.map((contact) => (
@@ -66,4 +78,4 @@ const ShareMedia = ({ media }: { media: MediaItem }) => {
   );
 };
 
-export default ShareMedia;
+export default ShareMediaDialog;

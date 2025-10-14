@@ -1,0 +1,37 @@
+import { Button } from "@/src/components/ui";
+import clsx from "clsx";
+import { FaCheck } from "react-icons/fa";
+import { useToggleWatched } from "../hooks/useWatchlistMutations";
+import { useEffect } from "react";
+import { MediaOptionButtonProps } from "@/src/types";
+
+export const ToggleWatchedButton = ({
+  mediaId,
+  watched,
+  setError,
+}: MediaOptionButtonProps) => {
+  const { toggleWatched, toggleError } = useToggleWatched();
+
+  useEffect(() => {
+    if (toggleError) {
+      setError(toggleError);
+    }
+  }, [toggleError, setError]);
+
+  const handleToggleWatched = async () => {
+    setError(null);
+    await toggleWatched(mediaId);
+  };
+  return (
+    <Button
+      variant="outline"
+      onClick={handleToggleWatched}
+      className={clsx(
+        "table-button border-background sm:border-input",
+        watched && "bg-zinc-900 hover:bg-zinc-800 border-black"
+      )}
+    >
+      <FaCheck />
+    </Button>
+  );
+};
