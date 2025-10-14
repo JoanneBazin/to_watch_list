@@ -6,21 +6,10 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
 import { format } from "date-fns";
-import { RxCross1 } from "react-icons/rx";
-import { FaCheck } from "react-icons/fa6";
-import { BiSolidEditAlt } from "react-icons/bi";
-
 import { MediaItem } from "@/src/types";
-import {
-  useDeleteFromWatchlist,
-  useToggleWatched,
-} from "@/src/features/media/hooks/useWatchlistMutations";
 import { useState } from "react";
 import {
-  Button,
-  Modal,
   Table,
   TableBody,
   TableCell,
@@ -28,26 +17,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/src/components/ui";
-import ShareMedia from "../../suggestions/components/ShareMedia";
 import { MediaCard } from "./MediaCard";
 import { MediaCardSuggestions } from "./MediaCardSuggestions";
-import EditMediaForm from "./form/EditMediaForm";
+import { MediaOptions } from "./MediaOptions";
+import ShareMediaDialog from "../../suggestions/components/ShareMediaDialog";
+import { ToggleWatchedButton } from "./ToggleWatchedButton";
+import { DeleteMediaButton } from "./DeleteMediaButton";
+import { EditMediaDialog } from "./EditMediaDialog";
+
+type MediaColumnMeta = {
+  className?: string;
+};
+
+type MediaColumnDef<TData extends MediaItem> = ColumnDef<TData, any> & {
+  meta?: MediaColumnMeta;
+};
 
 export const MediaTable = ({ data }: { data: MediaItem[] }) => {
-  const { deleteMedia, isDeletingMedia, deleteError } =
-    useDeleteFromWatchlist();
-  const { toggleWatched, isTogglingWatched, toggleError } = useToggleWatched();
-  const [openId, setOpenId] = useState<string | null>(null);
+  const [updateError, setUpdateError] = useState<string | null>(null);
 
-  const handleDelete = async (id: string) => {
-    await deleteMedia(id);
-  };
-
-  const handleToggleWatched = async (id: string) => {
-    await toggleWatched(id);
-  };
-
-  const columns: ColumnDef<MediaItem>[] = [
+  const columns: MediaColumnDef<MediaItem>[] = [
     {
       accessorKey: "title",
       header: "Titre",
@@ -61,84 +50,80 @@ export const MediaTable = ({ data }: { data: MediaItem[] }) => {
           </MediaCard>
         );
       },
+      meta: {
+        className: "w-4/5",
+      },
     },
     {
       accessorKey: "addedAt",
       header: "Ajouté le",
       cell: ({ getValue }) =>
         format(new Date(getValue() as Date), "dd-MM-yyyy"),
+      meta: {
+        className: "hidden sm:table-cell text-xs",
+      },
     },
     {
       accessorKey: "categoryName",
       header: "Catégorie",
+      meta: {
+        className: "hidden sm:table-cell text-xs",
+      },
     },
 
     {
       accessorKey: "watched",
       header: "",
       cell: ({ row }) => (
-        <Button
-          variant="outline"
-          onClick={() => handleToggleWatched(row.original.id)}
-          className={
-            row.original.watched
-              ? "bg-zinc-900 hover:bg-zinc-800 border-black"
-              : ""
-          }
-        >
-          <FaCheck />
-        </Button>
+        <ToggleWatchedButton
+          mediaId={row.original.id}
+          watched={row.original.watched}
+          setError={setUpdateError}
+        />
       ),
+      meta: {
+        className: "px-0 py-1 sm:p-4",
+      },
     },
 
     {
       id: "delete",
       cell: ({ row }) => (
-        <Button
-          variant="outline"
-          onClick={() => handleDelete(row.original.id)}
-          className={
-            row.original.watched
-              ? "bg-zinc-900 hover:bg-zinc-800 border-black"
-              : ""
-          }
-        >
-          <RxCross1 />
-        </Button>
+        <DeleteMediaButton
+          mediaId={row.original.id}
+          watched={row.original.watched}
+          setError={setUpdateError}
+        />
       ),
+      meta: {
+        className: "hidden sm:table-cell p-4",
+      },
     },
 
     {
       id: "edit",
-      cell: ({ row }) => (
-        <Modal
-          trigger={
-            <Button
-              variant="outline"
-              className={
-                row.original.watched
-                  ? "bg-zinc-900 hover:bg-zinc-800 border-black"
-                  : ""
-              }
-            >
-              <BiSolidEditAlt />
-            </Button>
-          }
-          title={`Modifier ${row.original.title}`}
-          open={openId === row.original.id}
-          setOpen={(isOpen) => setOpenId(isOpen ? row.original.id : null)}
-        >
-          <EditMediaForm
-            media={row.original}
-            onSuccess={() => setOpenId(null)}
-          />
-        </Modal>
-      ),
+      cell: ({ row }) => <EditMediaDialog media={row.original} />,
+      meta: {
+        className: "hidden sm:table-cell p-4",
+      },
     },
 
     {
       id: "suggest",
-      cell: ({ row }) => <ShareMedia media={row.original} />,
+      cell: ({ row }) => <ShareMediaDialog media={row.original} />,
+      meta: {
+        className: "hidden sm:table-cell p-4",
+      },
+    },
+
+    {
+      id: "mobileOptions",
+      cell: ({ row }) => (
+        <MediaOptions media={row.original} onError={setUpdateError} />
+      ),
+      meta: {
+        className: "sm:hidden p-0",
+      },
     },
   ];
 
@@ -151,17 +136,22 @@ export const MediaTable = ({ data }: { data: MediaItem[] }) => {
   return (
     <>
       <div className="flex justify-center">
-        {toggleError && <p className="error-message pb-4">{toggleError}</p>}
-        {deleteError && <p className="error-message pb-4">{deleteError}</p>}
+        {updateError && <p className="error-message">{updateError}</p>}
       </div>
-      <div className="border border-r-radius mt-10">
+      <div className="border border-r-radius border-accent-dark mt-4 sm:mt-8">
         <Table>
-          <TableHeader>
+          <TableHeader className="hidden sm:table-header-group">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      key={header.id}
+                      className={
+                        (header.column.columnDef as MediaColumnDef<MediaItem>)
+                          .meta?.className
+                      }
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -181,12 +171,18 @@ export const MediaTable = ({ data }: { data: MediaItem[] }) => {
                   key={row.id}
                   className={
                     row.original.watched
-                      ? "bg-zinc-900 text-zinc-700 italic"
+                      ? "bg-accent-dark text-accent italic"
                       : "hover:bg-muted/50"
                   }
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      className={
+                        (cell.column.columnDef as MediaColumnDef<MediaItem>)
+                          .meta?.className
+                      }
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

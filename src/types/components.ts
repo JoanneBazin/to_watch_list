@@ -1,5 +1,5 @@
 export interface ModalProps {
-  trigger: React.ReactNode;
+  trigger: React.ReactNode | null;
   title: string;
   children: React.ReactNode;
   open?: boolean;

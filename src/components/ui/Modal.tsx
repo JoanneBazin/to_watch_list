@@ -16,10 +16,10 @@ export const Modal = ({
   setOpen,
 }: ModalProps) => (
   <Dialog open={open} onOpenChange={setOpen}>
-    <DialogTrigger asChild>{trigger}</DialogTrigger>
-    <DialogContent>
+    {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
+    <DialogContent className="rounded-md">
       <DialogHeader>
-        <DialogTitle>{title}</DialogTitle>
+        <DialogTitle className="text-left">{title}</DialogTitle>
         <DialogDescription className="sr-only">{title}</DialogDescription>
       </DialogHeader>
       {children}
