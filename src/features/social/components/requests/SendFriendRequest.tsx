@@ -10,9 +10,9 @@ const SendFriendRequest = ({ receiverId }: { receiverId: string }) => {
   const { addFriend, isAddingFriend, addingError } = useSendFriendRequest();
 
   const handleAddContact = async () => {
-    const success = await addFriend(receiverId);
+    const result = await addFriend(receiverId);
 
-    if (success) {
+    if (result.success) {
       setAdded(true);
     }
   };

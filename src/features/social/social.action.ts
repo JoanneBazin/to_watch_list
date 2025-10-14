@@ -5,7 +5,6 @@ import { FriendRequestStatus } from "@/src/types";
 import { ApiError } from "@/src/utils/ApiError";
 import { handleActionError } from "@/src/utils/errorHandlers";
 import { requireAuth } from "@/src/utils/requireAuth";
-import { NextResponse } from "next/server";
 
 export const addFriendRequest = async (receiverId: string) => {
   try {

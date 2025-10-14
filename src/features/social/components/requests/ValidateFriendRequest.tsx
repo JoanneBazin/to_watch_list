@@ -17,8 +17,8 @@ const ValidateFriendRequest = ({
   const { updateRequest, isUpdating, updateError } = useUpdateRequest();
 
   const handleRespondToFriendRequest = async (status: FriendRequestStatus) => {
-    const success = await updateRequest(requestId, status);
-    if (success) {
+    const result = await updateRequest(requestId, status);
+    if (result.success) {
       if (status === "ACCEPTED") {
         setAdded(true);
       } else {

@@ -43,8 +43,8 @@ const EditUserAvatar = ({ userAvatar }: { userAvatar?: string | null }) => {
     const formData = new FormData();
     formData.append("avatar", image);
 
-    const success = await updateUserImage(formData);
-    if (success) {
+    const result = await updateUserImage(formData);
+    if (result.success) {
       setPreview(null);
       setImage(null);
       if (fileInput.current) {

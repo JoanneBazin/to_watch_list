@@ -27,8 +27,8 @@ const EditMediaForm = ({ media, onSuccess }: EditMediaFormProps) => {
   setValue("year", String(media.year));
 
   const onSubmit = async (data: UpdateMediaFormData) => {
-    const success = await updateWatchlistMedia(media.id, data);
-    if (success) {
+    const result = await updateWatchlistMedia(media.id, data);
+    if (result.success) {
       onSuccess();
     }
   };
@@ -37,7 +37,7 @@ const EditMediaForm = ({ media, onSuccess }: EditMediaFormProps) => {
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="grid gap-4 py-4">
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="synopsis" className="text-right">
+          <Label htmlFor="synopsis" className="input-label">
             Synopsis
           </Label>
           <Textarea
@@ -47,7 +47,7 @@ const EditMediaForm = ({ media, onSuccess }: EditMediaFormProps) => {
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="year" className="text-right">
+          <Label htmlFor="year" className="input-label">
             Année de sortie
           </Label>
           <Input
@@ -58,13 +58,13 @@ const EditMediaForm = ({ media, onSuccess }: EditMediaFormProps) => {
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="real" className="text-right">
+          <Label htmlFor="real" className="input-label">
             Réalisateur
           </Label>
           <Input id="real" {...register("real")} className="col-span-3" />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="platform" className="text-right">
+          <Label htmlFor="platform" className="input-label">
             Plateforme streaming
           </Label>
           <Input
@@ -75,7 +75,7 @@ const EditMediaForm = ({ media, onSuccess }: EditMediaFormProps) => {
         </div>
       </div>
       <DialogFooter className="relative">
-        <Button type="submit">
+        <Button type="submit" className="mt-2">
           {isUpdatingMedia ? <Loader /> : "Modifier"}
         </Button>
         {updateError && (

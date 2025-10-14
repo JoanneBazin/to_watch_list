@@ -12,8 +12,8 @@ const SendSuggestion = ({ contactId, mediaId }: SendSuggestionProps) => {
   const { shareMedia, isSharing, shareError } = useCreateSuggestion();
 
   const handleSendSuggestion = async () => {
-    const success = await shareMedia(mediaId, contactId, senderComment);
-    if (success) {
+    const result = await shareMedia(mediaId, contactId, senderComment);
+    if (result.success) {
       setSentSuggestion(true);
     }
   };

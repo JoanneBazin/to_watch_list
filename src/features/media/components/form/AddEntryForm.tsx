@@ -33,7 +33,11 @@ const AddEntryForm = ({
   const { sendingMedia, isSendingMedia, sendingError } =
     useCreateContactMedia();
 
-  const { categories } = useFetchCategories();
+  const {
+    categories,
+    isLoading: categoryLoading,
+    error: categoryError,
+  } = useFetchCategories();
 
   const onSubmit = async (data: MediaFormData) => {
     const reqData = {
@@ -41,15 +45,15 @@ const AddEntryForm = ({
       type: entry,
     };
 
-    let success: boolean | null = false;
+    let result = { success: false };
 
     if (isSuggestedMedia && receiverId) {
-      success = (await sendingMedia(reqData, receiverId)) ?? null;
+      result = await sendingMedia(reqData, receiverId);
     } else {
-      success = (await createNewMedia(reqData)) ?? null;
+      result = await createNewMedia(reqData);
     }
 
-    if (success) {
+    if (result.success) {
       onSuccess();
     }
   };
@@ -59,7 +63,7 @@ const AddEntryForm = ({
       <input type="hidden" value={entry} {...register("type")} />
       <div className="grid gap-4 py-4">
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="title" className="text-right">
+          <Label htmlFor="title" className="input-label">
             Titre
           </Label>
           <Input id="title" {...register("title")} className="col-span-3" />
@@ -68,7 +72,7 @@ const AddEntryForm = ({
           <p className="error-message text-end">{errors.title.message}</p>
         )}
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="synopsis" className="text-right">
+          <Label htmlFor="synopsis" className="input-label">
             Synopsis
           </Label>
           <Textarea
@@ -78,7 +82,7 @@ const AddEntryForm = ({
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="year" className="text-right">
+          <Label htmlFor="year" className="input-label">
             Année de sortie
           </Label>
           <Input
@@ -89,13 +93,13 @@ const AddEntryForm = ({
           />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="real" className="text-right">
+          <Label htmlFor="real" className="input-label">
             Réalisateur
           </Label>
           <Input id="real" {...register("real")} className="col-span-3" />
         </div>
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="platform" className="text-right">
+          <Label htmlFor="platform" className="input-label">
             Plateforme streaming
           </Label>
           <Input
@@ -113,10 +117,16 @@ const AddEntryForm = ({
           <select
             id="category"
             {...register("categoryName")}
-            className="flex gap-2 h-10 w-full cursor-default items-center rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="flex gap-2 h-10 cursor-default items-center rounded-lg border border-input bg-background px-1 md:px-3 py-2 text-xs md:text-sm overflow-y-scroll ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <option value="">Catégorie</option>
-            {categories &&
+            {categoryError && (
+              <option disabled className="italic">
+                {categoryError}
+              </option>
+            )}
+            {!categoryLoading &&
+              !categoryError &&
               categories.map((item) => (
                 <option key={item.id} value={item.name}>
                   {item.name}
@@ -127,7 +137,7 @@ const AddEntryForm = ({
 
         {isSuggestedMedia && (
           <div>
-            <Label htmlFor="senderComment" className="text-right">
+            <Label htmlFor="senderComment" className="input-label">
               Laissez un commentaire ?
             </Label>
             <Textarea
@@ -139,7 +149,7 @@ const AddEntryForm = ({
         )}
       </div>
       <DialogFooter className="relative">
-        <Button type="submit">
+        <Button type="submit" className="mt-2">
           {isCreatingMedia || isSendingMedia ? <Loader /> : "Ajouter"}
         </Button>
         {createError && (
