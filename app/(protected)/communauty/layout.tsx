@@ -1,6 +1,6 @@
 "use client";
 
-import { SectionNavButton } from "@/src/components/ui";
+import { SectionNavButton } from "@/src/components/layout/SectionNavButton";
 import {
   CommunautyProvider,
   useCommunauty,

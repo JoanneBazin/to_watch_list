@@ -29,7 +29,11 @@
 
   body {
     @apply bg-background text-foreground;
-    width: 100vw;
+  }
+
+  main {
+    margin: 0 auto;
+    max-width: 1440px;
   }
 
   section {
@@ -45,5 +49,10 @@
 
   .table-button {
     @apply text-xs px-3;
+  }
+
+  .input-label {
+    @apply text-xs text-right;
+    @apply sm:text-sm;
   }
 }

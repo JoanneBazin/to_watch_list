@@ -24,7 +24,8 @@ export const EditMediaDialog = ({
             variant="outline"
             className={clsx(
               "table-button",
-              media.watched && "bg-zinc-900 hover:bg-zinc-800 border-black"
+              media.watched &&
+                "bg-accent-dark text-black hover:bg-muted border-black"
             )}
           >
             <BiSolidEditAlt />

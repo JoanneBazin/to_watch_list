@@ -30,7 +30,8 @@ export const MediaOptions = ({ media, onError }: MediaOptionsProps) => {
             variant="ghost"
             className={clsx(
               "table-button p-0",
-              media.watched && "bg-zinc-900 hover:bg-zinc-800 border-black"
+              media.watched &&
+                "bg-accent-dark text-black hover:bg-muted border-black"
             )}
           >
             <CiMenuKebab size={18} />
@@ -40,15 +41,18 @@ export const MediaOptions = ({ media, onError }: MediaOptionsProps) => {
         <DropdownMenuContent align="end">
           <DropdownMenuItem
             onClick={() => handleOpenDialog("share")}
-            className="pt-2"
+            className="pt-2 text-xs"
           >
             Partager {media.title}
           </DropdownMenuItem>
 
-          <DropdownMenuItem onClick={() => handleOpenDialog("edit")}>
+          <DropdownMenuItem
+            onClick={() => handleOpenDialog("edit")}
+            className="text-xs"
+          >
             Modifier
           </DropdownMenuItem>
-          <DropdownMenuItem className="px-0">
+          <DropdownMenuItem className="p-0">
             <DeleteMediaButton
               mediaId={media.id}
               watched={media.watched}

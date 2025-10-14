@@ -30,13 +30,13 @@ const CategoryFilter = () => {
   return (
     <section>
       <h2 className="sr-only">Section tri par catégorie</h2>
-      <div className="flex flex-col gap-8 my-10 mx-auto w-[80vw]">
+      <div className="flex flex-col gap-4 my-4 lg:my-10">
         <Select
           onValueChange={(value) =>
             setSelectedCategory(value === "ALL" ? null : value)
           }
         >
-          <SelectTrigger>
+          <SelectTrigger className="sm:w-1/2 md:w-1/3 lg:w-1/4">
             <SelectValue placeholder="Filtrer par catégorie" />
           </SelectTrigger>
           <SelectContent>

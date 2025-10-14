@@ -28,5 +28,4 @@ export * from "./toast";
 export * from "./toaster";
 export * from "./use-toast";
 export * from "./Modal";
-export * from "./SectionNavButton";
 export * from "./dropdown-menu";

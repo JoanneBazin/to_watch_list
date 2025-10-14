@@ -19,7 +19,7 @@ export const Modal = ({
     {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
     <DialogContent className="rounded-md">
       <DialogHeader>
-        <DialogTitle className="text-left">{title}</DialogTitle>
+        <DialogTitle className="text-left text-base w-3/4">{title}</DialogTitle>
         <DialogDescription className="sr-only">{title}</DialogDescription>
       </DialogHeader>
       {children}

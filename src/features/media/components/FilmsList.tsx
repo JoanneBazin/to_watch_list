@@ -17,7 +17,11 @@ export const FilmsList = () => {
       <h2 className="sr-only">Section films</h2>
 
       <Modal
-        trigger={<Button variant="outline">Ajouter un film</Button>}
+        trigger={
+          <Button variant="outline" className="text-xs sm:text-sm">
+            Ajouter un film
+          </Button>
+        }
         title="Nouveau film"
         open={open}
         setOpen={setOpen}

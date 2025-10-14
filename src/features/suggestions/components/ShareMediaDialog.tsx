@@ -36,7 +36,8 @@ const ShareMediaDialog = ({
             variant="outline"
             className={clsx(
               "table-button",
-              media.watched && "bg-zinc-900 hover:bg-zinc-800 border-black"
+              media.watched &&
+                "bg-accent-dark text-black hover:bg-muted border-black"
             )}
           >
             <IoShareSocial />
@@ -50,17 +51,16 @@ const ShareMediaDialog = ({
     >
       {contacts.length > 0 ? (
         contacts.map((contact) => (
-          <div
-            key={contact.id}
-            className="flex gap-4 items-center justify-start px-4"
-          >
-            <Avatar img={contact.image} size="small" />
+          <div key={contact.id} className="px-4">
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value={contact.id}>
                 <AccordionTrigger>
-                  <span className="mr-6">{contact.name}</span>
+                  <div className="flex gap-4">
+                    <Avatar img={contact.image} size="small" />
+                    <span className="mr-6">{contact.name}</span>
+                  </div>
                 </AccordionTrigger>
-                <AccordionContent>
+                <AccordionContent className="pb-0">
                   {contact.suggestionsFromUser.find((id) => id === media.id) ? (
                     <p>Suggestion envoyée !</p>
                   ) : (
