@@ -22,8 +22,8 @@ const DeleteFriend = ({ friendId }: { friendId: string }) => {
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.preventDefault();
-    const success = await deleteContact(friendId);
-    if (success) {
+    const result = await deleteContact(friendId);
+    if (result.success) {
       router.push("/dashboard");
     }
   };

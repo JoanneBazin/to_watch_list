@@ -27,7 +27,6 @@ export const useUpdateUser = () => {
       ...user,
       image: result.image ? result.image + cacheBuster : null,
     });
-    return true;
   };
 
   const {

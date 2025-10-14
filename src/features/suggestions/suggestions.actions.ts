@@ -5,7 +5,6 @@ import { SuggestionsStatus } from "@/src/types";
 import { ApiError } from "@/src/utils/ApiError";
 import { handleActionError } from "@/src/utils/errorHandlers";
 import { requireAuth } from "@/src/utils/requireAuth";
-import { date } from "better-auth";
 
 export const shareMediaSuggestion = async (
   mediaId: string,
@@ -75,7 +74,7 @@ export const updateReceivedSuggestions = async (
 
     return prisma.usersWatchList.update({
       where: { userId_mediaId: { userId, mediaId } },
-      data: { addedAt: new Date(Date.now()) },
+      data: { addedAt: new Date() },
       select: {
         media: true,
         addedAt: true,

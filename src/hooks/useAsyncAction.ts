@@ -14,13 +14,14 @@ export const useAsyncAction = <TArgs extends any[], TResult>(
     setError(null);
 
     try {
-      const result = await action(...args);
-      return result;
+      await action(...args);
+      return { success: true as const };
     } catch (error) {
       handleError(error, setError);
-      return null;
+      return { success: false as const };
     } finally {
       setIsLoading(false);
+      console.log(error);
     }
   };
 

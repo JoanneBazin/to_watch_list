@@ -19,8 +19,8 @@ const SendResponseComment = ({ suggestionId }: { suggestionId: string }) => {
     useUpdateSuggestionResponse();
 
   const handleSendResponse = async (e: React.MouseEvent) => {
-    const success = await sendComment(suggestionId, receiverComment);
-    if (success) {
+    const result = await sendComment(suggestionId, receiverComment);
+    if (result.success) {
       setCommentSent(true);
     }
   };
@@ -35,7 +35,7 @@ const SendResponseComment = ({ suggestionId }: { suggestionId: string }) => {
         <AccordionTrigger>
           <span className="mr-6 text-xs">Renvoyer un commentaire</span>
         </AccordionTrigger>
-        <AccordionContent>
+        <AccordionContent className="pb-0">
           <Textarea
             onChange={(e) => setReceiverComment(e.target.value)}
             name="comment"
@@ -46,7 +46,7 @@ const SendResponseComment = ({ suggestionId }: { suggestionId: string }) => {
           )}
 
           <Button
-            className="mt-2"
+            className="mt-3"
             onClick={handleSendResponse}
             variant="outline"
           >

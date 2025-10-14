@@ -29,7 +29,6 @@ export const useCreateMedia = () => {
     };
 
     setWatchlist([newItem, ...watchlist]);
-    return true;
   };
 
   const {
@@ -48,7 +47,6 @@ export const useAddToWatchlist = () => {
     const result = await addToWatchlist(mediaId);
     if (!result) throw new ApiError(500, "Erreur lors de l'ajout");
     setWatchlist([...watchlist, { ...result.media, ...result }]);
-    return true;
   };
 
   const {
@@ -82,7 +80,6 @@ export const useCreateContactMedia = () => {
           : c
       )
     );
-    return true;
   };
 
   const {
@@ -105,7 +102,6 @@ export const useUpdateMedia = () => {
         media.id === result.id ? { ...media, ...result } : media
       )
     );
-    return true;
   };
 
   const {

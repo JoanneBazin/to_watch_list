@@ -13,8 +13,8 @@ const SuggestionResponse = ({ mediaId }: { mediaId: string }) => {
     useUpdateSuggestionStatus();
 
   const handleUpdateSuggestion = async (status: SuggestionsStatus) => {
-    const success = await updateSuggestion(mediaId, status);
-    if (success) {
+    const result = await updateSuggestion(mediaId, status);
+    if (result.success) {
       if (status === "ACCEPTED") {
         setAcceptedSuggestion(true);
       } else {

@@ -32,7 +32,6 @@ export const useCreateSuggestion = () => {
           : contact
       )
     );
-    return true;
   };
 
   const {
@@ -58,7 +57,6 @@ export const useUpdateSuggestionStatus = () => {
       const newMedia = { ...result, ...result.media, media: undefined };
       setWatchlist([...watchlist, newMedia]);
     }
-    return true;
   };
 
   const {
@@ -91,7 +89,6 @@ export const useUpdateSuggestionResponse = () => {
           : media
       )
     );
-    return true;
   };
 
   const {
