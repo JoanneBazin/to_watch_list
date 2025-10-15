@@ -16,7 +16,7 @@ const MediaCard = ({ media, children }: MediaCardProps) => {
       </Badge>
 
       <div className="flex flex-col sm:flex-row gap-4 justify-between">
-        <div>
+        <div className="flex flex-col gap-1">
           {media.real && <p className="font-semibold">{media.real}</p>}
           {media.year && <p className="text-xs">{media.year}</p>}
           {media.synopsis && <p className="text-gray-500">{media.synopsis}</p>}

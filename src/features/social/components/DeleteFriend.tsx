@@ -15,6 +15,7 @@ import {
   Loader,
 } from "@/src/components/ui";
 import { useDeleteFriend } from "../hooks/useSocialMutations";
+import { Trash } from "lucide-react";
 
 const DeleteFriend = ({ friendId }: { friendId: string }) => {
   const router = useRouter();
@@ -31,8 +32,12 @@ const DeleteFriend = ({ friendId }: { friendId: string }) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button className="absolute bg-zinc-900 text-zinc-600 m-4">
-          Supprimer ce contact
+        <Button
+          variant="outline"
+          className=" m-4"
+          aria-label="Supprimer ce contact"
+        >
+          <Trash />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

@@ -25,10 +25,10 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
   if (!session?.user) return null;
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <PrivateHeader />
       {children}
-    </>
+    </div>
   );
 };
 

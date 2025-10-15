@@ -1,4 +1,4 @@
-import { MediaItem } from "./media";
+import { EntryType, MediaItem } from "./media";
 
 export interface Contact {
   id: string;
@@ -29,5 +29,9 @@ export interface FriendProfile {
   name: string;
   image: string | null;
   watchlist: MediaItem[];
-  contacts: Contact[];
+}
+
+export interface FriendWatchlistProps {
+  user: FriendProfile;
+  entry: EntryType;
 }

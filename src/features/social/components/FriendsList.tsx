@@ -12,7 +12,7 @@ const FriendsList = () => {
       {isPending && <Loader />}
       {error && <p className="error-message text-center my-16">{error}</p>}
       {!isPending && !error && contacts.length < 1 && (
-        <p className="my-10 italic text-accent text-center">Pas de contacts</p>
+        <p className="my-10 info-message">Pas de contacts</p>
       )}
 
       {contacts.length > 0 && (
