@@ -14,9 +14,7 @@ const FriendRequests = () => {
       {isLoading && <Loader />}
       {error && <p className="error-message text-center my-16">{error}</p>}
       {!isLoading && !error && receivedRequests.length < 1 && (
-        <p className="my-10 italic text-accent text-center">
-          Pas de demandes en attente
-        </p>
+        <p className="my-10 info-message">Pas de demandes en attente</p>
       )}
 
       {receivedRequests.length > 0 && (

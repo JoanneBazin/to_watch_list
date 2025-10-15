@@ -15,7 +15,7 @@ const SuggestionsLayoutContent = ({
 
   return (
     <div>
-      <nav className="flex gap-6 justify-center p-10">
+      <nav className="flex sm:gap-6 items-center justify-center p-6 sm:p-10">
         <SectionNavButton
           label="Suggestions"
           value="suggestions"

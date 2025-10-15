@@ -48,6 +48,10 @@
     @apply md:text-sm;
   }
 
+  .info-message {
+    @apply italic text-accent text-center;
+  }
+
   .table-button {
     @apply text-xs px-3;
   }
