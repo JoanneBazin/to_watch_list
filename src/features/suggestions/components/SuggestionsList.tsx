@@ -13,13 +13,11 @@ const SuggestionsList = () => {
       {isLoading && <Loader />}
       {error && <p className="error-message text-center my-16">{error}</p>}
       {!isLoading && !error && suggestions.length < 1 && (
-        <p className="my-16 italic text-gray-500 text-center">
-          Pas de suggestions en attente
-        </p>
+        <p className="my-10 info-message">Pas de suggestions en attente</p>
       )}
 
       {suggestions.length > 0 && (
-        <div className="grid grid-cols-2 gap-4 mx-4 my-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-4">
           {suggestions.map((suggestion) => (
             <SuggestionCard media={suggestion} key={suggestion.id} />
           ))}

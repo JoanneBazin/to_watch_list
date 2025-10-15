@@ -1,10 +1,9 @@
 "use client";
 import { Button, Loader } from "@/src/components/ui";
-import { RiAddLargeLine } from "react-icons/ri";
-import { AiOutlineClose } from "react-icons/ai";
 import { useState } from "react";
 import { useUpdateSuggestionStatus } from "../hooks/useSuggestionsMutations";
 import { SuggestionsStatus } from "@/src/types";
+import { Plus, X } from "lucide-react";
 
 const SuggestionResponse = ({ mediaId }: { mediaId: string }) => {
   const [acceptedSuggestion, setAcceptedSuggestion] = useState<boolean>(false);
@@ -24,36 +23,42 @@ const SuggestionResponse = ({ mediaId }: { mediaId: string }) => {
   };
 
   if (deletedSuggestion) {
-    return <p className="italic text-center">Suggestion ignorée</p>;
+    return <p className="info-message text-sm">Suggestion ignorée</p>;
   }
   if (acceptedSuggestion) {
-    return <p className="italic text-center">Suggestion ajoutée</p>;
+    return <p className="info-message text-sm">Suggestion ajoutée</p>;
   }
 
   return (
-    <div className="my-2 mx-auto max-w-60">
+    <div className="mx-auto mt-4 max-w-56">
       {isUpdating ? (
         <Loader />
       ) : (
         <>
-          <div className="flex flex-col gap-6 mt-4 justify-center">
+          <div className="flex flex-col gap-4 justify-center">
             <Button
               variant="outline"
               onClick={() => handleUpdateSuggestion("ACCEPTED")}
             >
-              <RiAddLargeLine />
-              <span className="ml-2"> Ajouter à ma watch-list</span>
+              <Plus size={16} />
+              <span className="ml-2 text-xs md:text-sm">
+                {" "}
+                Ajouter à ma watch-list
+              </span>
             </Button>
             <Button
               variant="outline"
               onClick={() => handleUpdateSuggestion("REFUSED")}
             >
-              <AiOutlineClose />
-              <span className="ml-2"> Supprimer la suggestion</span>
+              <X size={16} />
+              <span className="ml-2 text-xs md:text-sm">
+                {" "}
+                Supprimer la suggestion
+              </span>
             </Button>
           </div>
           {updateError && (
-            <p className="error-message text-center mt-3">{updateError}</p>
+            <p className="error-message text-center">{updateError}</p>
           )}
         </>
       )}
