@@ -2,7 +2,7 @@
 import { MediaItem } from "@/src/types";
 import { useEffect, useState } from "react";
 import { fetchPendingSuggestions } from "../suggestions.api";
-import { handleError } from "@/src/utils/errorHandlers";
+import { handleError } from "@/src/utils";
 
 export const useFetchSuggestions = () => {
   const [suggestions, setSuggestions] = useState<MediaItem[]>([]);

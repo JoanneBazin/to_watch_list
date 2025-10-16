@@ -1,6 +1,6 @@
 "use client";
 import { AuthForm } from "@/src/features/auth/components";
-import { useSession } from "@/src/lib/auth-client";
+import { useSession } from "@/src/lib";
 import { MoveLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

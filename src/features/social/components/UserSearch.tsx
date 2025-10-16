@@ -2,7 +2,7 @@
 import { Input, Loader } from "@/src/components/ui";
 import { useState } from "react";
 import { UserCard } from "./UserCard";
-import { useFetchSearchedUser } from "../hooks/useFetchSearchedUser";
+import { useFetchSearchedUser } from "../hooks";
 
 export const UserSearch = () => {
   const [query, setQuery] = useState<string>("");

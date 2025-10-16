@@ -1,9 +1,9 @@
 import { Button, Modal } from "@/src/components/ui";
-import { MediaDialogProps, MediaItem } from "@/src/types";
+import { MediaDialogProps } from "@/src/types";
 import clsx from "clsx";
 import { useState } from "react";
 import { BiSolidEditAlt } from "react-icons/bi";
-import EditMediaForm from "./form/EditMediaForm";
+import { EditMediaForm } from "./form/EditMediaForm";
 
 export const EditMediaDialog = ({
   media,

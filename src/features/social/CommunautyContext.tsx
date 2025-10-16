@@ -1,4 +1,4 @@
-import { createSectionContext } from "@/src/utils/createSectionContext";
+import { createSectionContext } from "@/src/utils";
 
 export type SocialSection = "contacts" | "requests" | "search";
 

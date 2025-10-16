@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader } from "@/src/components/ui";
-import { useFetchSuggestions } from "../hooks/useFetchSuggestions";
+import { useFetchSuggestions } from "../hooks";
 import { SuggestionCard } from "./SuggestionCard";
 
 export const SuggestionsList = () => {

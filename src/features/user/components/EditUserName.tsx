@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useUpdateUser } from "../hooks/useUserMutation";
+import { useUpdateUser } from "../hooks";
 import { Button, Input, Loader } from "@/src/components/ui";
 
 export const EditUserName = ({ username }: { username: string }) => {

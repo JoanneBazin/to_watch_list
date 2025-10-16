@@ -1,9 +1,9 @@
 "use client";
 
 import { Button, Loader } from "@/src/components/ui";
-import { useAddToWatchlist } from "../hooks/useWatchlistMutations";
+import { useAddToWatchlist } from "../hooks";
 
-const AddMedia = ({ mediaId }: { mediaId: string }) => {
+export const AddMedia = ({ mediaId }: { mediaId: string }) => {
   const { addMedia, isAddingMedia, addError } = useAddToWatchlist();
 
   const handleAdd = async () => {
@@ -19,5 +19,3 @@ const AddMedia = ({ mediaId }: { mediaId: string }) => {
     </div>
   );
 };
-
-export default AddMedia;

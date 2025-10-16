@@ -2,7 +2,7 @@
 import { ReceivedRequests } from "@/src/types";
 import { useEffect, useState } from "react";
 import { fetchFriendRequests } from "../social.api";
-import { handleError } from "@/src/utils/errorHandlers";
+import { handleError } from "@/src/utils";
 
 export const useFetchRequests = () => {
   const [receivedRequests, setReceivedRequests] = useState<ReceivedRequests[]>(

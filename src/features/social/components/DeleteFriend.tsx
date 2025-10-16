@@ -14,7 +14,7 @@ import {
   AlertDialogTrigger,
   Loader,
 } from "@/src/components/ui";
-import { useDeleteFriend } from "../hooks/useSocialMutations";
+import { useDeleteFriend } from "../hooks";
 import { Trash } from "lucide-react";
 
 export const DeleteFriend = ({ friendId }: { friendId: string }) => {

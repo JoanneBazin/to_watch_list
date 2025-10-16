@@ -1,6 +1,5 @@
-import { prisma } from "@/src/lib/prisma";
-import { ApiError } from "@/src/utils/ApiError";
-import { handleApiRoute } from "@/src/utils/handleApiRoute";
+import { prisma } from "@/src/lib";
+import { ApiError, handleApiRoute } from "@/src/utils";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {

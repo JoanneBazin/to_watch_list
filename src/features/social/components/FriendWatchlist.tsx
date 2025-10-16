@@ -1,11 +1,9 @@
 import { FriendWatchlistProps } from "@/src/types";
-import AddMedia from "../../media/components/AddMedia";
 import { useMediaStore } from "../../media/media.store";
-import { MediaCard } from "../../media/components/MediaCard";
 import { Button, Modal } from "@/src/components/ui";
 import { useState } from "react";
-import AddEntryForm from "../../media/components/form/AddEntryForm";
 import { Send } from "lucide-react";
+import { AddEntryForm, AddMedia, MediaCard } from "../../media/components";
 
 export const FriendWatchlist = ({ user, entry }: FriendWatchlistProps) => {
   const [open, setOpen] = useState(false);

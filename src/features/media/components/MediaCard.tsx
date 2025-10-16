@@ -1,7 +1,7 @@
 import { MediaCardProps } from "@/src/types";
 import { Badge, Modal } from "@/src/components/ui";
 
-const MediaCard = ({ media, children }: MediaCardProps) => {
+export const MediaCard = ({ media, children }: MediaCardProps) => {
   return (
     <Modal
       trigger={
@@ -30,5 +30,3 @@ const MediaCard = ({ media, children }: MediaCardProps) => {
     </Modal>
   );
 };
-
-export { MediaCard };

@@ -1,11 +1,11 @@
 "use client";
 import { Button, Loader } from "@/src/components/ui";
 import { useState } from "react";
-import { useUpdateSuggestionStatus } from "../hooks/useSuggestionsMutations";
+import { useUpdateSuggestionStatus } from "../hooks";
 import { SuggestionsStatus } from "@/src/types";
 import { Plus, X } from "lucide-react";
 
-const SuggestionResponse = ({ mediaId }: { mediaId: string }) => {
+export const SuggestionResponse = ({ mediaId }: { mediaId: string }) => {
   const [acceptedSuggestion, setAcceptedSuggestion] = useState<boolean>(false);
   const [deletedSuggestion, setDeletedSuggestion] = useState<boolean>(false);
   const { updateSuggestion, isUpdating, updateError } =
@@ -65,5 +65,3 @@ const SuggestionResponse = ({ mediaId }: { mediaId: string }) => {
     </div>
   );
 };
-
-export default SuggestionResponse;

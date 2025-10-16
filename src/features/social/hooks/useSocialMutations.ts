@@ -5,8 +5,8 @@ import {
 } from "../social.action";
 import { FriendRequestStatus } from "@/src/types";
 import { useUserStore } from "../../user/user.store";
-import { useAsyncAction } from "@/src/hooks/useAsyncAction";
-import { ApiError } from "@/src/utils/ApiError";
+import { useAsyncAction } from "@/src/hooks";
+import { ApiError } from "@/src/utils";
 
 export const useSendFriendRequest = () => {
   const addNewFriend = async (receiverId: string) => {

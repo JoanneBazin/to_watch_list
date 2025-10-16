@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/src/components/ui";
-import SuggestionResponse from "./SuggestionResponse";
+import { SuggestionResponse } from "./SuggestionResponse";
 import { MediaItem } from "@/src/types";
 
 export const SuggestionCard = ({ media }: { media: MediaItem }) => {

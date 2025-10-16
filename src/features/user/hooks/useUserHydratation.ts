@@ -5,7 +5,7 @@ import { useUserStore } from "../user.store";
 import { useEffect } from "react";
 import { fetchContactList } from "../../social/social.api";
 import { fetchUserCounts } from "../user.api";
-import { handleError } from "@/src/utils/errorHandlers";
+import { handleError } from "@/src/utils";
 
 export const useUserHydratation = (user: SessionUser | undefined) => {
   const { setUser, setContacts, setCounts, setIsPending, setError } =

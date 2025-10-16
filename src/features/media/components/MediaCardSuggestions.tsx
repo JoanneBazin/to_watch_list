@@ -1,7 +1,7 @@
 import { SuggestionsProps } from "@/src/types";
 import { RiSingleQuotesL } from "react-icons/ri";
 import { RiSingleQuotesR } from "react-icons/ri";
-import SendResponseComment from "../../suggestions/components/SendResponseComment";
+import { SendResponseComment } from "../../suggestions/components";
 
 export const MediaCardSuggestions = ({
   suggestions,

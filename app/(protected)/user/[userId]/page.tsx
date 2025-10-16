@@ -5,7 +5,7 @@ import {
   DeleteFriend,
   FriendWatchlist,
 } from "@/src/features/social/components";
-import { useFetchFriendProfile } from "@/src/features/social/hooks/useFetchFriendProfile";
+import { useFetchFriendProfile } from "@/src/features/social/hooks";
 
 const FriendProfilePage = ({ params }: { params: { userId: string } }) => {
   const { friendProfile, isLoading, error } = useFetchFriendProfile(

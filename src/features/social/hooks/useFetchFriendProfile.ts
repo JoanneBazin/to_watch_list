@@ -2,7 +2,7 @@
 import { FriendProfile } from "@/src/types";
 import { useEffect, useState } from "react";
 import { fetchFriendProfile } from "../social.api";
-import { handleError } from "@/src/utils/errorHandlers";
+import { handleError } from "@/src/utils";
 
 export const useFetchFriendProfile = (id: string) => {
   const [friendProfile, setFriendProfile] = useState<FriendProfile>();

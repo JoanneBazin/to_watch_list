@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useMediaStore } from "../media.store";
 import { fetchWatchlist } from "../media.api";
-import { handleError } from "@/src/utils/errorHandlers";
+import { handleError } from "@/src/utils";
 
 export const useMediaHydratation = (enabled: boolean = true) => {
   const { setWatchlist, setIsPending, setError } = useMediaStore();

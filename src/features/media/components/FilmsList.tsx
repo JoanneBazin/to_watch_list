@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useMediaStore } from "../media.store";
 import { Button, Modal, Skeleton } from "@/src/components/ui";
-import AddEntryForm from "./form/AddEntryForm";
+import { AddEntryForm } from "./form/AddEntryForm";
 import { MediaTable } from "./MediaTable";
 
 export const FilmsList = () => {

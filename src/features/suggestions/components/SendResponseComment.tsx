@@ -10,9 +10,13 @@ import {
   Textarea,
 } from "@/src/components/ui";
 import { useState } from "react";
-import { useUpdateSuggestionResponse } from "../hooks/useSuggestionsMutations";
+import { useUpdateSuggestionResponse } from "../hooks";
 
-const SendResponseComment = ({ suggestionId }: { suggestionId: string }) => {
+export const SendResponseComment = ({
+  suggestionId,
+}: {
+  suggestionId: string;
+}) => {
   const [receiverComment, setReceiverComment] = useState<string>("");
   const [commentSent, setCommentSent] = useState<boolean>(false);
   const { sendComment, isUpdating, updateError } =
@@ -57,5 +61,3 @@ const SendResponseComment = ({ suggestionId }: { suggestionId: string }) => {
     </Accordion>
   );
 };
-
-export default SendResponseComment;

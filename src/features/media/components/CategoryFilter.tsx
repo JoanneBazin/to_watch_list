@@ -1,7 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
 
-import { MediaTable } from "@/src/features/media/components/MediaTable";
 import {
   ScrollArea,
   Select,
@@ -12,6 +11,7 @@ import {
   SelectValue,
 } from "@/src/components/ui";
 import { useMediaStore } from "../media.store";
+import { MediaTable } from "./MediaTable";
 
 export const CategoryFilter = () => {
   const watchlist = useMediaStore((s) => s.watchlist);

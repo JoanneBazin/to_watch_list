@@ -1,6 +1,6 @@
 "use client";
-import { Loader } from "../../../components/ui/Loader";
-import { useFetchMessages } from "../hooks/useFetchMessages";
+import { Loader } from "@/src/components/ui";
+import { useFetchMessages } from "../hooks";
 import { MessageCard } from "./MessageCard";
 
 export const ReceivedMessages = () => {
