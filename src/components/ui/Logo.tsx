@@ -14,7 +14,7 @@ export const Logo = ({ size = "large" }: LogoProps) => {
       sizeLogo = "w-[30px] sm:w-[50px] h-auto";
       break;
     case "medium":
-      sizeLogo = "w-[50px] sm:w-[100px] h-auto";
+      sizeLogo = "w-[70px] sm:w-[100px] h-auto";
       break;
     case "large":
       sizeLogo = "w-[200px] sm:w-[350px] h-auto";

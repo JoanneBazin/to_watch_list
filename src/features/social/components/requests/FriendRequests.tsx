@@ -22,7 +22,7 @@ export const FriendRequests = () => {
           {receivedRequests.map((request, index) => (
             <div
               key={index}
-              className="flex justify-between items-start max-w-[300px]"
+              className="flex justify-between items-center max-w-[300px]"
             >
               <div className="flex gap-3 items-center">
                 <Avatar img={request.sender.image} />
