@@ -4,7 +4,11 @@ import { Avatar, Button, Input, Loader } from "@/src/components/ui";
 import { FormEvent, useRef, useState } from "react";
 import { useUpdateUser } from "../hooks/useUserMutation";
 
-const EditUserAvatar = ({ userAvatar }: { userAvatar?: string | null }) => {
+export const EditUserAvatar = ({
+  userAvatar,
+}: {
+  userAvatar?: string | null;
+}) => {
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
@@ -79,5 +83,3 @@ const EditUserAvatar = ({ userAvatar }: { userAvatar?: string | null }) => {
     </div>
   );
 };
-
-export default EditUserAvatar;

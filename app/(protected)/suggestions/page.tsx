@@ -1,7 +1,9 @@
 "use client";
 
-import ReceivedMessages from "@/src/features/suggestions/components/ReceivedMessages";
-import SuggestionsList from "@/src/features/suggestions/components/SuggestionsList";
+import {
+  ReceivedMessages,
+  SuggestionsList,
+} from "@/src/features/suggestions/components";
 import { useSuggestions } from "@/src/features/suggestions/SuggestionsContext";
 
 export default function SuggestionsPage() {

@@ -4,7 +4,7 @@ import { Loader } from "@/src/components/ui";
 import { useFetchSuggestions } from "../hooks/useFetchSuggestions";
 import { SuggestionCard } from "./SuggestionCard";
 
-const SuggestionsList = () => {
+export const SuggestionsList = () => {
   const { suggestions, isLoading, error } = useFetchSuggestions();
 
   return (
@@ -26,5 +26,3 @@ const SuggestionsList = () => {
     </section>
   );
 };
-
-export default SuggestionsList;

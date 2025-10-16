@@ -1,9 +1,11 @@
 "use client";
 
-import CategoryFilter from "@/src/features/media/components/CategoryFilter";
+import {
+  CategoryFilter,
+  FilmsList,
+  SeriesList,
+} from "@/src/features/media/components";
 import { useDashboard } from "@/src/features/media/DashboardContext";
-import { FilmsList } from "@/src/features/media/components/FilmsList";
-import { SeriesList } from "@/src/features/media/components/SeriesList";
 
 const DashboardPage = () => {
   const { section } = useDashboard();

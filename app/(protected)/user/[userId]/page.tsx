@@ -1,9 +1,11 @@
 "use client";
-import DeleteFriend from "@/src/features/social/components/DeleteFriend";
-import { Avatar } from "@/src/components/ui/Avatar";
-import { Loader } from "@/src/components/ui/Loader";
+
+import { Avatar, Loader } from "@/src/components/ui";
+import {
+  DeleteFriend,
+  FriendWatchlist,
+} from "@/src/features/social/components";
 import { useFetchFriendProfile } from "@/src/features/social/hooks/useFetchFriendProfile";
-import FriendWatchlist from "@/src/features/social/components/FriendWatchlist";
 
 const FriendProfilePage = ({ params }: { params: { userId: string } }) => {
   const { friendProfile, isLoading, error } = useFetchFriendProfile(

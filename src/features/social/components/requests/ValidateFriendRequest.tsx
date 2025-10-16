@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useUpdateRequest } from "../../hooks/useSocialMutations";
 import { Check, X } from "lucide-react";
 
-const ValidateFriendRequest = ({
+export const ValidateFriendRequest = ({
   requestId,
   senderId,
 }: ValidateFriendRequestProps) => {
@@ -70,5 +70,3 @@ const ValidateFriendRequest = ({
     </div>
   );
 };
-
-export default ValidateFriendRequest;

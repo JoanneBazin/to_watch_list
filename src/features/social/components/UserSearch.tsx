@@ -4,7 +4,7 @@ import { useState } from "react";
 import { UserCard } from "./UserCard";
 import { useFetchSearchedUser } from "../hooks/useFetchSearchedUser";
 
-const UserSearch = () => {
+export const UserSearch = () => {
   const [query, setQuery] = useState<string>("");
   const { users, isLoading, error } = useFetchSearchedUser(query);
 
@@ -33,5 +33,3 @@ const UserSearch = () => {
     </section>
   );
 };
-
-export default UserSearch;

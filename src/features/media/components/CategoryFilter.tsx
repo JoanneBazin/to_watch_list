@@ -13,7 +13,7 @@ import {
 } from "@/src/components/ui";
 import { useMediaStore } from "../media.store";
 
-const CategoryFilter = () => {
+export const CategoryFilter = () => {
   const watchlist = useMediaStore((s) => s.watchlist);
 
   const categories = useMemo(() => {
@@ -64,5 +64,3 @@ const CategoryFilter = () => {
     </section>
   );
 };
-
-export default CategoryFilter;
