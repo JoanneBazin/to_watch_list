@@ -26,21 +26,25 @@ const Account = () => {
   }
 
   return (
-    <main className="min-h-[90vh] flex flex-col">
+    <main className="flex-1 flex flex-col items-center w-full max-w-[768px]">
       <h1 className="sr-only">Profil du compte</h1>
       <div className="flex gap-6 justify-center items-center my-12">
         <Avatar size="large" img={user.image} />
-        <h2 className="text-3xl">{user.name}</h2>
+        <h2 className="text-xl sm:text-3xl">{user.name}</h2>
       </div>
 
-      <section className="flex-1 flex flex-col justify-between">
-        <div className="w-1/3 flex flex-col gap-4 mx-auto my-4">
-          <h2 className="font-semibold text-2xl mb-4">Modifier le profil</h2>
-          <EditUserName username={user.name} />
-          <EditUserAvatar userAvatar={user.image} />
+      <section className="w-full flex-1 flex flex-col justify-between">
+        <div className="flex flex-col gap-4 sm:gap-6 mx-auto my-4 border border-accent rounded-lg p-6">
+          <h3 className="font-semibold text-lg sm:text-2xl mb-4">
+            Modifier le profil
+          </h3>
+          <div className="flex flex-col gap-10">
+            <EditUserName username={user.name} />
+            <EditUserAvatar userAvatar={user.image} />
+          </div>
         </div>
 
-        <div className="flex flex-col justify-end items-end gap-4">
+        <div className="flex flex-col justify-end items-end gap-2 sm:gap-4 py-3">
           <DeleteProfile />
           <SignOutBtn />
         </div>

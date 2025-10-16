@@ -57,19 +57,20 @@ const EditUserAvatar = ({ userAvatar }: { userAvatar?: string | null }) => {
     <div>
       <form
         onSubmit={handleEditAvatar}
-        className="relative flex items-center gap-6"
+        className="flex flex-col sm:flex-row justify-end items-end sm:items-center gap-2 sm:gap-6"
       >
-        <div className="absolute left-[-120px]">
-          <Avatar img={preview ?? userAvatar} size="large" />
+        <div className="flex gap-4">
+          <Avatar img={preview ?? userAvatar} size="medium" />
+          <Input
+            type="file"
+            id="user_avatar"
+            accept="image/*"
+            onChange={handlePreviewAvatar}
+            ref={fileInput}
+            className="flex-1"
+          />
         </div>
-        <Input
-          type="file"
-          id="user_avatar"
-          accept="image/*"
-          onChange={handlePreviewAvatar}
-          ref={fileInput}
-        />
-        <Button variant="outline" className="my-4">
+        <Button variant="outline" className="w-1/2 sm:w-fit">
           {isUpdatingImage ? <Loader /> : "Valider"}
         </Button>
       </form>
