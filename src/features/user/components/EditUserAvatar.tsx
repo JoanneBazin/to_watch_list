@@ -63,7 +63,7 @@ export const EditUserAvatar = ({
         onSubmit={handleEditAvatar}
         className="flex flex-col sm:flex-row justify-end items-end sm:items-center gap-2 sm:gap-6"
       >
-        <div className="flex gap-4">
+        <div className="flex items-center gap-4">
           <Avatar img={preview ?? userAvatar} size="medium" />
           <Input
             type="file"

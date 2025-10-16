@@ -42,6 +42,10 @@ export const ValidateFriendRequest = ({
     return;
   }
 
+  if (updateError) {
+    return <p className="error-message italic">{updateError}</p>;
+  }
+
   return (
     <div className="flex flex-col">
       <div className="flex gap-2 items-center justify-end">
@@ -66,7 +70,6 @@ export const ValidateFriendRequest = ({
           <X />
         </Button>
       </div>
-      {updateError && <p className="error-message italic">{updateError}</p>}
     </div>
   );
 };

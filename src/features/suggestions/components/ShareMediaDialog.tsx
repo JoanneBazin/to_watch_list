@@ -45,7 +45,7 @@ export const ShareMediaDialog = ({
         )
       }
       title={`Envoyer ${media.title} sur la
-            watch list de :`}
+            liste de :`}
       open={isOpen}
       setOpen={setIsOpen}
     >
