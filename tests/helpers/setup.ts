@@ -1,5 +1,4 @@
-import { auth } from "@/src/lib/auth";
-import { prisma } from "@/src/lib/prisma";
+import { auth, prisma } from "@/src/lib/server";
 
 export const createTestUser = async (overrides = {}) => {
   const userData = await auth.api.signUpEmail({

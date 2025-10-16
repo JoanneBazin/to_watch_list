@@ -6,7 +6,7 @@ import {
 } from "../suggestions.actions";
 import { useMediaStore } from "../../media/media.store";
 import { useUserStore } from "../../user/user.store";
-import { ApiError } from "@/src/utils";
+import { ApiError } from "@/src/utils/shared";
 import { useAsyncAction } from "@/src/hooks";
 
 export const useCreateSuggestion = () => {

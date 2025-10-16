@@ -1,12 +1,12 @@
 "use server";
 
-import { prisma } from "@/src/lib";
+import { prisma } from "@/src/lib/server";
 import {
-  ApiError,
   handleActionError,
   requireAuth,
   uploadImages,
-} from "@/src/utils";
+} from "@/src/utils/server";
+import { ApiError } from "@/src/utils/shared";
 
 export const updateUserName = async (name: string) => {
   try {

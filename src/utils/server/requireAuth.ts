@@ -1,6 +1,6 @@
-import { auth } from "@/src/lib";
+import { auth } from "@/src/lib/server";
 import { headers } from "next/headers";
-import { ApiError } from "./ApiError";
+import { ApiError } from "../shared";
 
 export const requireAuth = async (req?: Request) => {
   const requestHeaders = req?.headers || headers();

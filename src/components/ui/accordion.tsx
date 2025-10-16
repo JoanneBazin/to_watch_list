@@ -4,7 +4,7 @@ import * as React from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { ChevronDown } from "lucide-react";
 
-import { cn } from "@/src/lib/tailwind";
+import { cn } from "@/src/lib/client/tailwind";
 
 const Accordion = AccordionPrimitive.Root;
 

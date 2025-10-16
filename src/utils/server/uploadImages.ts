@@ -1,5 +1,5 @@
 import sharp from "sharp";
-import { supabaseAdmin } from "../lib/supabase-client";
+import { supabaseAdmin } from "@/src/lib/server";
 
 export const uploadImages = async (
   file: File,

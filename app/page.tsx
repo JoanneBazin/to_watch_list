@@ -1,6 +1,6 @@
 "use client";
 import { Logo } from "@/src/components/ui";
-import { useSession } from "@/src/lib";
+import { useSession } from "@/src/lib/client";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

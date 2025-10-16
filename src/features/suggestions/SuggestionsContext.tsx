@@ -1,4 +1,4 @@
-import { createSectionContext } from "@/src/utils";
+import { createSectionContext } from "@/src/utils/client";
 
 export type SuggestionsSection = "suggestions" | "messages";
 

@@ -1,18 +1,18 @@
 "use server";
 
-import { prisma } from "@/src/lib";
+import { prisma } from "@/src/lib/server";
 import {
-  ApiError,
   handleActionError,
   requireAuth,
   strictValidateSchema,
-} from "@/src/utils";
+} from "@/src/utils/server";
 import {
   MediaFormData,
   mediaServerSchema,
   UpdateMediaFormData,
   updateMediaServerSchema,
 } from "./media.schema";
+import { ApiError } from "@/src/utils/shared";
 
 export const createMedia = async (media: MediaFormData) => {
   try {

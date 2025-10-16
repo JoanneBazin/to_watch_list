@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { ApiError } from "./ApiError";
+import { ApiError } from "../shared";
 
 export const handleApiRoute = async (fn: () => Promise<NextResponse>) => {
   try {

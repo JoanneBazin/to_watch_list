@@ -6,7 +6,7 @@ import {
 import { FriendRequestStatus } from "@/src/types";
 import { useUserStore } from "../../user/user.store";
 import { useAsyncAction } from "@/src/hooks";
-import { ApiError } from "@/src/utils";
+import { ApiError } from "@/src/utils/shared";
 
 export const useSendFriendRequest = () => {
   const addNewFriend = async (receiverId: string) => {

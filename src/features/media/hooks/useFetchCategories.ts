@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { fetchMediaCategories } from "../media.api";
-import { handleError } from "@/src/utils";
+import { handleError } from "@/src/utils/client";
 import { CategoryType } from "@/src/types";
 
 export function useFetchCategories() {

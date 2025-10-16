@@ -1,4 +1,4 @@
-import { ApiError } from "@/src/utils";
+import { ApiError } from "@/src/utils/shared";
 
 export const fetchUserCounts = async () => {
   const response = await fetch("/api/users");
