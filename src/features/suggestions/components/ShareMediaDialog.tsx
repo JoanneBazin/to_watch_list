@@ -12,11 +12,11 @@ import {
 import { MediaDialogProps } from "@/src/types";
 import { useUserStore } from "../../user/user.store";
 import { IoShareSocial } from "react-icons/io5";
-import SendSuggestion from "./SendSuggestion";
+import { SendSuggestion } from "./SendSuggestion";
 import { useState } from "react";
 import clsx from "clsx";
 
-const ShareMediaDialog = ({
+export const ShareMediaDialog = ({
   media,
   mobile = false,
   open,
@@ -77,5 +77,3 @@ const ShareMediaDialog = ({
     </Modal>
   );
 };
-
-export default ShareMediaDialog;

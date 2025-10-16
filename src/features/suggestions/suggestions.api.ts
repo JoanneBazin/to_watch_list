@@ -1,4 +1,4 @@
-import { ApiError } from "@/src/utils/ApiError";
+import { ApiError } from "@/src/utils";
 
 export const fetchPendingSuggestions = async () => {
   const response = await fetch("/api/suggestions");

@@ -1,4 +1,4 @@
-import { ApiError } from "@/src/utils/ApiError";
+import { ApiError } from "@/src/utils";
 
 export const fetchContactList = async () => {
   const response = await fetch("/api/social/friends");

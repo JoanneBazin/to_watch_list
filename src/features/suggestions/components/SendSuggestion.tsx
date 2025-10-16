@@ -4,9 +4,9 @@ import { Button, Loader, Textarea } from "@/src/components/ui";
 import { CiCirclePlus } from "react-icons/ci";
 import { useState } from "react";
 import { SendSuggestionProps } from "@/src/types";
-import { useCreateSuggestion } from "../hooks/useSuggestionsMutations";
+import { useCreateSuggestion } from "../hooks";
 
-const SendSuggestion = ({ contactId, mediaId }: SendSuggestionProps) => {
+export const SendSuggestion = ({ contactId, mediaId }: SendSuggestionProps) => {
   const [sentSuggestion, setSentSuggestion] = useState<boolean>(false);
   const [senderComment, setSenderComment] = useState("");
   const { shareMedia, isSharing, shareError } = useCreateSuggestion();
@@ -43,5 +43,3 @@ const SendSuggestion = ({ contactId, mediaId }: SendSuggestionProps) => {
     </div>
   );
 };
-
-export default SendSuggestion;

@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form";
 import { EditMediaFormProps } from "@/src/types";
-import { useUpdateMedia } from "@/src/features/media/hooks/useWatchlistMutations";
 import {
   Button,
   DialogFooter,
@@ -13,8 +12,9 @@ import {
 } from "@/src/components/ui";
 import { UpdateMediaFormData, updateMediaSchema } from "../../media.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useUpdateMedia } from "../../hooks";
 
-const EditMediaForm = ({ media, onSuccess }: EditMediaFormProps) => {
+export const EditMediaForm = ({ media, onSuccess }: EditMediaFormProps) => {
   const { handleSubmit, register, setValue } = useForm<UpdateMediaFormData>({
     resolver: zodResolver(updateMediaSchema),
   });
@@ -87,5 +87,3 @@ const EditMediaForm = ({ media, onSuccess }: EditMediaFormProps) => {
     </form>
   );
 };
-
-export default EditMediaForm;

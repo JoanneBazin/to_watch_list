@@ -2,7 +2,7 @@ import { Button, Loader } from "@/src/components/ui";
 import { FriendRequestStatus, ValidateFriendRequestProps } from "@/src/types";
 import Link from "next/link";
 import { useState } from "react";
-import { useUpdateRequest } from "../../hooks/useSocialMutations";
+import { useUpdateRequest } from "../../hooks";
 import { Check, X } from "lucide-react";
 
 export const ValidateFriendRequest = ({

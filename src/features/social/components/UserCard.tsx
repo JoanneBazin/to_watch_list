@@ -11,10 +11,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/src/components/ui";
-import ValidateFriendRequest from "./requests/ValidateFriendRequest";
-import SendFriendRequest from "./requests/SendFriendRequest";
+import { ValidateFriendRequest } from "./requests/ValidateFriendRequest";
+import { SendFriendRequest } from "./requests/SendFriendRequest";
 
-const UserCard = ({ user }: { user: SearchContact }) => {
+export const UserCard = ({ user }: { user: SearchContact }) => {
   let actionSection;
 
   switch (user.friendshipStatus) {
@@ -52,5 +52,3 @@ const UserCard = ({ user }: { user: SearchContact }) => {
     </Card>
   );
 };
-
-export { UserCard };

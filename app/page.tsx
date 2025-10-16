@@ -1,6 +1,6 @@
 "use client";
 import { Logo } from "@/src/components/ui";
-import { useSession } from "@/src/lib/auth-client";
+import { useSession } from "@/src/lib";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

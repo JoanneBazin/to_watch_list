@@ -2,8 +2,7 @@
 
 import { Button, Loader } from "@/src/components/ui";
 import { useState } from "react";
-import { FaCheckCircle } from "react-icons/fa";
-import { useSendFriendRequest } from "../../hooks/useSocialMutations";
+import { useSendFriendRequest } from "../../hooks";
 
 export const SendFriendRequest = ({ receiverId }: { receiverId: string }) => {
   const [added, setAdded] = useState<boolean>(false);

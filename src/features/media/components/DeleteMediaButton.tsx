@@ -1,9 +1,9 @@
 import { MediaOptionButtonProps } from "@/src/types";
-import { useDeleteFromWatchlist } from "../hooks/useWatchlistMutations";
 import { useEffect } from "react";
 import { Button } from "@/src/components/ui";
 import clsx from "clsx";
 import { RxCross1 } from "react-icons/rx";
+import { useDeleteFromWatchlist } from "../hooks";
 
 export const DeleteMediaButton = ({
   mediaId,

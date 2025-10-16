@@ -2,7 +2,7 @@
 
 import { Avatar, Button, Input, Loader } from "@/src/components/ui";
 import { FormEvent, useRef, useState } from "react";
-import { useUpdateUser } from "../hooks/useUserMutation";
+import { useUpdateUser } from "../hooks";
 
 export const EditUserAvatar = ({
   userAvatar,

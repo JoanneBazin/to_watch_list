@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { handleError } from "../utils/errorHandlers";
+import { handleError } from "../utils";
 
 export const useAsyncAction = <TArgs extends any[], TResult>(
   action: (...args: TArgs) => Promise<TResult>

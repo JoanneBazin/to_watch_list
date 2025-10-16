@@ -1,8 +1,8 @@
 "use client";
 
-import { useFetchRequests } from "@/src/features/social/hooks/useFetchRequests";
+import { useFetchRequests } from "@/src/features/social/hooks";
 import { Loader, Avatar } from "@/src/components/ui";
-import ValidateFriendRequest from "./ValidateFriendRequest";
+import { ValidateFriendRequest } from "./ValidateFriendRequest";
 
 export const FriendRequests = () => {
   const { receivedRequests, isLoading, error } = useFetchRequests();

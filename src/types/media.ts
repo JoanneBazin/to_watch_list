@@ -67,3 +67,8 @@ export interface MediaOptionsProps {
 }
 
 export type MobileDialogType = "share" | "edit" | null;
+
+export interface CategoryType {
+  name: string;
+  id: string;
+}

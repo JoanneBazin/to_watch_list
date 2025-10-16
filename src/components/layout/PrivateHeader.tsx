@@ -8,7 +8,7 @@ import clsx from "clsx";
 import { Menu, X } from "lucide-react";
 import { useClickOutside } from "@/src/hooks";
 
-const PrivateHeader = () => {
+export const PrivateHeader = () => {
   const { user, counts, isPending, error } = useUserStore();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -137,5 +137,3 @@ const PrivateHeader = () => {
     </header>
   );
 };
-
-export default PrivateHeader;

@@ -7,12 +7,11 @@ import {
 } from "@/src/components/ui";
 import { MediaOptionsProps } from "@/src/types";
 import clsx from "clsx";
-import { useState } from "react";
 import { CiMenuKebab } from "react-icons/ci";
-import ShareMediaDialog from "../../suggestions/components/ShareMediaDialog";
 import { EditMediaDialog } from "./EditMediaDialog";
 import { DeleteMediaButton } from "./DeleteMediaButton";
-import { useMobileDialog } from "@/src/hooks/useMobileDialog";
+import { useMobileDialog } from "@/src/hooks";
+import { ShareMediaDialog } from "../../suggestions/components";
 
 export const MediaOptions = ({ media, onError }: MediaOptionsProps) => {
   const {

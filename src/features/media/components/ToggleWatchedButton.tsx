@@ -1,7 +1,7 @@
 import { Button } from "@/src/components/ui";
 import clsx from "clsx";
 import { FaCheck } from "react-icons/fa";
-import { useToggleWatched } from "../hooks/useWatchlistMutations";
+import { useToggleWatched } from "../hooks";
 import { useEffect } from "react";
 import { MediaOptionButtonProps } from "@/src/types";
 

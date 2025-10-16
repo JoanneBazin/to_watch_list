@@ -6,8 +6,8 @@ import {
 } from "../suggestions.actions";
 import { useMediaStore } from "../../media/media.store";
 import { useUserStore } from "../../user/user.store";
-import { ApiError } from "@/src/utils/ApiError";
-import { useAsyncAction } from "@/src/hooks/useAsyncAction";
+import { ApiError } from "@/src/utils";
+import { useAsyncAction } from "@/src/hooks";
 
 export const useCreateSuggestion = () => {
   const { contacts, setContacts } = useUserStore.getState();

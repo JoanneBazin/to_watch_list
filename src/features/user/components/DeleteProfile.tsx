@@ -13,7 +13,7 @@ import {
   Button,
   Loader,
 } from "@/src/components/ui";
-import { useDeleteAccount } from "../hooks/useUserMutation";
+import { useDeleteAccount } from "../hooks";
 
 export const DeleteProfile = () => {
   const { deleteAccount, isDeleting, deleteError } = useDeleteAccount();

@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import { useFetchCategories } from "@/src/features/media/hooks/useFetchCategories";
 import { AddEntryFormProps } from "@/src/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -10,13 +9,14 @@ import {
   Loader,
   Textarea,
 } from "@/src/components/ui";
+import { MediaFormData, mediaSchema } from "../../media.schema";
 import {
   useCreateContactMedia,
   useCreateMedia,
-} from "../../hooks/useWatchlistMutations";
-import { MediaFormData, mediaSchema } from "../../media.schema";
+  useFetchCategories,
+} from "../../hooks";
 
-const AddEntryForm = ({
+export const AddEntryForm = ({
   entry,
   isSuggestedMedia,
   onSuccess,
@@ -166,5 +166,3 @@ const AddEntryForm = ({
     </form>
   );
 };
-
-export default AddEntryForm;
