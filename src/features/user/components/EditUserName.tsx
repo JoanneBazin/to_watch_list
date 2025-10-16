@@ -22,13 +22,17 @@ export const EditUserName = ({ username }: { username: string }) => {
 
   return (
     <div>
-      <form onSubmit={handleEditName} className="flex items-center gap-6">
+      <form
+        onSubmit={handleEditName}
+        className="flex flex-col sm:flex-row items-end sm:items-center justify-end gap-3 sm:gap-6"
+      >
         <Input
           defaultValue={name}
           placeholder={username}
           onChange={(e) => setName(e.target.value)}
+          className="sm:w-1/3"
         />
-        <Button variant="outline" className="my-4">
+        <Button variant="outline" className="w-1/2 sm:w-fit">
           {isUpdatingName ? <Loader /> : "Modifier"}
         </Button>
       </form>
