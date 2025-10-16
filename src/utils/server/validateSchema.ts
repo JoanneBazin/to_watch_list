@@ -1,16 +1,5 @@
 import { z, ZodError } from "zod";
-import { ApiError } from "./ApiError";
-
-export const safeValidateSchema = <T>(
-  schema: z.ZodSchema<T>,
-  data: unknown
-) => {
-  const result = schema.safeParse(data);
-
-  return result.success
-    ? { success: true, data: result.data }
-    : { success: false, errors: result.error.flatten().fieldErrors };
-};
+import { ApiError } from "../shared";
 
 export const strictValidateSchema = <T extends z.ZodTypeAny>(
   schema: T,

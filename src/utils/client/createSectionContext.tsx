@@ -1,5 +1,5 @@
+import { ProviderType, SectionContextType } from "@/src/types";
 import { createContext, useContext, useState } from "react";
-import { ProviderType, SectionContextType } from "../types";
 
 export const createSectionContext = <T extends string>() => {
   const Context = createContext<SectionContextType<T> | null>(null);

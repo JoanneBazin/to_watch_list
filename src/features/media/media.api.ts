@@ -1,4 +1,4 @@
-import { ApiError } from "@/src/utils/ApiError";
+import { ApiError } from "@/src/utils/shared";
 
 export const fetchWatchlist = async () => {
   const response = await fetch("/api/media");

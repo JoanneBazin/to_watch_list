@@ -2,7 +2,7 @@
 import { SearchContact } from "@/src/types";
 import { useEffect, useState } from "react";
 import { fetchUserSearch } from "../social.api";
-import { handleError } from "@/src/utils";
+import { handleError } from "@/src/utils/client";
 
 export const useFetchSearchedUser = (query: string) => {
   const [users, setUsers] = useState<SearchContact[]>([]);

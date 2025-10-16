@@ -1,8 +1,9 @@
 "use server";
 
-import { prisma } from "@/src/lib";
+import { prisma } from "@/src/lib/server";
 import { FriendRequestStatus } from "@/src/types";
-import { ApiError, handleActionError, requireAuth } from "@/src/utils";
+import { handleActionError, requireAuth } from "@/src/utils/server";
+import { ApiError } from "@/src/utils/shared";
 
 export const addFriendRequest = async (receiverId: string) => {
   try {

@@ -22,9 +22,9 @@ import {
   deleteFromWatchlist,
   updateWatched,
 } from "@/src/features/media/media.actions";
-import { prisma } from "@/src/lib/prisma";
-import { requireAuth } from "@/src/utils/requireAuth";
-import { AddEntryFormValue } from "@/src/types";
+import { prisma } from "@/src/lib/server";
+import { requireAuth } from "@/src/utils/server";
+import { MediaFormData } from "@/src/features/media/media.schema";
 
 vi.mock("@/src/utils/requireAuth", () => ({
   requireAuth: vi.fn(),
@@ -50,11 +50,11 @@ describe("Media actions", () => {
   });
 
   describe("addToWatchlist", () => {
-    const mediaData: AddEntryFormValue = {
+    const mediaData: MediaFormData = {
       title: "Film test",
       type: "FILM",
       synopsis: "Synopsis test",
-      year: 2025,
+      year: "2025",
       real: "Real test",
       platform: "Netflix",
       categoryName: "Action",
@@ -64,10 +64,10 @@ describe("Media actions", () => {
       const result = await createMedia(mediaData);
 
       expect(requireAuth).toHaveBeenCalledTimes(1);
-      expect(result.title).toBe("Film test");
+      expect(result?.title).toBe("Film test");
 
       const inDb = await prisma.usersWatchList.findFirst({
-        where: { userId, mediaId: result.id },
+        where: { userId, mediaId: result?.id },
       });
       expect(inDb).not.toBeNull();
     });
@@ -78,8 +78,8 @@ describe("Media actions", () => {
       const result = await addToWatchlist(existantMedia.id);
 
       expect(requireAuth).toHaveBeenCalledTimes(1);
-      expect(result.userId).toBe(userId);
-      expect(result.mediaId).toBe(existantMedia.id);
+      expect(result?.userId).toBe(userId);
+      expect(result?.mediaId).toBe(existantMedia.id);
 
       const inDb = await prisma.usersWatchList.findFirst({
         where: { userId, mediaId: existantMedia.id },
@@ -98,12 +98,12 @@ describe("Media actions", () => {
       expect(requireAuth).toHaveBeenCalledTimes(1);
 
       const inDb = await prisma.usersWatchList.findFirst({
-        where: { userId: contactId, mediaId: result.mediaId },
+        where: { userId: contactId, mediaId: result?.mediaId },
         include: { suggestions: true },
       });
       expect(inDb).not.toBeNull();
       expect(inDb?.suggestions).toContainEqual(
-        expect.objectContaining({ id: result.id })
+        expect.objectContaining({ id: result?.id })
       );
     });
   });
@@ -114,8 +114,8 @@ describe("Media actions", () => {
       const result = await updateWatched(mediaId);
 
       expect(requireAuth).toHaveBeenCalledTimes(1);
-      expect(result.mediaId).toBe(mediaId);
-      expect(result.watched).toBe(!watched);
+      expect(result?.mediaId).toBe(mediaId);
+      expect(result?.watched).toBe(!watched);
 
       const inDb = await prisma.usersWatchList.findFirst({
         where: { userId, mediaId: mediaId },
@@ -132,7 +132,7 @@ describe("Media actions", () => {
       const result = await deleteFromWatchlist(mediaId);
 
       expect(requireAuth).toHaveBeenCalledTimes(1);
-      expect(result.mediaId).toBe(mediaId);
+      expect(result?.mediaId).toBe(mediaId);
 
       const inDb = await prisma.usersWatchList.findFirst({
         where: { userId, mediaId: mediaId },

@@ -1,5 +1,6 @@
-import { prisma } from "@/src/lib";
-import { ApiError, handleApiRoute, requireAuth } from "@/src/utils";
+import { prisma } from "@/src/lib/server";
+import { handleApiRoute, requireAuth } from "@/src/utils/server";
+import { ApiError } from "@/src/utils/shared";
 import { NextResponse } from "next/server";
 
 export async function GET(

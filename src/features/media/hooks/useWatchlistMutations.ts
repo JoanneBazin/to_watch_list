@@ -13,7 +13,7 @@ import { useUserStore } from "../../user/user.store";
 import { useAsyncAction } from "@/src/hooks";
 import { MediaFormData, UpdateMediaFormData } from "../media.schema";
 import { MediaItem } from "@/src/types";
-import { ApiError } from "@/src/utils";
+import { ApiError } from "@/src/utils/shared";
 
 export const useCreateMedia = () => {
   const { watchlist, setWatchlist } = useMediaStore.getState();

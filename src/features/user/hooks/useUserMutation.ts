@@ -4,8 +4,9 @@ import {
   updateUserName,
 } from "../user.action";
 import { useUserStore } from "../user.store";
-import { ApiError, handleSignOut } from "@/src/utils";
+import { handleSignOut } from "@/src/utils/client";
 import { useAsyncAction } from "@/src/hooks";
+import { ApiError } from "@/src/utils/shared";
 
 export const useUpdateUser = () => {
   const { user, setUser } = useUserStore.getState();

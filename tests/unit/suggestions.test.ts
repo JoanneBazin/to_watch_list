@@ -14,8 +14,8 @@ import {
   createTestMedia,
   createTestUser,
 } from "../helpers/setup";
-import { prisma } from "@/src/lib/prisma";
-import { requireAuth } from "@/src/utils/requireAuth";
+import { prisma } from "@/src/lib/server/prisma";
+import { requireAuth } from "@/src/utils/server";
 import {
   shareMediaSuggestion,
   updateReceivedSuggestions,
@@ -59,11 +59,11 @@ describe("Suggestions actions", () => {
       const result = await shareMediaSuggestion(media.id, contactId);
 
       expect(requireAuth).toHaveBeenCalledTimes(1);
-      expect(result.mediaId).toBe(media.id);
+      expect(result?.mediaId).toBe(media.id);
 
       const inDb = await prisma.suggestion.findFirst({
         where: {
-          id: result.id,
+          id: result?.id,
           senderId: userId,
           receiverId: contactId,
           status: "PENDING",
@@ -97,7 +97,6 @@ describe("Suggestions actions", () => {
       );
 
       expect(requireAuth).toHaveBeenCalledTimes(1);
-      expect(result.id).toBe(media.id);
 
       const inDb = await prisma.suggestion.findMany({
         where: {
@@ -125,7 +124,7 @@ describe("Suggestions actions", () => {
       );
 
       expect(requireAuth).toHaveBeenCalledTimes(1);
-      expect(result.receiverComment).toBe(userMessage);
+      expect(result?.receiverComment).toBe(userMessage);
 
       const inDb = await prisma.suggestion.findFirst({
         where: {

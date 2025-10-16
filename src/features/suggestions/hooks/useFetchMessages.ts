@@ -2,7 +2,7 @@
 import { MessageProps } from "@/src/types";
 import { useEffect, useState } from "react";
 import { fetchResponseMessages } from "../suggestions.api";
-import { handleError } from "@/src/utils";
+import { handleError } from "@/src/utils/client";
 
 export const useFetchMessages = () => {
   const [messages, setMessages] = useState<MessageProps[]>([]);
