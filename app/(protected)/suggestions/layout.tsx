@@ -1,6 +1,6 @@
 "use client";
 
-import { SectionNavButton } from "@/src/components/layout/SectionNavButton";
+import { SectionNavButton } from "@/src/components/layout";
 import {
   SuggestionsProvider,
   useSuggestions,

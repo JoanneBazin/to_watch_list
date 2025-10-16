@@ -1,9 +1,11 @@
 "use client";
 
-import FriendsList from "@/src/features/social/components/FriendsList";
-import UserSearch from "@/src/features/social/components/UserSearch";
-import FriendRequests from "@/src/features/social/components/requests/FriendRequests";
 import { useCommunauty } from "@/src/features/social/CommunautyContext";
+import {
+  FriendRequests,
+  FriendsList,
+  UserSearch,
+} from "@/src/features/social/components";
 
 const CommunautyPage = () => {
   const { section } = useCommunauty();

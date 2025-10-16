@@ -15,7 +15,7 @@ import {
 } from "@/src/components/ui";
 import { useDeleteAccount } from "../hooks/useUserMutation";
 
-const DeleteProfile = () => {
+export const DeleteProfile = () => {
   const { deleteAccount, isDeleting, deleteError } = useDeleteAccount();
 
   const handleDelete = async (e: React.MouseEvent) => {
@@ -51,5 +51,3 @@ const DeleteProfile = () => {
     </AlertDialog>
   );
 };
-
-export default DeleteProfile;

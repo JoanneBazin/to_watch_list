@@ -3,7 +3,7 @@ import { Avatar, Loader } from "@/src/components/ui";
 import Link from "next/link";
 import { useUserStore } from "../../user/user.store";
 
-const FriendsList = () => {
+export const FriendsList = () => {
   const { contacts, isPending, error } = useUserStore();
 
   return (
@@ -28,5 +28,3 @@ const FriendsList = () => {
     </section>
   );
 };
-
-export default FriendsList;

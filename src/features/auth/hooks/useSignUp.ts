@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { signUp } from "@/src/lib/auth-client";
+import { signUp } from "@/src/lib";
 import { SignUpData, signUpSchema } from "../auth.schema";
-import { handleError } from "@/src/utils/errorHandlers";
-import { safeValidateSchema } from "@/src/utils/validateSchema";
+import { handleError, safeValidateSchema } from "@/src/utils";
 
 export const useSignUp = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);

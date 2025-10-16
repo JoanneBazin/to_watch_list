@@ -7,7 +7,7 @@ import { useState } from "react";
 import AddEntryForm from "../../media/components/form/AddEntryForm";
 import { Send } from "lucide-react";
 
-const FriendWatchlist = ({ user, entry }: FriendWatchlistProps) => {
+export const FriendWatchlist = ({ user, entry }: FriendWatchlistProps) => {
   const [open, setOpen] = useState(false);
   const userList = user.watchlist.filter((media) => media.type === entry);
   const watchlist = useMediaStore((s) => s.watchlist);
@@ -60,5 +60,3 @@ const FriendWatchlist = ({ user, entry }: FriendWatchlistProps) => {
     </div>
   );
 };
-
-export default FriendWatchlist;

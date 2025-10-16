@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { LuMenu } from "react-icons/lu";
 import { Avatar, Button, Logo, SignOutBtn, Skeleton } from "../ui";
 import { useUserStore } from "@/src/features/user/user.store";
-import { useClickOutside } from "@/src/hooks/useClickOutside";
 import clsx from "clsx";
-import { RxCross1 } from "react-icons/rx";
+import { Menu, X } from "lucide-react";
+import { useClickOutside } from "@/src/hooks";
 
 const PrivateHeader = () => {
   const { user, counts, isPending, error } = useUserStore();
@@ -41,13 +40,13 @@ const PrivateHeader = () => {
               className="relative px-5 md:hidden"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              <RxCross1
+              <X
                 className={clsx(
                   "absolute opacity-0 rotate-90 scale-0 transition-all duration-300",
                   isMenuOpen && "opacity-100 rotate-0 scale-100"
                 )}
               />
-              <LuMenu
+              <Menu
                 className={clsx(
                   "absolute transition-all duration-300",
                   isMenuOpen

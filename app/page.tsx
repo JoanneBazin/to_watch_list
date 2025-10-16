@@ -1,10 +1,10 @@
 "use client";
-import { Logo } from "@/src/components/ui/Logo";
+import { Logo } from "@/src/components/ui";
 import { useSession } from "@/src/lib/auth-client";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function Home() {
   const { data: session, isPending } = useSession();

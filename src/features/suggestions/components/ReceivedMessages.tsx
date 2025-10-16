@@ -3,7 +3,7 @@ import { Loader } from "../../../components/ui/Loader";
 import { useFetchMessages } from "../hooks/useFetchMessages";
 import { MessageCard } from "./MessageCard";
 
-const ReceivedMessages = () => {
+export const ReceivedMessages = () => {
   const { messages, isLoading, error } = useFetchMessages();
 
   return (
@@ -28,5 +28,3 @@ const ReceivedMessages = () => {
     </section>
   );
 };
-
-export default ReceivedMessages;

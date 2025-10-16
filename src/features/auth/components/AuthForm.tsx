@@ -1,13 +1,10 @@
 "use client";
 
-import { Button } from "@/src/components/ui/button";
-import { Input } from "@/src/components/ui/input";
 import { useState } from "react";
-import { Loader } from "@/src/components/ui";
-import { useSignIn } from "../hooks/useSignIn";
-import { useSignUp } from "../hooks/useSignUp";
+import { useSignIn, useSignUp } from "../hooks";
+import { Button, Input, Loader } from "@/src/components/ui";
 
-const AuthForm = ({ isLogin = true }: { isLogin: boolean }) => {
+export const AuthForm = ({ isLogin = true }: { isLogin: boolean }) => {
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -88,5 +85,3 @@ const AuthForm = ({ isLogin = true }: { isLogin: boolean }) => {
     </form>
   );
 };
-
-export default AuthForm;

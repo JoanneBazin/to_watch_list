@@ -1,6 +1,6 @@
 "use client";
-import { Button } from "@/src/components/ui/button";
-import { handleSignOut } from "@/src/utils/handleSignOut";
+import { Button } from "@/src/components/ui";
+import { handleSignOut } from "@/src/utils";
 
 const SignOutBtn = () => {
   return (

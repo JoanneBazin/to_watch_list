@@ -1,9 +1,11 @@
 "use client";
 
 import { Avatar, Button, SignOutBtn } from "@/src/components/ui";
-import DeleteProfile from "@/src/features/user/components/DeleteProfile";
-import EditUserAvatar from "@/src/features/user/components/EditUserAvatar";
-import { EditUserName } from "@/src/features/user/components/EditUserName";
+import {
+  DeleteProfile,
+  EditUserAvatar,
+  EditUserName,
+} from "@/src/features/user/components";
 import { useUserStore } from "@/src/features/user/user.store";
 import Link from "next/link";
 

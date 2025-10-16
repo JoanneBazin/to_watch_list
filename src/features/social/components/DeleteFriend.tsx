@@ -17,7 +17,7 @@ import {
 import { useDeleteFriend } from "../hooks/useSocialMutations";
 import { Trash } from "lucide-react";
 
-const DeleteFriend = ({ friendId }: { friendId: string }) => {
+export const DeleteFriend = ({ friendId }: { friendId: string }) => {
   const router = useRouter();
   const { deleteContact, isDeleting, deleteError } = useDeleteFriend();
 
@@ -60,5 +60,3 @@ const DeleteFriend = ({ friendId }: { friendId: string }) => {
     </AlertDialog>
   );
 };
-
-export default DeleteFriend;

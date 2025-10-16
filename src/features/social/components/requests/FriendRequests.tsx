@@ -4,7 +4,7 @@ import { useFetchRequests } from "@/src/features/social/hooks/useFetchRequests";
 import { Loader, Avatar } from "@/src/components/ui";
 import ValidateFriendRequest from "./ValidateFriendRequest";
 
-const FriendRequests = () => {
+export const FriendRequests = () => {
   const { receivedRequests, isLoading, error } = useFetchRequests();
 
   return (
@@ -41,5 +41,3 @@ const FriendRequests = () => {
     </section>
   );
 };
-
-export default FriendRequests;
