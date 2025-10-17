@@ -11,7 +11,6 @@ import {
   cleanDatabase,
   createMockSession,
   createTestContact,
-  createTestMedia,
   createTestUser,
 } from "../helpers/setup";
 import { prisma } from "@/src/lib/server/prisma";
@@ -22,8 +21,9 @@ import {
   updateSuggestionResponse,
 } from "@/src/features/suggestions/suggestions.actions";
 import { MediaItem } from "@/src/types";
+import { createTestCategory, createTestMedia } from "../helpers/media-helpers";
 
-vi.mock("@/src/utils/requireAuth", () => ({
+vi.mock("@/src/utils/server/requireAuth", () => ({
   requireAuth: vi.fn(),
 }));
 
@@ -37,6 +37,7 @@ describe("Suggestions actions", () => {
   beforeAll(async () => {
     await cleanDatabase();
     userId = await createTestUser({ email: "user@test.com" });
+    await createTestCategory();
     vi.mocked(requireAuth).mockResolvedValue(createMockSession(userId));
   });
   beforeEach(async () => {
@@ -51,8 +52,10 @@ describe("Suggestions actions", () => {
     let media: MediaItem;
 
     it("should share a media as suggestion", async () => {
-      const newContact = await createTestContact(userId, "sender@test.com");
-      contactId = newContact.receiverId;
+      const { receiver } = await createTestContact(userId, {
+        email: "sender@test.com",
+      });
+      contactId = receiver.id;
 
       media = await createTestMedia();
 
@@ -91,10 +94,7 @@ describe("Suggestions actions", () => {
         }),
       ]);
 
-      const result = await updateReceivedSuggestions(
-        media.id,
-        newSuggestionStatus
-      );
+      await updateReceivedSuggestions(media.id, newSuggestionStatus);
 
       expect(requireAuth).toHaveBeenCalledTimes(1);
 

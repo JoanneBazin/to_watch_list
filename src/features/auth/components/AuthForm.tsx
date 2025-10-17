@@ -45,6 +45,7 @@ export const AuthForm = ({ isLogin = true }: { isLogin: boolean }) => {
           <Input
             type="text"
             placeholder="Nom"
+            data-testid="name-input"
             value={user.name}
             onChange={(e) => setUser({ ...user, name: e.target.value })}
           />
@@ -57,6 +58,7 @@ export const AuthForm = ({ isLogin = true }: { isLogin: boolean }) => {
         <Input
           type="text"
           placeholder="Email"
+          data-testid="email-input"
           value={user.email}
           onChange={(e) => setUser({ ...user, email: e.target.value })}
         />
@@ -69,6 +71,7 @@ export const AuthForm = ({ isLogin = true }: { isLogin: boolean }) => {
         <Input
           type="text"
           placeholder="Mot de passe"
+          data-testid="password-input"
           value={user.password}
           onChange={(e) => setUser({ ...user, password: e.target.value })}
         />
@@ -77,11 +80,15 @@ export const AuthForm = ({ isLogin = true }: { isLogin: boolean }) => {
         )}
       </div>
 
-      <Button type="submit" className="mt-3">
+      <Button type="submit" className="mt-3" data-testid="auth-submit">
         {isLoading ? <Loader /> : isLogin ? "Se connecter" : "S'inscrire"}
       </Button>
 
-      {authError && <p className="error-message text-center">{authError}</p>}
+      {authError && (
+        <p className="error-message text-center" data-testid="auth-error">
+          {authError}
+        </p>
+      )}
     </form>
   );
 };

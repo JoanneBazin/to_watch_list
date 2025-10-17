@@ -41,7 +41,10 @@ export const UserCard = ({ user }: { user: SearchContact }) => {
   }
 
   return (
-    <Card className="flex flex-col items-center border-accent-dark">
+    <Card
+      className="flex flex-col items-center border-accent-dark"
+      data-testid="user-card"
+    >
       <CardHeader>
         <CardTitle className="text-center">{user.name}</CardTitle>
       </CardHeader>

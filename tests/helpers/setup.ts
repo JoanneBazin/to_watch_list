@@ -14,11 +14,12 @@ export const createTestUser = async (overrides = {}) => {
   return userData.user.id;
 };
 
-export const createTestContact = async (userId: string, email: string) => {
+export const createTestContact = async (userId: string, overrides = {}) => {
   const contactUser = await createTestUser({
-    email,
+    email: "contactTest@test.com",
     name: "Test Contact",
     password: "password1234",
+    ...overrides,
   });
 
   return prisma.friendRequest.create({
@@ -27,7 +28,7 @@ export const createTestContact = async (userId: string, email: string) => {
       receiverId: contactUser,
       status: "ACCEPTED",
     },
-    select: { receiverId: true },
+    select: { receiver: true },
   });
 };
 
@@ -50,32 +51,9 @@ export const createMockSession = (userId: string) => ({
   },
 });
 
-export const createTestCategory = async () => {
-  await prisma.category.create({
-    data: { name: "Action" },
-  });
-};
-
-export const createTestMedia = async () => {
-  const media = await prisma.watchList.create({
-    data: { title: "Film title", type: "FILM", categoryName: "Action" },
-  });
-  return { ...media, addedAt: new Date(Date.now()), watched: false };
-};
-
-export const getTestMediaIdFromWatchlist = async (userId: string) => {
-  const mediaId = await prisma.usersWatchList.findFirst({
-    where: { userId: userId },
-    select: {
-      mediaId: true,
-      watched: true,
-    },
-  });
-  if (!mediaId) throw new Error("No media available");
-  return mediaId;
-};
-
 export const cleanDatabase = async () => {
   await prisma.user.deleteMany({});
+  await prisma.account.deleteMany({});
   await prisma.watchList.deleteMany({});
+  await prisma.category.deleteMany({});
 };

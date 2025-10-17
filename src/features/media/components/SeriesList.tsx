@@ -16,7 +16,15 @@ export const SeriesList = () => {
     <section>
       <h2 className="sr-only">Section séries</h2>
       <Modal
-        trigger={<Button variant="outline">Ajouter une série</Button>}
+        trigger={
+          <Button
+            variant="outline"
+            className="text-xs sm:text-sm"
+            data-testid="add-serie-btn"
+          >
+            Ajouter une série
+          </Button>
+        }
         title="Nouvelle série"
         open={open}
         setOpen={setOpen}

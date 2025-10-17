@@ -39,6 +39,7 @@ export const SuggestionResponse = ({ mediaId }: { mediaId: string }) => {
             <Button
               variant="outline"
               onClick={() => handleUpdateSuggestion("ACCEPTED")}
+              data-testid="accept-suggestion-btn"
             >
               <Plus size={16} />
               <span className="ml-2 text-xs md:text-sm">

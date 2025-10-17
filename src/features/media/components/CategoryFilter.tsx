@@ -1,15 +1,5 @@
 "use client";
 import { useMemo, useState } from "react";
-
-import {
-  ScrollArea,
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/src/components/ui";
 import { useMediaStore } from "../media.store";
 import { MediaTable } from "./MediaTable";
 
@@ -31,27 +21,23 @@ export const CategoryFilter = () => {
     <section>
       <h2 className="sr-only">Section tri par catégorie</h2>
       <div className="flex flex-col gap-4 my-4 lg:my-10">
-        <Select
-          onValueChange={(value) =>
-            setSelectedCategory(value === "ALL" ? null : value)
+        <select
+          id="category-filter"
+          className="h-10 sm:w-1/3 cursor-default items-center rounded-lg border border-input bg-background px-1 md:px-3 py-2 text-xs md:text-sm overflow-y-scroll ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          onChange={(e) =>
+            setSelectedCategory(
+              e.target.value === "ALL" ? null : e.target.value
+            )
           }
         >
-          <SelectTrigger className="sm:w-1/2 md:w-1/3 lg:w-1/4">
-            <SelectValue placeholder="Filtrer par catégorie" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <ScrollArea className="max-h-60 rounded-md ">
-                <SelectItem value="ALL">Toutes les catégories</SelectItem>
-                {categories.map((category) => (
-                  <SelectItem value={category} key={category}>
-                    {category}
-                  </SelectItem>
-                ))}
-              </ScrollArea>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+          <option value="ALL">Toutes les catégories</option>
+
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
 
         <div className="w-full">
           {mediasSelection.length > 0 ? (

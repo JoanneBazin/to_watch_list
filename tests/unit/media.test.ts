@@ -11,9 +11,7 @@ import {
   cleanDatabase,
   createMockSession,
   createTestContact,
-  createTestMedia,
   createTestUser,
-  getTestMediaIdFromWatchlist,
 } from "../helpers/setup";
 import {
   addToContactWatchlist,
@@ -25,8 +23,13 @@ import {
 import { prisma } from "@/src/lib/server";
 import { requireAuth } from "@/src/utils/server";
 import { MediaFormData } from "@/src/features/media/media.schema";
+import {
+  createTestCategory,
+  createTestMedia,
+  getTestMediaIdFromWatchlist,
+} from "../helpers/media-helpers";
 
-vi.mock("@/src/utils/requireAuth", () => ({
+vi.mock("@/src/utils/server/requireAuth", () => ({
   requireAuth: vi.fn(),
 }));
 
@@ -40,6 +43,8 @@ describe("Media actions", () => {
   beforeAll(async () => {
     await cleanDatabase();
     userId = await createTestUser();
+    await createTestCategory();
+
     vi.mocked(requireAuth).mockResolvedValue(createMockSession(userId));
   });
   beforeEach(async () => {
@@ -88,10 +93,10 @@ describe("Media actions", () => {
     });
 
     it("should create a new entry into contact watchlist", async () => {
-      const { receiverId: contactId } = await createTestContact(
-        userId,
-        "contact@test.com"
-      );
+      const { receiver } = await createTestContact(userId, {
+        email: "contact@test.com",
+      });
+      const contactId = receiver.id;
 
       const result = await addToContactWatchlist(mediaData, contactId);
 

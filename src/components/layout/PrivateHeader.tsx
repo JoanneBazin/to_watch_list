@@ -102,6 +102,7 @@ export const PrivateHeader = () => {
                 <button
                   className="font-bold hover:text-accent flex items-center gap-3"
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  data-testid="open-profile-menu"
                 >
                   <Avatar img={user?.image} size="small" />
                   {user?.name}

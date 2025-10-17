@@ -18,7 +18,11 @@ export const FilmsList = () => {
 
       <Modal
         trigger={
-          <Button variant="outline" className="text-xs sm:text-sm">
+          <Button
+            variant="outline"
+            className="text-xs sm:text-sm"
+            data-testid="add-film-btn"
+          >
             Ajouter un film
           </Button>
         }
