@@ -18,6 +18,7 @@ export const UserSearch = () => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Rechercher un contact"
+          data-testid="search-user-input"
         />
       </div>
       {isLoading && <Loader />}

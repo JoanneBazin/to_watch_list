@@ -23,6 +23,7 @@ export const FriendRequests = () => {
             <div
               key={index}
               className="flex justify-between items-center max-w-[300px]"
+              data-testid="request-card"
             >
               <div className="flex gap-3 items-center">
                 <Avatar img={request.sender.image} />

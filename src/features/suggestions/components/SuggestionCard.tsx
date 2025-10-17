@@ -11,7 +11,11 @@ import { MediaItem } from "@/src/types";
 
 export const SuggestionCard = ({ media }: { media: MediaItem }) => {
   return (
-    <Card key={media.id} className="border-accent-dark p-4 sm:p-6 h-fit">
+    <Card
+      key={media.id}
+      className="border-accent-dark p-4 sm:p-6 h-fit"
+      data-testid="suggestion-card"
+    >
       <CardHeader className="p-0 mb-2">
         <CardTitle className="flex justify-between gap-4 items-start text-base sm:text-xl">
           <span>{media.title}</span>

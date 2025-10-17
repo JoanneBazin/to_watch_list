@@ -13,9 +13,9 @@ export const FriendWatchlist = ({ user, entry }: FriendWatchlistProps) => {
   return (
     <div>
       <div className="flex items-center gap-14 mb-4">
-        <h3 className="font-semibold text-xl sm:text-2xl">
+        <h4 className="font-semibold text-xl sm:text-2xl">
           {entry === "FILM" ? "Films" : "Séries"}
-        </h3>
+        </h4>
         <Modal
           trigger={
             <Button

@@ -28,6 +28,7 @@ const Authentification = () => {
         <button
           onClick={() => setIsLogin(!isLogin)}
           className="text-sm sm:text-base text-foreground underline hover:text-accent"
+          data-testid="toggle-auth-form"
         >
           {isLogin ? "Créer un compte" : "Déjà un compte ?"}
         </button>

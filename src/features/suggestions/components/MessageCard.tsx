@@ -26,6 +26,7 @@ export const MessageCard = ({ message }: { message: MessageProps }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => setIsHovered(!isHovered)}
+      data-testid="message-card"
     >
       <div
         className={clsx(

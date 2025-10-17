@@ -10,6 +10,7 @@ import {
 import {
   cleanDatabase,
   createMockSession,
+  createTestContact,
   createTestUser,
 } from "../helpers/setup";
 import { prisma } from "@/src/lib/server/prisma";
@@ -20,7 +21,7 @@ import {
   updateFriendRequestStatus,
 } from "@/src/features/social/social.action";
 
-vi.mock("@/src/utils/requireAuth", () => ({
+vi.mock("@/src/utils/server/requireAuth", () => ({
   requireAuth: vi.fn(),
 }));
 
@@ -44,8 +45,6 @@ describe("Social actions", () => {
   });
 
   describe("manageFriendRequest", () => {
-    let friendId: string | undefined;
-
     it("should send a new friend request", async () => {
       const contactUser = await createTestUser({
         email: "receiver@test.com",
@@ -96,28 +95,31 @@ describe("Social actions", () => {
         },
       });
       expect(inDb).not.toBeNull();
-
-      friendId = result?.sender.id;
     });
 
-    // it("should delete a relation", async () => {
-    //   await deleteFriend(friendId);
+    it("should delete a relation", async () => {
+      const { receiver } = await createTestContact(userId, {
+        email: "contactuser@test.com",
+      });
+      const friendId = receiver.id;
 
-    //   expect(requireAuth).toHaveBeenCalledTimes(1);
+      await deleteFriend(friendId);
 
-    //   const inDb = await prisma.friendRequest.findFirst({
-    //     where: {
-    //       OR: [
-    //         {
-    //           AND: [{ senderId: userId }, { receiverId: friendId }],
-    //         },
-    //         {
-    //           AND: [{ senderId: friendId }, { receiverId: userId }],
-    //         },
-    //       ],
-    //     },
-    //   });
-    //   expect(inDb).toBeNull();
-    // });
+      expect(requireAuth).toHaveBeenCalledTimes(1);
+
+      const inDb = await prisma.friendRequest.findFirst({
+        where: {
+          OR: [
+            {
+              AND: [{ senderId: userId }, { receiverId: friendId }],
+            },
+            {
+              AND: [{ senderId: friendId }, { receiverId: userId }],
+            },
+          ],
+        },
+      });
+      expect(inDb).toBeNull();
+    });
   });
 });

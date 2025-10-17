@@ -18,7 +18,11 @@ export const FriendsList = () => {
       {contacts.length > 0 && (
         <div className="flex flex-col gap-5 my-6">
           {contacts.map((contact) => (
-            <div key={contact.id} className="flex gap-5 items-center">
+            <div
+              key={contact.id}
+              className="flex gap-5 items-center"
+              data-testid="contact-card"
+            >
               <Avatar img={contact.image} />
               <Link href={`/user/${contact.id}`}>{contact.name}</Link>
             </div>

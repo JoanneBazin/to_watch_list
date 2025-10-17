@@ -20,7 +20,7 @@ const FriendProfilePage = ({ params }: { params: { userId: string } }) => {
 
       {friendProfile && (
         <>
-          <section className="my-12">
+          <section className="my-12" data-testid="contact-profile">
             <div className="flex gap-6 sm:gap-10 items-center justify-center">
               <Avatar img={friendProfile.image} size="large" />
               <h2 className="text-2xl sm:text-4xl text-center">
@@ -30,7 +30,7 @@ const FriendProfilePage = ({ params }: { params: { userId: string } }) => {
           </section>
 
           <section className="w-full flex flex-col items-center sm:items-start gap-10 sm:flex-row sm:justify-around p-0">
-            <h2 className="sr-only">Watchlist utilisateur</h2>
+            <h3 className="sr-only">Watchlist utilisateur</h3>
             <FriendWatchlist user={friendProfile} entry="FILM" />
             <FriendWatchlist user={friendProfile} entry="SERIE" />
           </section>
