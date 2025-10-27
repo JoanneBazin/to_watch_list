@@ -2,6 +2,11 @@ import { z } from "zod";
 
 export const mediaSchema = z.object({
   title: z.string().min(1, "Le titre est obligatoire"),
+  tmdbId: z.number().optional().nullable(),
+  originalTitle: z
+    .string()
+    .transform((val) => (val.trim() === "" ? null : val))
+    .nullable(),
   synopsis: z
     .string()
     .transform((val) => (val.trim() === "" ? null : val))
@@ -18,7 +23,12 @@ export const mediaSchema = z.object({
     .string()
     .transform((val) => (val.trim() === "" ? null : val))
     .nullable(),
-  categoryName: z.string().min(1, "La catégorie est obligatoire"),
+
+  categories: z
+    .union([z.string(), z.array(z.string())])
+    .transform((val) => (Array.isArray(val) ? val : [val]))
+    .pipe(z.array(z.string()).min(1, "La catégorie est obligatoire")),
+
   type: z.enum(["FILM", "SERIE"], {
     required_error: "Le type de média est obligatoire",
     invalid_type_error: "Type invalide",

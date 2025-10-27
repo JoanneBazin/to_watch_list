@@ -7,14 +7,22 @@ export const CategoryFilter = () => {
   const watchlist = useMediaStore((s) => s.watchlist);
 
   const categories = useMemo(() => {
-    return Array.from(new Set(watchlist.map((media) => media.categoryName)));
+    return Array.from(
+      new Set(
+        watchlist
+          .flatMap((media) => media.categories.map((cat) => cat.trim()))
+          .sort()
+      )
+    );
   }, [watchlist]);
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const mediasSelection = useMemo(() => {
     if (!selectedCategory) return watchlist;
-    return watchlist.filter((media) => media.categoryName === selectedCategory);
+    return watchlist.filter((media) =>
+      media.categories.includes(selectedCategory)
+    );
   }, [selectedCategory, watchlist]);
 
   return (

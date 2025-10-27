@@ -45,12 +45,12 @@ export const MediaOptions = ({ media, onError }: MediaOptionsProps) => {
             Partager {media.title}
           </DropdownMenuItem>
 
-          <DropdownMenuItem
+          {/* <DropdownMenuItem
             onClick={() => handleOpenDialog("edit")}
             className="text-xs"
           >
             Modifier
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuItem className="p-0">
             <DeleteMediaButton
               mediaId={media.id}
@@ -67,11 +67,11 @@ export const MediaOptions = ({ media, onError }: MediaOptionsProps) => {
         mobile={true}
         {...getDialogProps("share")}
       />
-      <EditMediaDialog
+      {/* <EditMediaDialog
         media={media}
         mobile={true}
         {...getDialogProps("edit")}
-      />
+      /> */}
     </>
   );
 };

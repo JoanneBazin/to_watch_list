@@ -60,4 +60,29 @@
     @apply text-xs text-right;
     @apply sm:text-sm;
   }
+
+  .search-media-card {
+    display: grid;
+    grid-template-areas:
+      "cover header"
+      "details details";
+    grid-template-columns: auto 1fr;
+  }
+  .card-cover {
+    grid-area: cover;
+  }
+  .card-header {
+    grid-area: header;
+  }
+  .card-details {
+    grid-area: details;
+  }
+
+  @media (min-width: 640px) {
+    .search-media-card {
+      grid-template-areas:
+        "header header"
+        "cover details";
+    }
+  }
 }

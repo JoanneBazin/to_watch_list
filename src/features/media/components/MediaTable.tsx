@@ -64,8 +64,23 @@ export const MediaTable = ({ data }: { data: MediaItem[] }) => {
       },
     },
     {
-      accessorKey: "categoryName",
+      accessorKey: "categories",
       header: "Catégorie",
+      cell: ({ row }) => {
+        const categories: string[] = row.getValue("categories");
+        return (
+          <div className="flex flex-wrap gap-1">
+            <span className="leading-relaxed">
+              {categories.slice(0, 2).join(" | ")}
+            </span>
+            {categories.length > 2 && (
+              <span className="text-accent text-xs">
+                +{categories.length - 2}
+              </span>
+            )}
+          </div>
+        );
+      },
       meta: {
         className: "hidden sm:table-cell text-xs sm:w-1/5",
       },
@@ -95,14 +110,6 @@ export const MediaTable = ({ data }: { data: MediaItem[] }) => {
           setError={setUpdateError}
         />
       ),
-      meta: {
-        className: "hidden md:table-cell p-4",
-      },
-    },
-
-    {
-      id: "edit",
-      cell: ({ row }) => <EditMediaDialog media={row.original} />,
       meta: {
         className: "hidden md:table-cell p-4",
       },
