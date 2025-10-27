@@ -10,14 +10,15 @@ datasource db {
 
 model WatchList {
   id           String    @id @default(cuid())
+  tmdbId       Int?
   title        String
+  originalTitle String?
   type         MediaType
   synopsis     String?
   year         Int?
   real         String?
   platform     String?
-  categoryName String
-  category     Category  @relation(fields: [categoryName], references: [name])
+  categories  String[]
 
   users       UsersWatchList[]
   suggestions Suggestion[]
@@ -31,13 +32,12 @@ enum MediaType {
 model Category {
   id     String      @id @default(cuid())
   name   String      @unique
-  medias WatchList[]
 }
 
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
-  name         String
+  name         String   @unique
   createdAt    DateTime @default(now())
   admin        Boolean  @default(false)
 

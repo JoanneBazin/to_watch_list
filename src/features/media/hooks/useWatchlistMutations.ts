@@ -1,6 +1,8 @@
 "use client";
 
 import {
+  addSearchedMedia,
+  addSearchedMediaToContactWatchlist,
   addToContactWatchlist,
   addToWatchlist,
   createMedia,
@@ -12,8 +14,34 @@ import { useMediaStore } from "../media.store";
 import { useUserStore } from "../../user/user.store";
 import { useAsyncAction } from "@/src/hooks";
 import { MediaFormData, UpdateMediaFormData } from "../media.schema";
-import { MediaItem } from "@/src/types";
+import { EntryType, MediaItem } from "@/src/types";
 import { ApiError } from "@/src/utils/shared";
+
+export const useAddSearchedMediaToWatchlist = () => {
+  const { watchlist, setWatchlist } = useMediaStore.getState();
+
+  const addNewUserMedia = async (mediaId: number, entry: EntryType) => {
+    const result = await addSearchedMedia(mediaId, entry);
+
+    if (!result) throw new ApiError(500, "Erreur lors de la création");
+
+    const newItem: MediaItem = {
+      ...result,
+      addedAt: new Date(),
+      watched: false,
+    };
+
+    setWatchlist([newItem, ...watchlist]);
+  };
+
+  const {
+    run: addNewMedia,
+    isLoading: isAddingMedia,
+    error: addError,
+  } = useAsyncAction(addNewUserMedia);
+
+  return { addNewMedia, isAddingMedia, addError };
+};
 
 export const useCreateMedia = () => {
   const { watchlist, setWatchlist } = useMediaStore.getState();
@@ -56,6 +84,46 @@ export const useAddToWatchlist = () => {
   } = useAsyncAction(addNewUserMedia);
 
   return { addMedia, isAddingMedia, addError };
+};
+
+export const useAddSearchedMediaToContactWatchlist = () => {
+  const { contacts, setContacts } = useUserStore.getState();
+
+  const addNewContactMedia = async (
+    mediaId: number,
+    receiverId: string,
+    entry: EntryType
+  ) => {
+    const result = await addSearchedMediaToContactWatchlist(
+      mediaId,
+      receiverId,
+      entry
+    );
+
+    if (!result) throw new ApiError(500, "Erreur lors de la création");
+
+    setContacts(
+      contacts.map((c) =>
+        c.id === result.receiverId
+          ? {
+              ...c,
+              suggestionsFromUser: [
+                ...(c.suggestionsFromUser || []),
+                result.id,
+              ],
+            }
+          : c
+      )
+    );
+  };
+
+  const {
+    run: addNewcontactMedia,
+    isLoading: isAddingContactMedia,
+    error: addContactError,
+  } = useAsyncAction(addNewContactMedia);
+
+  return { addNewContactMedia, isAddingContactMedia, addContactError };
 };
 
 export const useCreateContactMedia = () => {

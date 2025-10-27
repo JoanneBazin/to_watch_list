@@ -72,6 +72,21 @@ export const AddEntryForm = ({
           <p className="error-message text-end">{errors.title.message}</p>
         )}
         <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="title" className="input-label">
+            Titre original
+          </Label>
+          <Input
+            id="originalTitle"
+            {...register("originalTitle")}
+            className="col-span-3"
+          />
+        </div>
+        {errors.originalTitle && (
+          <p className="error-message text-end">
+            {errors.originalTitle.message}
+          </p>
+        )}
+        <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="synopsis" className="input-label">
             Synopsis
           </Label>
@@ -110,13 +125,13 @@ export const AddEntryForm = ({
         </div>
         <div className="grid grid-cols-2 gap-4 items-center">
           <div>
-            {errors.categoryName && (
-              <p className="error-message">{errors.categoryName.message}</p>
+            {errors.categories && (
+              <p className="error-message">{errors.categories.message}</p>
             )}
           </div>
           <select
             id="category"
-            {...register("categoryName")}
+            {...register("categories")}
             className="flex gap-2 h-10 cursor-default items-center rounded-lg border border-input bg-background px-1 md:px-3 py-2 text-xs md:text-sm overflow-y-scroll ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <option value="">Catégorie</option>

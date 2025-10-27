@@ -39,7 +39,6 @@ export const shareMediaSuggestion = async (
         mediaId: mediaId,
         senderComment: comment,
       },
-      select: { id: true, mediaId: true },
     });
   } catch (error) {
     handleActionError(error, "Share media");

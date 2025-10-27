@@ -3,12 +3,24 @@ import { useMediaStore } from "../../media/media.store";
 import { Button, Modal } from "@/src/components/ui";
 import { useState } from "react";
 import { Send } from "lucide-react";
-import { AddEntryForm, AddMedia, MediaCard } from "../../media/components";
+import {
+  AddEntryForm,
+  AddMedia,
+  MediaCard,
+  MediaModalNav,
+  SearchMediaForm,
+} from "../../media/components";
+
+const VIEWS = [
+  { id: "search", label: "Chercher un titre" },
+  { id: "create", label: "Créer un titre" },
+];
 
 export const FriendWatchlist = ({ user, entry }: FriendWatchlistProps) => {
   const [open, setOpen] = useState(false);
   const userList = user.watchlist.filter((media) => media.type === entry);
   const watchlist = useMediaStore((s) => s.watchlist);
+  const [view, setView] = useState("search");
 
   return (
     <div>
@@ -30,12 +42,17 @@ export const FriendWatchlist = ({ user, entry }: FriendWatchlistProps) => {
           open={open}
           setOpen={setOpen}
         >
-          <AddEntryForm
-            entry={entry}
-            isSuggestedMedia={true}
-            receiverId={user.id}
-            onSuccess={() => setOpen(false)}
-          />
+          <MediaModalNav views={VIEWS} activeView={view} setView={setView} />
+          {view === "search" ? (
+            <SearchMediaForm entry={entry} />
+          ) : (
+            <AddEntryForm
+              entry={entry}
+              isSuggestedMedia={true}
+              receiverId={user.id}
+              onSuccess={() => setOpen(false)}
+            />
+          )}
         </Modal>
       </div>
 

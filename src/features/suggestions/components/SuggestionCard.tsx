@@ -18,7 +18,12 @@ export const SuggestionCard = ({ media }: { media: MediaItem }) => {
     >
       <CardHeader className="p-0 mb-2">
         <CardTitle className="flex justify-between gap-4 items-start text-base sm:text-xl">
-          <span>{media.title}</span>
+          <div>
+            <p>{media.title}</p>
+            <p className="text-xs sm:text-sm text-accent">
+              {media.originalTitle}
+            </p>
+          </div>
 
           <Badge className="bg-foreground">{media.type}</Badge>
         </CardTitle>
@@ -28,7 +33,9 @@ export const SuggestionCard = ({ media }: { media: MediaItem }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="text-sm md:text-base">
             {media.real && <p className="font-semibold">{media.real}</p>}
-            <p className="text-secondary-foreground">{media.categoryName}</p>
+            <p className="text-secondary-foreground">
+              {media.categories.join(" | ")}
+            </p>
             {media.year && <p className="text-xs">{media.year}</p>}
             {media.synopsis && (
               <p className="text-gray-500 my-1">{media.synopsis}</p>

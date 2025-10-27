@@ -7,6 +7,11 @@ const nextConfig = {
         hostname: "kbtmhgwptzbslfsijjff.supabase.co",
         pathname: "/storage/v1/object/public/watchers_images/**",
       },
+      {
+        protocol: "https",
+        hostname: "image.tmdb.org",
+        pathname: "/t/p/**",
+      },
     ],
   },
 };
