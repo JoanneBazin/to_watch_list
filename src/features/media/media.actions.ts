@@ -2,20 +2,24 @@
 
 import { prisma } from "@/src/lib/server";
 import {
-  getMediaDBFormat,
   handleActionError,
   requireAuth,
   strictValidateSchema,
 } from "@/src/utils/server";
 import {
   MediaFormData,
-  mediaServerSchema,
   UpdateMediaFormData,
   updateMediaServerSchema,
 } from "./media.schema";
 import { ApiError } from "@/src/utils/shared";
-import { EntryType, TMDBMedia, TMDBMediaDetails, TMDBSerie } from "@/src/types";
-import { shareMediaSuggestion } from "../suggestions/suggestions.actions";
+import { EntryType, TMDBMedia, TMDBSerie } from "@/src/types";
+import {
+  createMediaWithUser,
+  getMedia,
+  getMediaDetailsFromDB,
+  linkMediaToUser,
+} from "./media.helpers";
+import { cleanWatchlist } from "@/scripts/cleanWatchlist";
 
 export const fetchMediaQuery = async (
   query: string,
@@ -24,15 +28,14 @@ export const fetchMediaQuery = async (
   const mediaType = entry === "FILM" ? "movie" : "tv";
 
   const url = `https://api.themoviedb.org/3/search/${mediaType}?query=${query}&language=fr-FR`;
-  const options = {
+
+  const response = await fetch(url, {
     method: "GET",
     headers: {
       accept: "application/json",
       Authorization: `Bearer ${process.env.TMDB_READ_TOKEN}`,
     },
-  };
-
-  const response = await fetch(url, options);
+  });
 
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
@@ -56,129 +59,138 @@ export const fetchMediaQuery = async (
   return result.results;
 };
 
-const getTMDBMediaDetails = async (mediaId: number, entry: EntryType) => {
-  const mediaInDb = await prisma.watchList.findFirst({
-    where: { tmdbId: mediaId },
-  });
-
-  if (mediaInDb) {
-    return { alreadyInDb: true, media: mediaInDb };
-  }
-
-  const mediaType = entry === "FILM" ? "movie" : "tv";
-
-  const url = `https://api.themoviedb.org/3/${mediaType}/${mediaId}?append_to_response=credits,watch/providers&language=fr-FR`;
-  const options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      Authorization: `Bearer ${process.env.TMDB_READ_TOKEN}`,
-    },
-  };
-  const response = await fetch(url, options);
-  const media = await response.json();
-  return { alreadyInDb: false, media };
-};
-
-export const addSearchedMedia = async (mediaId: number, entry: EntryType) => {
+export const addSearchedMediaToWatchlist = async (
+  mediaId: number,
+  entry: EntryType
+) => {
   try {
-    const { alreadyInDb, media } = await getTMDBMediaDetails(mediaId, entry);
+    const session = await requireAuth();
+    const userId = session.user.id;
 
-    if (alreadyInDb) {
-      const newUserMedia = await addToWatchlist(media.id);
-      return newUserMedia?.media;
+    const { source, media } = await getMedia(mediaId, entry);
+
+    if (source === "database") {
+      const result = await linkMediaToUser(media.id, userId);
+      return { ...result, ...result.media, media: undefined };
     }
 
-    const newMedia = getMediaDBFormat(media, entry);
-    return await createMedia(newMedia);
+    const newMedia = await createMediaWithUser(media, userId);
+    return getMediaDetailsFromDB(userId, newMedia.id);
   } catch (error) {
     handleActionError(error, "Add TMDB media");
   }
 };
 
-export const createMedia = async (media: MediaFormData) => {
+export const createCustomMedia = async (
+  media: MediaFormData,
+  userId?: string
+) => {
   try {
-    const { data } = strictValidateSchema(mediaServerSchema, media);
-
     const session = await requireAuth();
-    const userId = session.user.id;
+    const targetUserId = userId || session.user.id;
 
-    return await prisma.watchList.create({
-      data: {
-        title: data.title,
-        originalTitle: data.originalTitle,
-        tmdbId: data.tmdbId,
-        type: data.type,
-        synopsis: data.synopsis,
-        year: data.year,
-        real: data.real,
-        platform: data.platform,
-        categories: data.categories,
-        users: {
-          create: [
-            {
-              user: {
-                connect: {
-                  id: userId,
-                },
-              },
-            },
-          ],
-        },
-      },
-    });
+    return createMediaWithUser(media, targetUserId);
   } catch (error) {
-    handleActionError(error, "Add media");
+    handleActionError(error, "Create media");
   }
 };
 
-export const addToWatchlist = async (mediaId: string) => {
+export const addExistantMediaToWatchlist = async (mediaId: string) => {
   try {
-    if (!mediaId) throw new ApiError(400, "Media ID manquant");
-
     const session = await requireAuth();
     const userId = session.user.id;
 
-    const existantMedia = await prisma.usersWatchList.findUnique({
-      where: {
-        userId_mediaId: {
-          userId,
-          mediaId,
-        },
-      },
-      include: {
-        media: true,
-      },
-    });
+    const result = await linkMediaToUser(mediaId, userId);
+    return { ...result, ...result.media, media: undefined };
+  } catch (error) {
+    handleActionError(error, "Add existant media");
+  }
+};
 
-    if (existantMedia) {
-      const suggestions = await prisma.suggestion.updateMany({
-        where: {
-          AND: [{ receiverId: userId }, { mediaId: mediaId }],
-        },
-        data: {
-          status: "ACCEPTED",
-        },
-      });
+export const suggestSearchedMedia = async (
+  mediaId: number,
+  receiverId: string,
+  entry: EntryType,
+  senderComment?: string
+) => {
+  try {
+    const session = await requireAuth();
+    const { source, media } = await getMedia(mediaId, entry);
 
-      if (suggestions.count === 0) {
-        throw new ApiError(409, "Le titre est déjà dans ta liste");
+    return await prisma.$transaction(async (tx) => {
+      let dbMediaId: string;
+
+      if (source === "database") {
+        dbMediaId = media.id;
+        await linkMediaToUser(dbMediaId, receiverId, tx, false);
+      } else {
+        const newMedia = await createMediaWithUser(media, receiverId, tx);
+        dbMediaId = newMedia.id;
       }
 
-      return existantMedia;
-    } else {
-      return await prisma.usersWatchList.create({
+      return await tx.suggestion.create({
         data: {
-          userId: userId,
-          mediaId: mediaId,
-        },
-        include: {
-          media: true,
+          senderId: session.user.id,
+          receiverId,
+          mediaId: dbMediaId,
+          senderComment,
         },
       });
-    }
+    });
   } catch (error) {
-    handleActionError(error, "Add to watchlist");
+    handleActionError(error, "Suggest TMDB media");
+  }
+};
+
+export const suggestCustomMedia = async (
+  media: MediaFormData,
+  receiverId: string,
+  senderComment?: string
+) => {
+  try {
+    const session = await requireAuth();
+    const userId = session.user.id;
+
+    return await prisma.$transaction(async (tx) => {
+      const newMedia = await createMediaWithUser(media, receiverId, tx);
+
+      return await tx.suggestion.create({
+        data: {
+          senderId: userId,
+          receiverId,
+          mediaId: newMedia.id,
+          senderComment,
+        },
+      });
+    });
+  } catch (error) {
+    handleActionError(error, "Suggest custom media");
+  }
+};
+
+export const suggestExistantMedia = async (
+  mediaId: string,
+  receiverId: string,
+  senderComment?: string
+) => {
+  try {
+    const session = await requireAuth();
+    const userId = session.user.id;
+
+    return await prisma.$transaction(async (tx) => {
+      const { media } = await linkMediaToUser(mediaId, receiverId, tx, false);
+
+      return await tx.suggestion.create({
+        data: {
+          senderId: userId,
+          receiverId,
+          mediaId: media.id,
+          senderComment,
+        },
+      });
+    });
+  } catch (error) {
+    handleActionError(error, "Suggest existant media");
   }
 };
 
@@ -265,73 +277,5 @@ export const deleteFromWatchlist = async (mediaId: string) => {
     });
   } catch (error) {
     handleActionError(error, "Delete media");
-  }
-};
-
-export const addSearchedMediaToContactWatchlist = async (
-  mediaId: number,
-  receiverId: string,
-  entry: EntryType
-) => {
-  try {
-    const { alreadyInDb, media } = await getTMDBMediaDetails(mediaId, entry);
-
-    if (alreadyInDb) {
-      return shareMediaSuggestion(media.id, receiverId);
-    }
-
-    return addToContactWatchlist(media, receiverId);
-  } catch (error) {
-    handleActionError(error, "Add TMDB media");
-  }
-};
-
-export const addToContactWatchlist = async (
-  media: MediaFormData,
-  receiverId: string
-) => {
-  try {
-    const { data } = strictValidateSchema(mediaServerSchema, media);
-
-    const session = await requireAuth();
-    const userId = session.user.id;
-
-    return await prisma.$transaction(async (tx) => {
-      const newMedia = await tx.watchList.create({
-        data: {
-          title: data.title,
-          originalTitle: data.originalTitle,
-          tmdbId: data.tmdbId,
-          type: data.type,
-          synopsis: data.synopsis,
-          year: data.year,
-          real: data.real,
-          platform: data.platform,
-          categories: data.categories,
-          users: {
-            create: [
-              {
-                user: {
-                  connect: {
-                    id: receiverId,
-                  },
-                },
-              },
-            ],
-          },
-        },
-      });
-
-      return await tx.suggestion.create({
-        data: {
-          senderId: userId,
-          receiverId: receiverId,
-          mediaId: newMedia.id,
-          senderComment: data.senderComment,
-        },
-      });
-    });
-  } catch (error) {
-    handleActionError(error, "Add media");
   }
 };

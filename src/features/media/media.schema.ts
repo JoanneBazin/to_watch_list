@@ -26,18 +26,15 @@ export const mediaSchema = z.object({
 
   categories: z
     .union([z.string(), z.array(z.string())])
-    .transform((val) => (Array.isArray(val) ? val : [val]))
+    .transform((val) =>
+      Array.isArray(val) ? val : val.trim() === "" ? [] : [val]
+    )
     .pipe(z.array(z.string()).min(1, "La catégorie est obligatoire")),
 
   type: z.enum(["FILM", "SERIE"], {
     required_error: "Le type de média est obligatoire",
     invalid_type_error: "Type invalide",
   }),
-  senderComment: z
-    .string()
-    .transform((val) => (val.trim() === "" ? null : val))
-    .nullable()
-    .optional(),
 });
 
 export const mediaServerSchema = mediaSchema.transform((data) => ({

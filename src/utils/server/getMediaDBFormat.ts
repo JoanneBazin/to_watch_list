@@ -11,8 +11,7 @@ function isSerie(media: TMDBMedia | TMDBSerie): media is TMDBSerie {
 
 export const getMediaDBFormat = <T extends EntryType>(
   media: TMDBMediaDetails<T extends "FILM" ? TMDBMedia : TMDBSerie>,
-  entry: T,
-  senderComment?: string
+  entry: T
 ): MediaFormData => {
   const platform = media["watch/providers"]?.results?.FR?.flatrate
     ?.map((d) => d.provider_name)
@@ -32,7 +31,6 @@ export const getMediaDBFormat = <T extends EntryType>(
       platform: platform ?? null,
       categories,
       type: entry,
-      senderComment,
     };
   }
 
@@ -52,7 +50,6 @@ export const getMediaDBFormat = <T extends EntryType>(
       platform: platform ?? null,
       categories,
       type: entry,
-      senderComment,
     };
   }
   throw new ApiError(400, "Type de média invalide");

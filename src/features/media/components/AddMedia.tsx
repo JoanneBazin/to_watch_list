@@ -1,13 +1,13 @@
 "use client";
 
 import { Button, Loader } from "@/src/components/ui";
-import { useAddToWatchlist } from "../hooks";
+import { useAddExistantMedia } from "../hooks";
 
 export const AddMedia = ({ mediaId }: { mediaId: string }) => {
-  const { addMedia, isAddingMedia, addError } = useAddToWatchlist();
+  const { addExistantMedia, isAddingMedia, addError } = useAddExistantMedia();
 
   const handleAdd = async () => {
-    await addMedia(mediaId);
+    await addExistantMedia(mediaId);
   };
 
   return (

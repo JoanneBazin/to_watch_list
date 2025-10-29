@@ -1,40 +1,21 @@
 import { Button, Input, Label, Loader } from "@/src/components/ui";
 import { useState } from "react";
-import {
-  useAddSearchedMediaToContactWatchlist,
-  useAddSearchedMediaToWatchlist,
-  useSearchMedia,
-} from "../../hooks";
+import { useSearchMedia } from "../../hooks";
 import { SearchMediaCard } from "../SearchMediaCard";
-import { EntryType } from "@/src/types";
+import { SearchMediaFormProps } from "@/src/types";
 
 export const SearchMediaForm = ({
   entry,
   isSuggestedMedia = false,
   receiverId,
-}: {
-  entry: EntryType;
-  isSuggestedMedia?: boolean;
-  receiverId?: string;
-}) => {
+}: SearchMediaFormProps) => {
   const [query, setQuery] = useState("");
-  const [addedMedia, setAddedMedia] = useState(false);
-  const { mediaResults, isLoading, error, search } = useSearchMedia();
-  const { addNewMedia, isAddingMedia, addError } =
-    useAddSearchedMediaToWatchlist();
-  const { addNewContactMedia, isAddingContactMedia, addContactError } =
-    useAddSearchedMediaToContactWatchlist();
-
-  const handleAdd = async (mediaId: number) => {
-    let result;
-    if (isSuggestedMedia && receiverId) {
-      result = await addNewContactMedia(mediaId, receiverId, entry);
-    }
-    result = await addNewMedia(mediaId, entry);
-    if (result.success) {
-      setAddedMedia(true);
-    }
-  };
+  const {
+    mediaResults,
+    isLoading: searchLoading,
+    error: searchError,
+    search,
+  } = useSearchMedia();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,39 +38,21 @@ export const SearchMediaForm = ({
           placeholder="Rechercher un film"
         />
         <Button className="w-fit self-end">
-          {isLoading ? <Loader /> : "Rechercher"}
+          {searchLoading ? <Loader /> : "Rechercher"}
         </Button>
       </form>
 
+      {searchError && <p className="error-message mt-4">{searchError}</p>}
       {mediaResults.length > 0 && (
         <div className="my-6">
           {mediaResults.map((media) => (
-            <SearchMediaCard key={media.id} media={media} entry={entry}>
-              <div className="self-end">
-                {addedMedia ? (
-                  <p className="info-message">
-                    {isSuggestedMedia
-                      ? "Suggestion envoyée"
-                      : "Ajouté à la liste"}
-                  </p>
-                ) : (
-                  <Button
-                    variant="outline"
-                    className="text-sm"
-                    onClick={() => handleAdd(media.id)}
-                  >
-                    {isAddingMedia ? (
-                      <Loader />
-                    ) : isSuggestedMedia ? (
-                      "Envoyer comme suggestion"
-                    ) : (
-                      "Ajouter à ma liste"
-                    )}
-                  </Button>
-                )}
-                {addError && <p className="error-message mt-4">{addError}</p>}
-              </div>
-            </SearchMediaCard>
+            <SearchMediaCard
+              key={media.id}
+              media={media}
+              entry={entry}
+              isSuggestedMedia={isSuggestedMedia}
+              receiverId={receiverId}
+            />
           ))}
         </div>
       )}

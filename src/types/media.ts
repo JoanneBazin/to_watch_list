@@ -32,8 +32,14 @@ export interface MediaStore {
 
 export interface AddEntryFormProps {
   entry: EntryType;
-  isSuggestedMedia: boolean;
+  isSuggestedMedia?: boolean;
   onSuccess: () => void;
+  receiverId?: string;
+}
+
+export interface SearchMediaFormProps {
+  entry: EntryType;
+  isSuggestedMedia?: boolean;
   receiverId?: string;
 }
 
@@ -78,7 +84,8 @@ export interface CategoryType {
 export interface SearchMediaCardProps {
   media: TMDBMedia;
   entry: EntryType;
-  children: React.ReactNode;
+  isSuggestedMedia: boolean;
+  receiverId?: string;
 }
 
 export interface MediaModalNavProps {

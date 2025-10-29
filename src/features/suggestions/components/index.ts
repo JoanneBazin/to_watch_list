@@ -6,3 +6,4 @@ export * from "./ShareMediaDialog";
 export * from "./SuggestionCard";
 export * from "./SuggestionResponse";
 export * from "./SuggestionsList";
+export * from "./SuggestMediaToContact";
