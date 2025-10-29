@@ -12,6 +12,7 @@ export const MediaModalNav = ({
         {views.map((v) => (
           <button
             key={v.id}
+            data-testid={`${v.id}-media-nav`}
             className={clsx(
               "text-sm sm:text-base",
               activeView === v.id

@@ -30,7 +30,7 @@ export const UserWatchlist = ({ entry }: { entry: EntryType }) => {
           <Button
             variant="outline"
             className="text-xs sm:text-sm"
-            data-testid="add-film-btn"
+            data-testid="add-media-btn"
           >
             {entry === "FILM" ? "Ajouter un film" : "Ajouter une série"}
           </Button>

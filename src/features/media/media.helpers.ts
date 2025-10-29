@@ -6,29 +6,9 @@ import { getMediaDBFormat, strictValidateSchema } from "@/src/utils/server";
 import { ApiError } from "@/src/utils/shared";
 import { MediaFormData, mediaServerSchema } from "./media.schema";
 import { Prisma } from "@prisma/client";
+import { fetchMediaFromTMDB } from "@/src/lib/server/tmdbService";
 
 type PrismaClient = typeof prisma | Omit<Prisma.TransactionClient, symbol>;
-
-export const fetchMediaFromTMDB = async (mediaId: number, entry: EntryType) => {
-  const mediaType = entry === "FILM" ? "movie" : "tv";
-
-  const url = `https://api.themoviedb.org/3/${mediaType}/${mediaId}?append_to_response=credits,watch/providers&language=fr-FR`;
-
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      Authorization: `Bearer ${process.env.TMDB_READ_TOKEN}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new ApiError(response.status, "Erreur lors de la récupération TMDB");
-  }
-
-  const TMDBMedia = await response.json();
-  return getMediaDBFormat(TMDBMedia, entry);
-};
 
 export const getMedia = async (mediaId: number, entry: EntryType) => {
   const existingMedia = await prisma.watchList.findFirst({
@@ -39,7 +19,8 @@ export const getMedia = async (mediaId: number, entry: EntryType) => {
     return { source: "database" as const, media: existingMedia };
   }
 
-  const formattedMedia = await fetchMediaFromTMDB(mediaId, entry);
+  const mediaDetails = await fetchMediaFromTMDB(mediaId, entry);
+  const formattedMedia = getMediaDBFormat(mediaDetails, entry);
 
   return { source: "tmdb" as const, media: formattedMedia };
 };

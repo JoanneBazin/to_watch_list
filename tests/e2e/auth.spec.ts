@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
-import { cleanDatabase } from "../helpers/setup";
 import { signUpUser } from "../helpers/auth-helpers";
+import { cleanDatabase } from "../helpers/db-helpers";
 
 test.describe("Authentication", () => {
   test.beforeEach(async () => {

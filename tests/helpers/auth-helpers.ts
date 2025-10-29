@@ -1,4 +1,4 @@
-import { prisma } from "@/src/lib/server";
+import { auth, prisma } from "@/src/lib/server";
 import { Page } from "@playwright/test";
 
 export const signUpUser = async (
@@ -32,4 +32,18 @@ export const signInUser = async (
   await page.click("button[data-testid='auth-submit']");
 
   await page.waitForURL("/dashboard");
+};
+
+export const createTestUser = async (overrides = {}) => {
+  const userData = await auth.api.signUpEmail({
+    body: {
+      email: "test@test.com",
+      name: "Test User",
+      password: "password1234",
+      ...overrides,
+    },
+  });
+  if (!userData) throw new Error("User Test creation failed");
+
+  return userData.user.id;
 };

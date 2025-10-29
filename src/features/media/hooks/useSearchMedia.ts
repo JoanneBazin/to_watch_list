@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { fetchMediaQuery } from "../media.actions";
 import { handleError } from "@/src/utils/client";
 import { EntryType, TMDBMedia } from "@/src/types";
+import { fetchMediaQuery } from "@/src/lib/server/tmdbService";
 
 export const useSearchMedia = () => {
   const [mediaResults, setMediaResults] = useState<TMDBMedia[]>([]);

@@ -1,75 +1,50 @@
+import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { setupTestEnv } from "../helpers/setup";
 import {
-  afterAll,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
-import {
-  cleanDatabase,
-  createMockSession,
-  createTestContact,
-  createTestUser,
-} from "../helpers/setup";
-import {
-  addToContactWatchlist,
-  addToWatchlist,
-  createMedia,
+  addExistantMediaToWatchlist,
+  addSearchedMediaToWatchlist,
+  createCustomMedia,
   deleteFromWatchlist,
   updateWatched,
 } from "@/src/features/media/media.actions";
 import { prisma } from "@/src/lib/server";
 import { requireAuth } from "@/src/utils/server";
-import { MediaFormData } from "@/src/features/media/media.schema";
 import {
-  createTestCategory,
   createTestMedia,
-  getTestMediaIdFromWatchlist,
+  createTestMediaWithUser,
+  customMediaTest,
+  mockTMDBFilmData,
+  mockTMDBSerieData,
 } from "../helpers/media-helpers";
+import { fetchMediaFromTMDB } from "@/src/lib/server/tmdbService";
+import { cleanDatabase } from "../helpers/db-helpers";
 
-vi.mock("@/src/utils/server/requireAuth", () => ({
-  requireAuth: vi.fn(),
-}));
-
-vi.mock("next/headers", () => ({
-  headers: vi.fn(() => new Headers()),
+vi.mock("@/src/lib/server/tmdbService", () => ({
+  fetchMediaFromTMDB: vi.fn(),
 }));
 
 describe("Media actions", () => {
   let userId: string;
 
-  beforeAll(async () => {
-    await cleanDatabase();
-    userId = await createTestUser();
-    await createTestCategory();
-
-    vi.mocked(requireAuth).mockResolvedValue(createMockSession(userId));
-  });
   beforeEach(async () => {
     vi.clearAllMocks();
+    userId = await setupTestEnv();
   });
   afterAll(async () => {
     await cleanDatabase();
   });
 
-  describe("addToWatchlist", () => {
-    const mediaData: MediaFormData = {
-      title: "Film test",
-      type: "FILM",
-      synopsis: "Synopsis test",
-      year: "2025",
-      real: "Real test",
-      platform: "Netflix",
-      categoryName: "Action",
-    };
+  describe("Add to Watchlist", () => {
+    beforeEach(async () => {
+      vi.clearAllMocks();
+    });
 
-    it("should create a new entry into user watchlist", async () => {
-      const result = await createMedia(mediaData);
+    it("should create a custom media into user watchlist", async () => {
+      const mediaData = customMediaTest;
+      const result = await createCustomMedia(mediaData);
 
       expect(requireAuth).toHaveBeenCalledTimes(1);
-      expect(result?.title).toBe("Film test");
+      expect(result?.title).toBe("Test Media");
 
       const inDb = await prisma.usersWatchList.findFirst({
         where: { userId, mediaId: result?.id },
@@ -77,45 +52,60 @@ describe("Media actions", () => {
       expect(inDb).not.toBeNull();
     });
 
-    it("should add an existant entry into user watchlist", async () => {
-      const existantMedia = await createTestMedia();
+    it("should add a tmdb film into user watchlist", async () => {
+      const tmdbFilmId = 1234;
+      vi.mocked(fetchMediaFromTMDB).mockResolvedValue(
+        mockTMDBFilmData(tmdbFilmId)
+      );
 
-      const result = await addToWatchlist(existantMedia.id);
+      const result = await addSearchedMediaToWatchlist(tmdbFilmId, "FILM");
 
       expect(requireAuth).toHaveBeenCalledTimes(1);
-      expect(result?.userId).toBe(userId);
-      expect(result?.mediaId).toBe(existantMedia.id);
+      expect(result?.title).toBe("TMDB Film");
+      expect(result?.tmdbId).toBe(tmdbFilmId);
+
+      const inDb = await prisma.usersWatchList.findFirst({
+        where: { userId, mediaId: result?.id },
+      });
+      expect(inDb).not.toBeNull();
+    });
+
+    it("should add a tmdb serie into user watchlist", async () => {
+      const tmdbSerieId = 4567;
+      vi.mocked(fetchMediaFromTMDB).mockResolvedValue(
+        mockTMDBSerieData(tmdbSerieId)
+      );
+
+      const result = await addSearchedMediaToWatchlist(tmdbSerieId, "SERIE");
+
+      expect(requireAuth).toHaveBeenCalledTimes(1);
+      expect(result?.title).toBe("TMDB Serie");
+      expect(result?.tmdbId).toBe(tmdbSerieId);
+
+      const inDb = await prisma.usersWatchList.findFirst({
+        where: { userId, mediaId: result?.id },
+      });
+      expect(inDb).not.toBeNull();
+    });
+
+    it("should add an existant media into user watchlist", async () => {
+      const existantMedia = await createTestMedia();
+
+      const result = await addExistantMediaToWatchlist(existantMedia.id);
+
+      expect(requireAuth).toHaveBeenCalledTimes(1);
+      expect(result?.id).toBe(existantMedia.id);
 
       const inDb = await prisma.usersWatchList.findFirst({
         where: { userId, mediaId: existantMedia.id },
       });
       expect(inDb).not.toBeNull();
     });
-
-    it("should create a new entry into contact watchlist", async () => {
-      const { receiver } = await createTestContact(userId, {
-        email: "contact@test.com",
-      });
-      const contactId = receiver.id;
-
-      const result = await addToContactWatchlist(mediaData, contactId);
-
-      expect(requireAuth).toHaveBeenCalledTimes(1);
-
-      const inDb = await prisma.usersWatchList.findFirst({
-        where: { userId: contactId, mediaId: result?.mediaId },
-        include: { suggestions: true },
-      });
-      expect(inDb).not.toBeNull();
-      expect(inDb?.suggestions).toContainEqual(
-        expect.objectContaining({ id: result?.id })
-      );
-    });
   });
 
-  describe("updateMedia", () => {
+  describe("Update Media", () => {
     it("should toggle watched", async () => {
-      const { mediaId, watched } = await getTestMediaIdFromWatchlist(userId);
+      const { mediaId, watched } = await createTestMediaWithUser(userId);
       const result = await updateWatched(mediaId);
 
       expect(requireAuth).toHaveBeenCalledTimes(1);
@@ -131,9 +121,9 @@ describe("Media actions", () => {
     });
   });
 
-  describe("deleteMedia", () => {
+  describe("Delete Media", () => {
     it("should delete a media from user watchlist", async () => {
-      const { mediaId } = await getTestMediaIdFromWatchlist(userId);
+      const { mediaId } = await createTestMediaWithUser(userId);
       const result = await deleteFromWatchlist(mediaId);
 
       expect(requireAuth).toHaveBeenCalledTimes(1);

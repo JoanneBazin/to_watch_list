@@ -1,18 +1,5 @@
-import {
-  afterAll,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
-import {
-  cleanDatabase,
-  createMockSession,
-  createTestContact,
-  createTestUser,
-} from "../helpers/setup";
+import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { setupTestEnv } from "../helpers/setup";
 import { prisma } from "@/src/lib/server/prisma";
 import { requireAuth } from "@/src/utils/server";
 import {
@@ -20,67 +7,47 @@ import {
   deleteFriend,
   updateFriendRequestStatus,
 } from "@/src/features/social/social.action";
-
-vi.mock("@/src/utils/server/requireAuth", () => ({
-  requireAuth: vi.fn(),
-}));
-
-vi.mock("next/headers", () => ({
-  headers: vi.fn(() => new Headers()),
-}));
+import {
+  createContactWithFriendRequest,
+  createUserIntoDb,
+} from "../helpers/social-helpers";
+import { cleanDatabase } from "../helpers/db-helpers";
 
 describe("Social actions", () => {
   let userId: string;
 
-  beforeAll(async () => {
-    await cleanDatabase();
-    userId = await createTestUser();
-    vi.mocked(requireAuth).mockResolvedValue(createMockSession(userId));
-  });
   beforeEach(async () => {
     vi.clearAllMocks();
+    userId = await setupTestEnv();
   });
   afterAll(async () => {
     await cleanDatabase();
   });
 
-  describe("manageFriendRequest", () => {
+  describe("Add a contact", () => {
     it("should send a new friend request", async () => {
-      const contactUser = await createTestUser({
-        email: "receiver@test.com",
-        name: "Test Contact",
-        password: "password1234",
-      });
-      const result = await addFriendRequest(contactUser);
+      const contactId = await createUserIntoDb();
+      const result = await addFriendRequest(contactId);
 
       expect(requireAuth).toHaveBeenCalledTimes(1);
-      expect(result?.receiverId).toBe(contactUser);
+      expect(result?.receiverId).toBe(contactId);
       expect(result?.status).toBe("PENDING");
 
       const inDb = await prisma.friendRequest.findFirst({
-        where: { senderId: userId, receiverId: contactUser, status: "PENDING" },
+        where: { senderId: userId, receiverId: contactId, status: "PENDING" },
       });
       expect(inDb).not.toBeNull();
     });
+  });
 
+  describe("Respond to a friend request", () => {
     it("should update friendship status", async () => {
-      const senderId = await createTestUser({
-        email: "sender@test.com",
-        name: "Test Sender",
-        password: "password1234",
-      });
-      const receivedRequest = await prisma.friendRequest.create({
-        data: {
-          senderId,
-          receiverId: userId,
-          status: "PENDING",
-        },
-        select: { id: true },
-      });
+      const request = await createContactWithFriendRequest(userId, "PENDING");
+
       const newFriendshipStatus = "ACCEPTED";
 
       const result = await updateFriendRequestStatus(
-        receivedRequest.id,
+        request.id,
         newFriendshipStatus
       );
 
@@ -90,18 +57,18 @@ describe("Social actions", () => {
       const inDb = await prisma.friendRequest.findFirst({
         where: {
           receiverId: userId,
-          senderId: senderId,
+          senderId: request.senderId,
           status: newFriendshipStatus,
         },
       });
       expect(inDb).not.toBeNull();
     });
+  });
 
+  describe("Delete a contact", () => {
     it("should delete a relation", async () => {
-      const { receiver } = await createTestContact(userId, {
-        email: "contactuser@test.com",
-      });
-      const friendId = receiver.id;
+      const request = await createContactWithFriendRequest(userId, "ACCEPTED");
+      const friendId = request.senderId;
 
       await deleteFriend(friendId);
 
