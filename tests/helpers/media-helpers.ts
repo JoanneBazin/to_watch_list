@@ -1,6 +1,56 @@
 import { MediaFormData } from "@/src/features/media/media.schema";
 import { prisma } from "@/src/lib/server";
 
+export const customMediaTest: MediaFormData = {
+  title: "Test Media",
+  originalTitle: "Test Media",
+  synopsis: "Synopsis",
+  year: "2020",
+  real: "Real",
+  platform: "Platform",
+  type: "FILM",
+  categories: ["Action"],
+};
+
+export const mockTMDBFilmData = (id: number) => ({
+  id,
+  title: "TMDB Film",
+  original_title: "TMDB Film",
+  overview: "Synopsis mocké",
+  release_date: "2020-12-02",
+  genres: {
+    id: 123,
+    name: "Horreur",
+  },
+  credits: {
+    cast: [{ name: "Film director", job: "Director" }],
+    crew: [],
+  },
+  "watch/providers": {
+    results: {
+      FR: { flatrate: [{ provider_name: "Netflix" }] },
+    },
+  },
+});
+
+export const mockTMDBSerieData = (id: number) => ({
+  id,
+  name: "TMDB Film",
+  original_name: "TMDB Film",
+  overview: "Synopsis mocké",
+  first_air_date: "2020-12-02",
+  genres: {
+    id: 123,
+    name: "Horreur",
+  },
+  created_by: [{ id: 125, name: "TV Creator" }],
+  "watch/providers": {
+    results: {
+      FR: { flatrate: [{ provider_name: "Netflix" }] },
+    },
+  },
+});
+
 export const createTestCategory = async (overrides = {}) => {
   await prisma.category.create({
     data: { name: "Action", ...overrides },
@@ -8,47 +58,32 @@ export const createTestCategory = async (overrides = {}) => {
 };
 
 export const createTestMedia = async () => {
-  const media = await prisma.watchList.create({
-    data: { title: "Film title", type: "FILM", categoryName: "Action" },
+  return prisma.watchList.create({
+    data: { title: "Film title", type: "FILM", categories: ["Action"] },
   });
-  return { ...media, addedAt: new Date(), watched: false };
 };
 
-export const getTestMediaIdFromWatchlist = async (userId: string) => {
-  const mediaId = await prisma.usersWatchList.findFirst({
-    where: { userId: userId },
-    select: {
-      mediaId: true,
-      watched: true,
-    },
+export const createTestMediaWithUser = async (userId: string) => {
+  const media = await createTestMedia();
+  const userMedia = await prisma.usersWatchList.create({
+    data: { userId, mediaId: media.id },
   });
-  if (!mediaId) throw new Error("No media available");
-  return mediaId;
+  if (!userMedia) throw new Error("No media available");
+  return userMedia;
 };
 
-export const createTestSuggestion = async (
+export const createTestMediaSuggestion = async (
   senderId: string,
   receiverId: string,
-  media: MediaFormData,
-  receiverComment?: string
+  comment?: string
 ) => {
+  const media = await createTestMedia();
+
   return await prisma.$transaction(async (tx) => {
-    const newMedia = await tx.watchList.create({
+    await tx.usersWatchList.create({
       data: {
-        title: media.title,
-        type: media.type,
-        categoryName: media.categoryName,
-        users: {
-          create: [
-            {
-              user: {
-                connect: {
-                  id: receiverId,
-                },
-              },
-            },
-          ],
-        },
+        mediaId: media.id,
+        userId: receiverId,
       },
     });
 
@@ -56,16 +91,10 @@ export const createTestSuggestion = async (
       data: {
         senderId,
         receiverId,
-        mediaId: newMedia.id,
-        senderComment: "This is a great comment",
-        receiverComment: receiverComment,
+        mediaId: media.id,
+        receiverComment: comment,
       },
-      select: {
-        sender: true,
-        media: true,
-        senderComment: true,
-        receiverComment: true,
-      },
+      include: { media: true, sender: true },
     });
   });
 };

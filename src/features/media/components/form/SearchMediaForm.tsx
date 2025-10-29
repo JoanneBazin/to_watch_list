@@ -37,7 +37,7 @@ export const SearchMediaForm = ({
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Rechercher un film"
         />
-        <Button className="w-fit self-end">
+        <Button className="w-fit self-end" data-testid="search-media-btn">
           {searchLoading ? <Loader /> : "Rechercher"}
         </Button>
       </form>

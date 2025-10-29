@@ -57,6 +57,7 @@ export const SearchMediaCard = ({
               <Button
                 variant="outline"
                 className="text-sm"
+                data-testid="add-tmdb-btn"
                 onClick={() => handleAdd()}
               >
                 {isAddingMedia ? <Loader /> : "Ajouter à ma liste"}

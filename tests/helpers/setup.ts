@@ -1,35 +1,14 @@
-import { auth, prisma } from "@/src/lib/server";
+import { requireAuth } from "@/src/utils/server";
+import { vi } from "vitest";
+import { createTestUser } from "./auth-helpers";
+import { cleanDatabase } from "./db-helpers";
 
-export const createTestUser = async (overrides = {}) => {
-  const userData = await auth.api.signUpEmail({
-    body: {
-      email: "test@test.com",
-      name: "Test User",
-      password: "password1234",
-      ...overrides,
-    },
-  });
-  if (!userData) throw new Error("User Test creation failed");
+export const setupTestEnv = async () => {
+  await cleanDatabase();
+  const userId = await createTestUser();
 
-  return userData.user.id;
-};
-
-export const createTestContact = async (userId: string, overrides = {}) => {
-  const contactUser = await createTestUser({
-    email: "contactTest@test.com",
-    name: "Test Contact",
-    password: "password1234",
-    ...overrides,
-  });
-
-  return prisma.friendRequest.create({
-    data: {
-      senderId: userId,
-      receiverId: contactUser,
-      status: "ACCEPTED",
-    },
-    select: { receiver: true },
-  });
+  vi.mocked(requireAuth).mockResolvedValue(createMockSession(userId));
+  return userId;
 };
 
 export const createMockSession = (userId: string) => ({
@@ -50,10 +29,3 @@ export const createMockSession = (userId: string) => ({
     expiresAt: new Date(Date.now() + 3600000),
   },
 });
-
-export const cleanDatabase = async () => {
-  await prisma.user.deleteMany({});
-  await prisma.account.deleteMany({});
-  await prisma.watchList.deleteMany({});
-  await prisma.category.deleteMany({});
-};

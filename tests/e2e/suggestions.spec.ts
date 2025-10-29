@@ -1,10 +1,8 @@
 import test, { expect } from "@playwright/test";
-import { cleanDatabase, createTestContact } from "../helpers/setup";
+import { cleanDatabase } from "../helpers/db-helpers";
 import { signInUser, signUpUser } from "../helpers/auth-helpers";
-import {
-  createTestCategory,
-  createTestSuggestion,
-} from "../helpers/media-helpers";
+import { createTestMediaSuggestion } from "../helpers/media-helpers";
+import { createContactWithFriendRequest } from "../helpers/social-helpers";
 
 test.describe("Suggestions page", () => {
   let userId: string;
@@ -15,11 +13,8 @@ test.describe("Suggestions page", () => {
     await cleanDatabase();
     const userData = await signUpUser(page, user.email, user.password);
     userId = userData.id;
-    const { receiver } = await createTestContact(userId, {
-      email: "contact@test.com",
-    });
-    contactId = receiver.id;
-    await createTestCategory({ name: "Adventure" });
+    const { sender } = await createContactWithFriendRequest(userId, "ACCEPTED");
+    contactId = sender.id;
   });
 
   test.afterAll(async () => {
@@ -29,48 +24,33 @@ test.describe("Suggestions page", () => {
   test("should display received suggestions", async ({ page }) => {
     await signInUser(page, user.email, user.password);
 
-    const receivedSuggestion = await createTestSuggestion(contactId, userId, {
-      title: "Nice movie",
-      synopsis: null,
-      year: null,
-      real: null,
-      platform: null,
-      type: "FILM",
-      categoryName: "Adventure",
-    });
+    const suggestion = await createTestMediaSuggestion(contactId, userId);
     await page.goto("/suggestions");
     await page.waitForSelector("[data-testid='suggestion-card']");
 
     const suggestionCard = page.locator("[data-testid='suggestion-card']", {
-      hasText: receivedSuggestion.media.title,
+      hasText: suggestion.media.title,
     });
     await expect(suggestionCard).toBeVisible();
-    await expect(suggestionCard).toContainText(receivedSuggestion.sender.name);
-    if (receivedSuggestion.senderComment) {
-      await expect(suggestionCard).toContainText(
-        receivedSuggestion.senderComment
-      );
+    await expect(suggestionCard).toContainText(suggestion.sender.name);
+    if (suggestion.senderComment) {
+      await expect(suggestionCard).toContainText(suggestion.senderComment);
     }
 
-    await page.click("button[data-testid='accept-suggestion-btn']");
-    await expect(page.locator("text=Suggestion ajoutée")).toBeVisible();
+    await suggestionCard
+      .locator("button[data-testid='accept-suggestion-btn']")
+      .click();
+    await expect(
+      suggestionCard.locator("text=Suggestion ajoutée")
+    ).toBeVisible();
   });
 
   test("should display received messages", async ({ page }) => {
     await signInUser(page, user.email, user.password);
 
-    const sentSuggestion = await createTestSuggestion(
+    const suggestion = await createTestMediaSuggestion(
       userId,
       contactId,
-      {
-        title: "Nice show",
-        synopsis: null,
-        year: null,
-        real: null,
-        platform: null,
-        type: "SERIE",
-        categoryName: "Adventure",
-      },
       "This was a great idea"
     );
 
@@ -78,14 +58,14 @@ test.describe("Suggestions page", () => {
     await page.click("button[data-testid='messages-nav']");
 
     const messageCard = page.locator("[data-testid='message-card']", {
-      hasText: sentSuggestion.media.title,
+      hasText: suggestion.media.title,
     });
 
     await expect(messageCard).toBeVisible();
     await messageCard.click();
 
-    if (sentSuggestion.receiverComment) {
-      await expect(messageCard).toContainText(sentSuggestion.receiverComment);
+    if (suggestion.receiverComment) {
+      await expect(messageCard).toContainText(suggestion.receiverComment);
     }
   });
 });

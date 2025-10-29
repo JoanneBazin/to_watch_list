@@ -1,72 +1,121 @@
-import {
-  afterAll,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from "vitest";
-import {
-  cleanDatabase,
-  createMockSession,
-  createTestContact,
-  createTestUser,
-} from "../helpers/setup";
+import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { setupTestEnv } from "../helpers/setup";
 import { prisma } from "@/src/lib/server/prisma";
 import { requireAuth } from "@/src/utils/server";
 import {
-  shareMediaSuggestion,
   updateReceivedSuggestions,
   updateSuggestionResponse,
 } from "@/src/features/suggestions/suggestions.actions";
-import { MediaItem } from "@/src/types";
-import { createTestCategory, createTestMedia } from "../helpers/media-helpers";
+import {
+  createTestMedia,
+  createTestMediaSuggestion,
+  customMediaTest,
+  mockTMDBFilmData,
+  mockTMDBSerieData,
+} from "../helpers/media-helpers";
+import { createContactWithFriendRequest } from "../helpers/social-helpers";
+import {
+  suggestCustomMedia,
+  suggestExistantMedia,
+  suggestSearchedMedia,
+} from "@/src/features/media/media.actions";
+import { fetchMediaFromTMDB } from "@/src/lib/server/tmdbService";
+import { cleanDatabase } from "../helpers/db-helpers";
 
-vi.mock("@/src/utils/server/requireAuth", () => ({
-  requireAuth: vi.fn(),
-}));
-
-vi.mock("next/headers", () => ({
-  headers: vi.fn(() => new Headers()),
+vi.mock("@/src/lib/server/tmdbService", () => ({
+  fetchMediaFromTMDB: vi.fn(),
 }));
 
 describe("Suggestions actions", () => {
   let userId: string;
+  let contactId: string;
 
-  beforeAll(async () => {
-    await cleanDatabase();
-    userId = await createTestUser({ email: "user@test.com" });
-    await createTestCategory();
-    vi.mocked(requireAuth).mockResolvedValue(createMockSession(userId));
-  });
   beforeEach(async () => {
     vi.clearAllMocks();
+    userId = await setupTestEnv();
+    const request = await createContactWithFriendRequest(userId, "ACCEPTED");
+    contactId = request.senderId;
   });
   afterAll(async () => {
     await cleanDatabase();
   });
 
-  describe("manageSuggestionsExchange", () => {
-    let contactId: string;
-    let media: MediaItem;
+  describe("Send a suggestion", () => {
+    beforeEach(async () => {
+      vi.clearAllMocks();
+    });
 
-    it("should share a media as suggestion", async () => {
-      const { receiver } = await createTestContact(userId, {
-        email: "sender@test.com",
+    it("should create a custom media into contact watchlist", async () => {
+      const mediaData = customMediaTest;
+      const result = await suggestCustomMedia(mediaData, contactId);
+
+      expect(requireAuth).toHaveBeenCalledTimes(1);
+
+      const inDb = await prisma.usersWatchList.findFirst({
+        where: { userId: contactId, mediaId: result?.mediaId },
+        include: { suggestions: true },
       });
-      contactId = receiver.id;
+      expect(inDb).not.toBeNull();
+      expect(inDb?.suggestions).toContainEqual(
+        expect.objectContaining({ id: result?.id })
+      );
+    });
 
-      media = await createTestMedia();
+    it("should add a tmdb film into contact watchlist", async () => {
+      const tmdbFilmId = 1234;
+      vi.mocked(fetchMediaFromTMDB).mockResolvedValue(
+        mockTMDBFilmData(tmdbFilmId)
+      );
 
-      const result = await shareMediaSuggestion(media.id, contactId);
+      const result = await suggestSearchedMedia(tmdbFilmId, contactId, "FILM");
+
+      expect(requireAuth).toHaveBeenCalledTimes(1);
+
+      const inDb = await prisma.usersWatchList.findFirst({
+        where: { userId: contactId, mediaId: result?.mediaId },
+        include: { suggestions: true },
+      });
+      expect(inDb).not.toBeNull();
+      expect(inDb?.suggestions).toContainEqual(
+        expect.objectContaining({ id: result?.id })
+      );
+    });
+
+    it("should add a tmdb serie into contact watchlist", async () => {
+      const tmdbSerieId = 4567;
+      vi.mocked(fetchMediaFromTMDB).mockResolvedValue(
+        mockTMDBSerieData(tmdbSerieId)
+      );
+
+      const result = await suggestSearchedMedia(
+        tmdbSerieId,
+        contactId,
+        "SERIE"
+      );
+
+      expect(requireAuth).toHaveBeenCalledTimes(1);
+
+      const inDb = await prisma.usersWatchList.findFirst({
+        where: { userId: contactId, mediaId: result?.mediaId },
+        include: { suggestions: true },
+      });
+      expect(inDb).not.toBeNull();
+      expect(inDb?.suggestions).toContainEqual(
+        expect.objectContaining({ id: result?.id })
+      );
+    });
+
+    it("should add an existant media into contact watchlist", async () => {
+      const media = await createTestMedia();
+
+      const result = await suggestExistantMedia(media.id, contactId);
 
       expect(requireAuth).toHaveBeenCalledTimes(1);
       expect(result?.mediaId).toBe(media.id);
 
       const inDb = await prisma.suggestion.findFirst({
         where: {
-          id: result?.id,
+          mediaId: media.id,
           senderId: userId,
           receiverId: contactId,
           status: "PENDING",
@@ -74,34 +123,28 @@ describe("Suggestions actions", () => {
       });
       expect(inDb).not.toBeNull();
     });
+  });
 
-    it("should update received suggestion status", async () => {
+  describe("Update received suggestions", () => {
+    let mediaId: string;
+    let suggestionId: string;
+
+    beforeEach(async () => {
+      const suggestion = await createTestMediaSuggestion(contactId, userId);
+      mediaId = suggestion.mediaId;
+      suggestionId = suggestion.id;
+    });
+    it("should update suggestion status", async () => {
       const newSuggestionStatus = "ACCEPTED";
 
-      await prisma.$transaction([
-        prisma.usersWatchList.create({
-          data: {
-            userId,
-            mediaId: media.id,
-          },
-        }),
-        prisma.suggestion.create({
-          data: {
-            senderId: contactId,
-            receiverId: userId,
-            mediaId: media.id,
-          },
-        }),
-      ]);
-
-      await updateReceivedSuggestions(media.id, newSuggestionStatus);
+      await updateReceivedSuggestions(mediaId, newSuggestionStatus);
 
       expect(requireAuth).toHaveBeenCalledTimes(1);
 
       const inDb = await prisma.suggestion.findMany({
         where: {
           receiverId: userId,
-          mediaId: media.id,
+          mediaId: mediaId,
           status: newSuggestionStatus,
         },
       });
@@ -110,25 +153,15 @@ describe("Suggestions actions", () => {
 
     it("should send a response message", async () => {
       const userMessage = "Test message";
-      const receivedSuggestion = await prisma.suggestion.findFirst({
-        where: {
-          receiverId: userId,
-          status: "ACCEPTED",
-        },
-      });
-      if (!receivedSuggestion) throw new Error("Suggestion not found");
 
-      const result = await updateSuggestionResponse(
-        receivedSuggestion.id,
-        userMessage
-      );
+      const result = await updateSuggestionResponse(suggestionId, userMessage);
 
       expect(requireAuth).toHaveBeenCalledTimes(1);
       expect(result?.receiverComment).toBe(userMessage);
 
       const inDb = await prisma.suggestion.findFirst({
         where: {
-          id: receivedSuggestion.id,
+          id: suggestionId,
           receiverComment: userMessage,
         },
       });

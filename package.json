@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "test:unit": "cross-env NODE_ENV=test dotenv -e .env.test vitest",
-    "test:e2e": "cross-env NODE_ENV=test dotenv -e .env.test playwright test"
+    "test:e2e": "cross-env NODE_ENV=test dotenv -e .env.test playwright test",
+    "test:sync-db": "dotenv -e .env.test -- npx prisma db push --force-reset"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
