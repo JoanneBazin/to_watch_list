@@ -44,7 +44,11 @@ export const FriendWatchlist = ({ user, entry }: FriendWatchlistProps) => {
         >
           <MediaModalNav views={VIEWS} activeView={view} setView={setView} />
           {view === "search" ? (
-            <SearchMediaForm entry={entry} />
+            <SearchMediaForm
+              entry={entry}
+              isSuggestedMedia={true}
+              receiverId={user.id}
+            />
           ) : (
             <AddEntryForm
               entry={entry}

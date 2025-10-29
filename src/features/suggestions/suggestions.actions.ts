@@ -5,46 +5,6 @@ import { SuggestionsStatus } from "@/src/types";
 import { handleActionError, requireAuth } from "@/src/utils/server";
 import { ApiError } from "@/src/utils/shared";
 
-export const shareMediaSuggestion = async (
-  mediaId: string,
-  friendId: string,
-  comment?: string
-) => {
-  try {
-    const session = await requireAuth();
-    const senderId = session.user.id;
-
-    let userLinkWithMedia = await prisma.usersWatchList.findUnique({
-      where: {
-        userId_mediaId: {
-          userId: friendId,
-          mediaId: mediaId,
-        },
-      },
-    });
-
-    if (!userLinkWithMedia) {
-      userLinkWithMedia = await prisma.usersWatchList.create({
-        data: {
-          userId: friendId,
-          mediaId: mediaId,
-        },
-      });
-    }
-
-    return await prisma.suggestion.create({
-      data: {
-        senderId,
-        receiverId: friendId,
-        mediaId: mediaId,
-        senderComment: comment,
-      },
-    });
-  } catch (error) {
-    handleActionError(error, "Share media");
-  }
-};
-
 export const updateReceivedSuggestions = async (
   mediaId: string,
   status: SuggestionsStatus

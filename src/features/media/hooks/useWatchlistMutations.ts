@@ -1,12 +1,13 @@
 "use client";
 
 import {
-  addSearchedMedia,
-  addSearchedMediaToContactWatchlist,
-  addToContactWatchlist,
-  addToWatchlist,
-  createMedia,
+  addExistantMediaToWatchlist,
+  addSearchedMediaToWatchlist,
+  createCustomMedia,
   deleteFromWatchlist,
+  suggestCustomMedia,
+  suggestExistantMedia,
+  suggestSearchedMedia,
   updateMedia,
   updateWatched,
 } from "@/src/features/media/media.actions";
@@ -17,146 +18,141 @@ import { MediaFormData, UpdateMediaFormData } from "../media.schema";
 import { EntryType, MediaItem } from "@/src/types";
 import { ApiError } from "@/src/utils/shared";
 
-export const useAddSearchedMediaToWatchlist = () => {
+export const useAddTMDBMedia = (isSuggestion = false, receiverId?: string) => {
   const { watchlist, setWatchlist } = useMediaStore.getState();
-
-  const addNewUserMedia = async (mediaId: number, entry: EntryType) => {
-    const result = await addSearchedMedia(mediaId, entry);
-
-    if (!result) throw new ApiError(500, "Erreur lors de la création");
-
-    const newItem: MediaItem = {
-      ...result,
-      addedAt: new Date(),
-      watched: false,
-    };
-
-    setWatchlist([newItem, ...watchlist]);
-  };
-
-  const {
-    run: addNewMedia,
-    isLoading: isAddingMedia,
-    error: addError,
-  } = useAsyncAction(addNewUserMedia);
-
-  return { addNewMedia, isAddingMedia, addError };
-};
-
-export const useCreateMedia = () => {
-  const { watchlist, setWatchlist } = useMediaStore.getState();
-
-  const createNewUserMedia = async (media: MediaFormData) => {
-    const result = await createMedia(media);
-    if (!result) throw new ApiError(500, "Erreur lors de la création");
-
-    const newItem: MediaItem = {
-      ...result,
-      addedAt: new Date(),
-      watched: false,
-    };
-
-    setWatchlist([newItem, ...watchlist]);
-  };
-
-  const {
-    run: createNewMedia,
-    isLoading: isCreatingMedia,
-    error: createError,
-  } = useAsyncAction(createNewUserMedia);
-
-  return { createNewMedia, isCreatingMedia, createError };
-};
-
-export const useAddToWatchlist = () => {
-  const { watchlist, setWatchlist } = useMediaStore.getState();
-
-  const addNewUserMedia = async (mediaId: string) => {
-    const result = await addToWatchlist(mediaId);
-    if (!result) throw new ApiError(500, "Erreur lors de l'ajout");
-    setWatchlist([...watchlist, { ...result.media, ...result }]);
-  };
-
-  const {
-    run: addMedia,
-    isLoading: isAddingMedia,
-    error: addError,
-  } = useAsyncAction(addNewUserMedia);
-
-  return { addMedia, isAddingMedia, addError };
-};
-
-export const useAddSearchedMediaToContactWatchlist = () => {
   const { contacts, setContacts } = useUserStore.getState();
 
-  const addNewContactMedia = async (
+  const addMedia = async (
     mediaId: number,
-    receiverId: string,
-    entry: EntryType
+    entry: EntryType,
+    senderComment?: string
   ) => {
-    const result = await addSearchedMediaToContactWatchlist(
-      mediaId,
-      receiverId,
-      entry
-    );
+    if (isSuggestion && receiverId) {
+      const result = await suggestSearchedMedia(
+        mediaId,
+        receiverId,
+        entry,
+        senderComment
+      );
+      if (!result) throw new ApiError(500, "Erreur lors de la création");
 
-    if (!result) throw new ApiError(500, "Erreur lors de la création");
+      setContacts(
+        contacts.map((c) =>
+          c.id === result.receiverId
+            ? {
+                ...c,
+                suggestionsFromUser: [
+                  ...(c.suggestionsFromUser || []),
+                  result.id,
+                ],
+              }
+            : c
+        )
+      );
+    } else {
+      const result = await addSearchedMediaToWatchlist(mediaId, entry);
+      if (!result) throw new ApiError(500, "Erreur lors de la création");
 
-    setContacts(
-      contacts.map((c) =>
-        c.id === result.receiverId
-          ? {
-              ...c,
-              suggestionsFromUser: [
-                ...(c.suggestionsFromUser || []),
-                result.id,
-              ],
-            }
-          : c
-      )
-    );
+      setWatchlist([result, ...watchlist]);
+    }
   };
 
   const {
-    run: addNewcontactMedia,
-    isLoading: isAddingContactMedia,
-    error: addContactError,
-  } = useAsyncAction(addNewContactMedia);
+    run: addTMDBMedia,
+    isLoading: isAddingMedia,
+    error: addError,
+  } = useAsyncAction(addMedia);
 
-  return { addNewContactMedia, isAddingContactMedia, addContactError };
+  return { addTMDBMedia, isAddingMedia, addError };
 };
 
-export const useCreateContactMedia = () => {
+export const useCreateMedia = (isSuggestion = false, receiverId?: string) => {
+  const { watchlist, setWatchlist } = useMediaStore.getState();
   const { contacts, setContacts } = useUserStore.getState();
 
-  const createNewContactMedia = async (
-    suggestedMedia: MediaFormData,
-    receiverId: string
-  ) => {
-    const result = await addToContactWatchlist(suggestedMedia, receiverId);
-    if (!result) throw new ApiError(500, "Erreur lors de l'ajout");
-    setContacts(
-      contacts.map((c) =>
-        c.id === result.receiverId
-          ? {
-              ...c,
-              suggestionsFromUser: [
-                ...(c.suggestionsFromUser || []),
-                result.id,
-              ],
-            }
-          : c
-      )
-    );
+  const create = async (media: MediaFormData, senderComment?: string) => {
+    if (isSuggestion && receiverId) {
+      const result = await suggestCustomMedia(media, receiverId, senderComment);
+      if (!result) throw new ApiError(500, "Erreur lors de la création");
+
+      setContacts(
+        contacts.map((c) =>
+          c.id === result.receiverId
+            ? {
+                ...c,
+                suggestionsFromUser: [
+                  ...(c.suggestionsFromUser || []),
+                  result.id,
+                ],
+              }
+            : c
+        )
+      );
+    } else {
+      const result = await createCustomMedia(media);
+      if (!result) throw new ApiError(500, "Erreur lors de la création");
+
+      const newItem: MediaItem = {
+        ...result,
+        addedAt: new Date(),
+        watched: false,
+      };
+
+      setWatchlist([newItem, ...watchlist]);
+    }
   };
 
   const {
-    run: sendingMedia,
-    isLoading: isSendingMedia,
-    error: sendingError,
-  } = useAsyncAction(createNewContactMedia);
+    run: createMedia,
+    isLoading: isCreating,
+    error: createError,
+  } = useAsyncAction(create);
 
-  return { sendingMedia, isSendingMedia, sendingError };
+  return { createMedia, isCreating, createError };
+};
+
+export const useAddExistantMedia = (
+  isSuggestion = false,
+  receiverId?: string
+) => {
+  const { watchlist, setWatchlist } = useMediaStore.getState();
+  const { contacts, setContacts } = useUserStore.getState();
+
+  const add = async (mediaId: string, senderComment?: string) => {
+    if (isSuggestion && receiverId) {
+      const result = await suggestExistantMedia(
+        mediaId,
+        receiverId,
+        senderComment
+      );
+      if (!result) throw new ApiError(500, "Erreur lors de l'envoi'");
+      setContacts(
+        contacts.map((contact) =>
+          contact.id === receiverId
+            ? {
+                ...contact,
+                suggestionsFromUser: [
+                  ...(contact.suggestionsFromUser || []),
+                  result.mediaId,
+                ],
+              }
+            : contact
+        )
+      );
+    } else {
+      const result = await addExistantMediaToWatchlist(mediaId);
+      if (!result) throw new ApiError(500, "Erreur lors de l'ajout");
+      setWatchlist([result, ...watchlist]);
+    }
+  };
+
+  const {
+    run: addExistantMedia,
+    isLoading: isAddingMedia,
+    error: addError,
+  } = useAsyncAction(add);
+
+  return { addExistantMedia, isAddingMedia, addError };
 };
 
 export const useUpdateMedia = () => {

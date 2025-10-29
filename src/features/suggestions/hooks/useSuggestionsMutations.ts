@@ -1,6 +1,5 @@
 import { SuggestionsStatus } from "@/src/types";
 import {
-  shareMediaSuggestion,
   updateReceivedSuggestions,
   updateSuggestionResponse,
 } from "../suggestions.actions";
@@ -8,40 +7,6 @@ import { useMediaStore } from "../../media/media.store";
 import { useUserStore } from "../../user/user.store";
 import { ApiError } from "@/src/utils/shared";
 import { useAsyncAction } from "@/src/hooks";
-
-export const useCreateSuggestion = () => {
-  const { contacts, setContacts } = useUserStore.getState();
-
-  const sendSuggestion = async (
-    mediaId: string,
-    friendId: string,
-    comment?: string
-  ) => {
-    const result = await shareMediaSuggestion(mediaId, friendId, comment);
-    if (!result) throw new ApiError(500, "Erreur lors de l'envoi'");
-    setContacts(
-      contacts.map((contact) =>
-        contact.id === friendId
-          ? {
-              ...contact,
-              suggestionsFromUser: [
-                ...(contact.suggestionsFromUser || []),
-                result.mediaId,
-              ],
-            }
-          : contact
-      )
-    );
-  };
-
-  const {
-    run: shareMedia,
-    isLoading: isSharing,
-    error: shareError,
-  } = useAsyncAction(sendSuggestion);
-
-  return { shareMedia, isSharing, shareError };
-};
 
 export const useUpdateSuggestionStatus = () => {
   const { watchlist, setWatchlist } = useMediaStore.getState();
@@ -56,7 +21,7 @@ export const useUpdateSuggestionStatus = () => {
 
     if (status === "ACCEPTED") {
       const newMedia = { ...result, ...result.media, media: undefined };
-      setWatchlist([...watchlist, newMedia]);
+      setWatchlist([newMedia, ...watchlist]);
     }
     setCounts({ ...counts, suggestions: counts.suggestions - 1 });
   };

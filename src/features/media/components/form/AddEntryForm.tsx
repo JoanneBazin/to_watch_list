@@ -10,28 +10,30 @@ import {
   Textarea,
 } from "@/src/components/ui";
 import { MediaFormData, mediaSchema } from "../../media.schema";
-import {
-  useCreateContactMedia,
-  useCreateMedia,
-  useFetchCategories,
-} from "../../hooks";
+import { useCreateMedia, useFetchCategories } from "../../hooks";
+import { useState } from "react";
+import { SendSuggestion } from "@/src/features/suggestions/components";
 
 export const AddEntryForm = ({
   entry,
-  isSuggestedMedia,
+  isSuggestedMedia = false,
   onSuccess,
   receiverId,
 }: AddEntryFormProps) => {
   const {
     handleSubmit,
     register,
+    getValues,
+    trigger,
     formState: { errors },
   } = useForm<MediaFormData>({
     resolver: zodResolver(mediaSchema),
   });
-  const { createNewMedia, isCreatingMedia, createError } = useCreateMedia();
-  const { sendingMedia, isSendingMedia, sendingError } =
-    useCreateContactMedia();
+  const [comment, setComment] = useState("");
+  const { createMedia, isCreating, createError } = useCreateMedia(
+    isSuggestedMedia,
+    receiverId
+  );
 
   const {
     categories,
@@ -40,18 +42,19 @@ export const AddEntryForm = ({
   } = useFetchCategories();
 
   const onSubmit = async (data: MediaFormData) => {
-    const reqData = {
-      ...data,
-      type: entry,
-    };
+    const result = await createMedia(data);
 
-    let result = { success: false };
-
-    if (isSuggestedMedia && receiverId) {
-      result = await sendingMedia(reqData, receiverId);
-    } else {
-      result = await createNewMedia(reqData);
+    if (result.success) {
+      onSuccess();
     }
+  };
+
+  const onSuggestionSubmit = async (comment?: string) => {
+    const valid = await trigger();
+    if (!valid) return;
+
+    const values = getValues();
+    const result = await createMedia(values, comment);
 
     if (result.success) {
       onSuccess();
@@ -149,33 +152,25 @@ export const AddEntryForm = ({
               ))}
           </select>
         </div>
-
-        {isSuggestedMedia && (
-          <div>
-            <Label htmlFor="senderComment" className="input-label">
-              Laissez un commentaire ?
-            </Label>
-            <Textarea
-              id="senderComment"
-              {...register("senderComment")}
-              className="col-span-3"
-            />
-          </div>
-        )}
       </div>
       <DialogFooter className="relative">
-        <Button type="submit" className="mt-2">
-          {isCreatingMedia || isSendingMedia ? <Loader /> : "Ajouter"}
-        </Button>
-        {createError && (
-          <p className="absolute error-message top-2 left-0 max-w-[300px]">
-            {createError}
-          </p>
-        )}
-        {sendingError && (
-          <p className="absolute error-message top-2 left-0 max-w-[300px]">
-            {sendingError}
-          </p>
+        {isSuggestedMedia ? (
+          <SendSuggestion
+            onSubmit={onSuggestionSubmit}
+            isLoading={isCreating}
+            error={createError}
+          />
+        ) : (
+          <>
+            <Button type="submit" className="mt-2">
+              {isCreating ? <Loader /> : "Ajouter"}
+            </Button>
+            {createError && (
+              <p className="absolute error-message top-2 left-0 max-w-[300px]">
+                {createError}
+              </p>
+            )}
+          </>
         )}
       </DialogFooter>
     </form>

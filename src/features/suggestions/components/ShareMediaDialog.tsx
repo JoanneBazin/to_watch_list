@@ -1,20 +1,12 @@
 "use client";
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-  Avatar,
-  Button,
-  Modal,
-} from "@/src/components/ui";
+import { Button, Modal } from "@/src/components/ui";
 import { MediaDialogProps } from "@/src/types";
 import { useUserStore } from "../../user/user.store";
 import { IoShareSocial } from "react-icons/io5";
-import { SendSuggestion } from "./SendSuggestion";
 import { useState } from "react";
 import clsx from "clsx";
+import { SuggestMediaToContact } from "./SuggestMediaToContact";
 
 export const ShareMediaDialog = ({
   media,
@@ -51,25 +43,11 @@ export const ShareMediaDialog = ({
     >
       {contacts.length > 0 ? (
         contacts.map((contact) => (
-          <div key={contact.id} className="px-4">
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value={contact.id}>
-                <AccordionTrigger>
-                  <div className="flex gap-4">
-                    <Avatar img={contact.image} size="small" />
-                    <span className="mr-6">{contact.name}</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="pb-0">
-                  {contact.suggestionsFromUser.find((id) => id === media.id) ? (
-                    <p>Suggestion envoyée !</p>
-                  ) : (
-                    <SendSuggestion contactId={contact.id} mediaId={media.id} />
-                  )}
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
+          <SuggestMediaToContact
+            key={contact.id}
+            contact={contact}
+            mediaId={media.id}
+          />
         ))
       ) : (
         <span>Pas de contact</span>

@@ -1,45 +1,45 @@
 "use client";
 
 import { Button, Loader, Textarea } from "@/src/components/ui";
-import { CiCirclePlus } from "react-icons/ci";
 import { useState } from "react";
 import { SendSuggestionProps } from "@/src/types";
-import { useCreateSuggestion } from "../hooks";
 
-export const SendSuggestion = ({ contactId, mediaId }: SendSuggestionProps) => {
-  const [sentSuggestion, setSentSuggestion] = useState<boolean>(false);
-  const [senderComment, setSenderComment] = useState("");
-  const { shareMedia, isSharing, shareError } = useCreateSuggestion();
+export const SendSuggestion = ({
+  onSubmit,
+  isLoading,
+  error,
+}: SendSuggestionProps) => {
+  const [comment, setComment] = useState("");
 
-  const handleSendSuggestion = async () => {
-    const result = await shareMedia(mediaId, contactId, senderComment);
-    if (result.success) {
-      setSentSuggestion(true);
-    }
+  const handleSubmit = async () => {
+    await onSubmit(comment);
+    setComment("");
   };
 
-  if (sentSuggestion) {
-    return <span className="italic">Suggestion envoyée</span>;
-  }
   return (
     <div>
       <Textarea
-        onChange={(e) => setSenderComment(e.target.value)}
+        onChange={(e) => setComment(e.target.value)}
+        value={comment}
         name="comment"
         placeholder="Laisser un commentaire ?"
       />
 
-      <Button className="mt-2" onClick={handleSendSuggestion} variant="outline">
-        {isSharing ? (
+      <Button
+        type="button"
+        className="mt-2"
+        onClick={handleSubmit}
+        variant="outline"
+      >
+        {isLoading ? (
           <Loader />
         ) : (
           <>
-            <CiCirclePlus className="text-lg mr-2" />
-            <p>Envoyer ce titre</p>
+            <p>Envoyer</p>
           </>
         )}
       </Button>
-      {shareError && <p className="error-message pt-4">{shareError}</p>}
+      {error && <p className="error-message pt-4">{error}</p>}
     </div>
   );
 };

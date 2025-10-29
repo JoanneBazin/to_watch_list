@@ -11,9 +11,20 @@ export interface SuggestionsProps {
   };
 }
 
-export interface SendSuggestionProps {
-  contactId: string;
+export interface SuggestMediaToContactProps {
+  contact: Contact;
   mediaId: string;
+}
+
+export interface SendSuggestionProps {
+  onSubmit: (comment: string) => Promise<void>;
+  isLoading: boolean;
+  error: string | null;
+}
+
+export interface AddSuggestionCommentProps {
+  comment: string;
+  setComment: (comment: string) => void;
 }
 
 export type SuggestionsStatus = "ACCEPTED" | "REFUSED";
