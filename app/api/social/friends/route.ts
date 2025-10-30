@@ -22,7 +22,9 @@ export async function GET(req: NextRequest) {
             suggestionsReceived: {
               where: { senderId: userId },
               select: {
-                mediaId: true,
+                media: {
+                  select: { id: true, tmdbId: true },
+                },
               },
             },
           },
@@ -35,7 +37,9 @@ export async function GET(req: NextRequest) {
             suggestionsReceived: {
               where: { senderId: userId },
               select: {
-                mediaId: true,
+                media: {
+                  select: { id: true, tmdbId: true },
+                },
               },
             },
           },
@@ -51,7 +55,12 @@ export async function GET(req: NextRequest) {
         id: friend.id,
         name: friend.name,
         image: friend.image,
-        suggestionsFromUser: friend.suggestionsReceived.map((r) => r.mediaId),
+        suggestionsFromUser: {
+          dbId: friend.suggestionsReceived.map((r) => r.media.id),
+          tmdbId: friend.suggestionsReceived
+            .map((r) => r.media.tmdbId)
+            .filter((id) => id !== null),
+        },
       };
     });
 

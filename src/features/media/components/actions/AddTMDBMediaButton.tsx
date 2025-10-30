@@ -4,6 +4,7 @@ import { useMediaStore } from "../../media.store";
 import { useState } from "react";
 import { SendSuggestion } from "@/src/features/suggestions/components";
 import { Button, Loader } from "@/src/components/ui";
+import { useUserStore } from "@/src/features/user/user.store";
 
 export const AddTMDBMediaButton = ({
   mediaId,
@@ -18,8 +19,15 @@ export const AddTMDBMediaButton = ({
   const isInWatchlist = useMediaStore((s) =>
     s.watchlist.some((m) => m.tmdbId === mediaId)
   );
+  const contact = useUserStore((s) => s.contacts).find(
+    (c) => c.id === receiverId
+  );
+  const isAlreadySuggested = contact?.suggestionsFromUser.tmdbId.some(
+    (id) => id === mediaId
+  );
+
   const [addedMedia, setAddedMedia] = useState(
-    isSuggestedMedia ? false : isInWatchlist
+    isSuggestedMedia ? isAlreadySuggested : isInWatchlist
   );
 
   const handleAdd = async (comment?: string) => {

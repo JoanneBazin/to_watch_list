@@ -41,10 +41,13 @@ export const useAddTMDBMedia = (isSuggestion = false, receiverId?: string) => {
           c.id === result.receiverId
             ? {
                 ...c,
-                suggestionsFromUser: [
-                  ...(c.suggestionsFromUser || []),
-                  result.id,
-                ],
+                suggestionsFromUser: {
+                  dbId: [...c.suggestionsFromUser.dbId, result.mediaId],
+                  tmdbId: [
+                    ...c.suggestionsFromUser.tmdbId,
+                    ...(result.media.tmdbId ? [result.media.tmdbId] : []),
+                  ],
+                },
               }
             : c
         )
@@ -80,10 +83,10 @@ export const useCreateMedia = (isSuggestion = false, receiverId?: string) => {
           c.id === result.receiverId
             ? {
                 ...c,
-                suggestionsFromUser: [
-                  ...(c.suggestionsFromUser || []),
-                  result.id,
-                ],
+                suggestionsFromUser: {
+                  dbId: [...c.suggestionsFromUser.dbId, result.mediaId],
+                  tmdbId: [...c.suggestionsFromUser.tmdbId],
+                },
               }
             : c
         )
@@ -127,16 +130,19 @@ export const useAddExistantMedia = (
       );
       if (!result) throw new ApiError(500, "Erreur lors de l'envoi'");
       setContacts(
-        contacts.map((contact) =>
-          contact.id === receiverId
+        contacts.map((c) =>
+          c.id === receiverId
             ? {
-                ...contact,
-                suggestionsFromUser: [
-                  ...(contact.suggestionsFromUser || []),
-                  result.mediaId,
-                ],
+                ...c,
+                suggestionsFromUser: {
+                  dbId: [...c.suggestionsFromUser.dbId, result.mediaId],
+                  tmdbId: [
+                    ...c.suggestionsFromUser.tmdbId,
+                    ...(result.media.tmdbId ? [result.media.tmdbId] : []),
+                  ],
+                },
               }
-            : contact
+            : c
         )
       );
     } else {
