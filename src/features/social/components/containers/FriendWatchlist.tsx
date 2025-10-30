@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Send } from "lucide-react";
 import {
   AddEntryForm,
-  AddMedia,
+  AddExistantMediaButton,
   MediaCard,
   MediaModalNav,
   SearchMediaForm,
@@ -71,7 +71,7 @@ export const FriendWatchlist = ({ user, entry }: FriendWatchlistProps) => {
           userList.map((media) => (
             <MediaCard key={media.id} media={media}>
               {!watchlist.find((item) => item.id === media.id) && (
-                <AddMedia mediaId={media.id} />
+                <AddExistantMediaButton mediaId={media.id} />
               )}
             </MediaCard>
           ))}

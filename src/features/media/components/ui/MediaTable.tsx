@@ -21,9 +21,8 @@ import { MediaCard } from "./MediaCard";
 import { MediaCardSuggestions } from "./MediaCardSuggestions";
 import { MediaOptions } from "./MediaOptions";
 import { ToggleWatchedButton } from "../actions/ToggleWatchedButton";
-import { DeleteMediaButton } from "./DeleteMediaButton";
-import { EditMediaDialog } from "../actions/EditMediaDialog";
 import { ShareMediaDialog } from "../../../suggestions/components";
+import { DeleteMediaButton } from "../actions";
 
 type MediaColumnMeta = {
   className?: string;

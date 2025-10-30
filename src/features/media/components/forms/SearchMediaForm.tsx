@@ -1,7 +1,7 @@
 import { Button, Input, Label, Loader } from "@/src/components/ui";
 import { useState } from "react";
 import { useSearchMedia } from "../../hooks";
-import { SearchMediaCard } from "../actions/SearchMediaCard";
+import { SearchMediaCard } from "../ui/SearchMediaCard";
 import { SearchMediaFormProps } from "@/src/types";
 
 export const SearchMediaForm = ({
@@ -26,19 +26,19 @@ export const SearchMediaForm = ({
     <div>
       <form
         onSubmit={handleSearch}
-        className="flex flex-col sm:flex-row gap-4 sm:my-3"
+        className="flex flex-col sm:flex-row gap-4 sm:gap-8 sm:my-3"
       >
         <Label htmlFor="media-search" />
         <Input
           id="media-search"
-          className="w-3/4 sm:w-2/3"
+          className="sm:w-2/3"
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Rechercher un film"
         />
         <Button className="w-fit self-end" data-testid="search-media-btn">
-          {searchLoading ? <Loader /> : "Rechercher"}
+          {searchLoading ? <Loader size="small" /> : "Rechercher"}
         </Button>
       </form>
 

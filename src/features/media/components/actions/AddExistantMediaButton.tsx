@@ -1,9 +1,9 @@
 "use client";
 
 import { Button, Loader } from "@/src/components/ui";
-import { useAddExistantMedia } from "../hooks";
+import { useAddExistantMedia } from "../../hooks";
 
-export const AddMedia = ({ mediaId }: { mediaId: string }) => {
+export const AddExistantMediaButton = ({ mediaId }: { mediaId: string }) => {
   const { addExistantMedia, isAddingMedia, addError } = useAddExistantMedia();
 
   const handleAdd = async () => {
