@@ -11,7 +11,7 @@ export const FriendRequests = () => {
     <section className="max-w-[768px] mx-auto">
       <h2 className="sr-only">Invitation reçues</h2>
 
-      {isLoading && <Loader />}
+      {isLoading && <Loader size="large" />}
       {error && <p className="error-message text-center my-16">{error}</p>}
       {!isLoading && !error && receivedRequests.length < 1 && (
         <p className="my-10 info-message">Pas de demandes en attente</p>

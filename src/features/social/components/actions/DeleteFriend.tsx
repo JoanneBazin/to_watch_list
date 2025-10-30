@@ -52,7 +52,7 @@ export const DeleteFriend = ({ friendId }: { friendId: string }) => {
           <div className="flex gap-2">
             <AlertDialogCancel>Annuler</AlertDialogCancel>
             <AlertDialogAction onClick={(e) => handleDelete(e)}>
-              {isDeleting ? <Loader /> : "Supprimer"}
+              {isDeleting ? <Loader size="small" /> : "Supprimer"}
             </AlertDialogAction>
           </div>
         </AlertDialogFooter>

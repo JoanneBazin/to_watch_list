@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useUpdateUser } from "../hooks";
+import { useUpdateUser } from "../../hooks";
 import { Button, Input, Loader } from "@/src/components/ui";
 
 export const EditUserName = ({ username }: { username: string }) => {
@@ -33,7 +33,7 @@ export const EditUserName = ({ username }: { username: string }) => {
           className="sm:w-1/3"
         />
         <Button variant="outline" className="w-1/2 sm:w-fit">
-          {isUpdatingName ? <Loader /> : "Modifier"}
+          {isUpdatingName ? <Loader size="small" /> : "Modifier"}
         </Button>
       </form>
       {updateNameError && <p className="error-message">{updateNameError}</p>}

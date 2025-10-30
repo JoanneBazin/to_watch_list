@@ -3,10 +3,10 @@
 import { Button, Modal } from "@/src/components/ui";
 import { MediaDialogProps } from "@/src/types";
 import { useUserStore } from "../../../user/user.store";
-import { IoShareSocial } from "react-icons/io5";
 import { useState } from "react";
 import clsx from "clsx";
 import { SuggestMediaToContact } from "./SuggestMediaToContact";
+import { Share2 } from "lucide-react";
 
 export const ShareMediaDialog = ({
   media,
@@ -32,7 +32,7 @@ export const ShareMediaDialog = ({
                 "bg-accent-dark text-black hover:bg-muted border-black"
             )}
           >
-            <IoShareSocial />
+            <Share2 size={16} />
           </Button>
         )
       }

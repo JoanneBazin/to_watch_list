@@ -9,7 +9,7 @@ export const FriendsList = () => {
   return (
     <section className="max-w-[768px] mx-auto">
       <h2 className="sr-only">Liste des contacts</h2>
-      {isPending && <Loader />}
+      {isPending && <Loader size="large" />}
       {error && <p className="error-message text-center my-16">{error}</p>}
       {!isPending && !error && contacts.length < 1 && (
         <p className="my-10 info-message">Pas de contacts</p>

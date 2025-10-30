@@ -54,7 +54,7 @@ export const SendResponseComment = ({
             onClick={handleSendResponse}
             variant="outline"
           >
-            {isUpdating ? <Loader /> : "Envoyer"}
+            {isUpdating ? <Loader size="small" /> : "Envoyer"}
           </Button>
         </AccordionContent>
       </AccordionItem>

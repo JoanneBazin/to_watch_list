@@ -10,7 +10,7 @@ export const SuggestionsList = () => {
   return (
     <section>
       <h2 className="sr-only">Suggestions reçues</h2>
-      {isLoading && <Loader />}
+      {isLoading && <Loader size="large" />}
       {error && <p className="error-message text-center my-16">{error}</p>}
       {!isLoading && !error && suggestions.length < 1 && (
         <p className="my-10 info-message">Pas de suggestions en attente</p>

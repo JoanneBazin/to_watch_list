@@ -7,10 +7,10 @@ import {
 } from "@/src/components/ui";
 import { MediaOptionsProps } from "@/src/types";
 import clsx from "clsx";
-import { CiMenuKebab } from "react-icons/ci";
 import { useMobileDialog } from "@/src/hooks";
 import { ShareMediaDialog } from "../../../suggestions/components";
 import { DeleteMediaButton } from "../actions";
+import { EllipsisVertical } from "lucide-react";
 
 export const MediaOptions = ({ media, onError }: MediaOptionsProps) => {
   const {
@@ -32,7 +32,7 @@ export const MediaOptions = ({ media, onError }: MediaOptionsProps) => {
                 "bg-accent-dark text-black hover:bg-muted border-black"
             )}
           >
-            <CiMenuKebab size={18} />
+            <EllipsisVertical size={18} />
           </Button>
         </DropdownMenuTrigger>
 

@@ -20,9 +20,8 @@ import {
 import { MediaCard } from "./MediaCard";
 import { MediaCardSuggestions } from "./MediaCardSuggestions";
 import { MediaOptions } from "./MediaOptions";
-import { ToggleWatchedButton } from "../actions/ToggleWatchedButton";
 import { ShareMediaDialog } from "../../../suggestions/components";
-import { DeleteMediaButton } from "../actions";
+import { DeleteMediaButton, ToggleWatchedButton } from "../actions";
 
 type MediaColumnMeta = {
   className?: string;

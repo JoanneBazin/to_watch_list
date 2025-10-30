@@ -163,7 +163,7 @@ export const AddEntryForm = ({
         ) : (
           <>
             <Button type="submit" className="mt-2">
-              {isCreating ? <Loader /> : "Ajouter"}
+              {isCreating ? <Loader size="small" /> : "Ajouter"}
             </Button>
             {createError && (
               <p className="absolute error-message top-2 left-0 max-w-[300px]">

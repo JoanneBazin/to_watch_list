@@ -1,6 +1,5 @@
 "use client";
 
-import { cleanWatchlist } from "@/scripts/cleanWatchlist";
 import { Avatar, Button, SignOutBtn } from "@/src/components/ui";
 import {
   DeleteProfile,

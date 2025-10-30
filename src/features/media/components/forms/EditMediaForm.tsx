@@ -76,7 +76,7 @@ export const EditMediaForm = ({ media, onSuccess }: EditMediaFormProps) => {
       </div>
       <DialogFooter className="relative">
         <Button type="submit" className="mt-2">
-          {isUpdatingMedia ? <Loader /> : "Modifier"}
+          {isUpdatingMedia ? <Loader size="small" /> : "Modifier"}
         </Button>
         {updateError && (
           <p className="absolute error-message top-2 left-0 max-w-[300px]">

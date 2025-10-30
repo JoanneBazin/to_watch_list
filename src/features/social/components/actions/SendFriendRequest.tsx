@@ -28,7 +28,7 @@ export const SendFriendRequest = ({ receiverId }: { receiverId: string }) => {
 
   return (
     <Button variant={"outline"} onClick={handleAddContact}>
-      {isAddingFriend ? <Loader /> : "Ajouter"}
+      {isAddingFriend ? <Loader size="small" /> : "Ajouter"}
     </Button>
   );
 };

@@ -2,8 +2,8 @@ import { MediaOptionButtonProps } from "@/src/types";
 import { useEffect } from "react";
 import { Button } from "@/src/components/ui";
 import clsx from "clsx";
-import { RxCross1 } from "react-icons/rx";
 import { useDeleteFromWatchlist } from "../../hooks";
+import { X } from "lucide-react";
 
 export const DeleteMediaButton = ({
   mediaId,
@@ -33,7 +33,7 @@ export const DeleteMediaButton = ({
         mobile && "p-0 text-destructive"
       )}
     >
-      {mobile ? "Supprimer de la liste" : <RxCross1 />}
+      {mobile ? "Supprimer de la liste" : <X size={16} />}
     </Button>
   );
 };

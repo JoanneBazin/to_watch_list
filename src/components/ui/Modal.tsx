@@ -17,9 +17,11 @@ export const Modal = ({
 }: ModalProps) => (
   <Dialog open={open} onOpenChange={setOpen}>
     {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
-    <DialogContent className="rounded-md overflow-y-auto max-w-xl max-h-[80vh]">
+    <DialogContent className="rounded-md overflow-y-auto max-w-xl max-h-[80vh] custom-scrollbar">
       <DialogHeader>
-        <DialogTitle className="text-left text-base w-3/4">{title}</DialogTitle>
+        <DialogTitle className="text-left text-base lg:text-lg w-3/4">
+          {title}
+        </DialogTitle>
         <DialogDescription className="sr-only">{title}</DialogDescription>
       </DialogHeader>
       {children}

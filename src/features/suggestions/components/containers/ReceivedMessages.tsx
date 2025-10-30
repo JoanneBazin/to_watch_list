@@ -9,7 +9,7 @@ export const ReceivedMessages = () => {
   return (
     <section>
       <h2 className="sr-only">Messages reçus</h2>
-      {isLoading && <Loader />}
+      {isLoading && <Loader size="large" />}
       {error && <p className="error-message text-center my-10">{error}</p>}
       {!isLoading && !error && messages.length < 1 && (
         <p className="my-10 info-message">Pas de messages</p>
