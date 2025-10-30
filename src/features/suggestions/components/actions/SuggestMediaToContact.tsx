@@ -8,7 +8,7 @@ import {
 import { SuggestMediaToContactProps } from "@/src/types";
 import { useAddExistantMedia } from "../../../media/hooks";
 import { useState } from "react";
-import { SendSuggestion } from "../ui/SendSuggestion";
+import { SendSuggestion } from "../ui";
 
 export const SuggestMediaToContact = ({
   contact,
@@ -18,7 +18,10 @@ export const SuggestMediaToContact = ({
     true,
     contact.id
   );
-  const [sentSuggestion, setSentSuggestion] = useState(false);
+  const isAlreadySuggested = contact.suggestionsFromUser.dbId.some(
+    (id) => id === mediaId
+  );
+  const [sentSuggestion, setSentSuggestion] = useState(isAlreadySuggested);
 
   const handleSuggest = async (comment?: string) => {
     const result = await addExistantMedia(mediaId, comment);
@@ -37,8 +40,7 @@ export const SuggestMediaToContact = ({
           </div>
         </AccordionTrigger>
         <AccordionContent className="pb-0">
-          {contact.suggestionsFromUser.find((id) => id === mediaId) ||
-          sentSuggestion ? (
+          {sentSuggestion ? (
             <p>Suggestion envoyée !</p>
           ) : (
             <SendSuggestion

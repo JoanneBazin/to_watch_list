@@ -96,6 +96,11 @@ export const suggestSearchedMedia = async (
           mediaId: dbMediaId,
           senderComment,
         },
+        include: {
+          media: {
+            select: { tmdbId: true },
+          },
+        },
       });
     });
   } catch (error) {
@@ -147,6 +152,11 @@ export const suggestExistantMedia = async (
           receiverId,
           mediaId: media.id,
           senderComment,
+        },
+        include: {
+          media: {
+            select: { tmdbId: true },
+          },
         },
       });
     });

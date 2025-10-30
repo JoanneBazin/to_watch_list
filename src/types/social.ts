@@ -4,7 +4,10 @@ export interface Contact {
   id: string;
   name: string;
   image?: string | null;
-  suggestionsFromUser: string[];
+  suggestionsFromUser: {
+    dbId: string[];
+    tmdbId: number[];
+  };
 }
 
 export interface SearchContact extends Contact {
