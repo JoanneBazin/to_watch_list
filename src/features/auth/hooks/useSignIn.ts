@@ -35,6 +35,10 @@ export const useSignIn = () => {
         },
         {
           onError: (ctx) => {
+            if (ctx.error.message.includes("Invalid email or password")) {
+              setAuthError("Email ou mot de passe invalide");
+              return;
+            }
             setAuthError(ctx.error.message);
           },
         }
