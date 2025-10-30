@@ -21,7 +21,6 @@ export const useAsyncAction = <TArgs extends any[], TResult>(
       return { success: false as const };
     } finally {
       setIsLoading(false);
-      console.log(error);
     }
   };
 
