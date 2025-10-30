@@ -8,9 +8,9 @@ import {
 import { MediaOptionsProps } from "@/src/types";
 import clsx from "clsx";
 import { CiMenuKebab } from "react-icons/ci";
-import { DeleteMediaButton } from "./DeleteMediaButton";
 import { useMobileDialog } from "@/src/hooks";
 import { ShareMediaDialog } from "../../../suggestions/components";
+import { DeleteMediaButton } from "../actions";
 
 export const MediaOptions = ({ media, onError }: MediaOptionsProps) => {
   const {

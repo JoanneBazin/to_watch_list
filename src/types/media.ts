@@ -88,6 +88,13 @@ export interface SearchMediaCardProps {
   receiverId?: string;
 }
 
+export interface AddTMDBMediaButtonProps {
+  mediaId: number;
+  entry: EntryType;
+  isSuggestedMedia: boolean;
+  receiverId?: string;
+}
+
 export interface MediaModalNavProps {
   views: {
     id: string;

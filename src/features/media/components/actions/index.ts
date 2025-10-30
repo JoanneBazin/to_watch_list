@@ -1,5 +1,5 @@
-export * from "./AddMedia";
+export * from "./AddExistantMediaButton";
 export * from "./DeleteMediaButton";
 export * from "./EditMediaDialog";
-export * from "./SearchMediaCard";
+export * from "../ui/SearchMediaCard";
 export * from "./ToggleWatchedButton";
