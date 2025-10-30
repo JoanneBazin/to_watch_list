@@ -2,6 +2,7 @@ import { useState } from "react";
 import { signUp } from "@/src/lib/client";
 import { SignUpData, signUpSchema } from "../auth.schema";
 import { handleError, safeValidateSchema } from "@/src/utils/client";
+import { validateAuthData } from "../auth.helpers";
 
 export const useSignUp = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -29,6 +30,7 @@ export const useSignUp = () => {
     }
 
     try {
+      await validateAuthData(user.name, user.email);
       await signUp.email(
         {
           name: user.name,
