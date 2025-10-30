@@ -13,7 +13,7 @@ import {
   Button,
   Loader,
 } from "@/src/components/ui";
-import { useDeleteAccount } from "../hooks";
+import { useDeleteAccount } from "../../hooks";
 
 export const DeleteProfile = () => {
   const { deleteAccount, isDeleting, deleteError } = useDeleteAccount();
@@ -43,7 +43,7 @@ export const DeleteProfile = () => {
           <div className="flex gap-2">
             <AlertDialogCancel>Annuler</AlertDialogCancel>
             <AlertDialogAction onClick={(e) => handleDelete(e)}>
-              {isDeleting ? <Loader /> : "Supprimer"}
+              {isDeleting ? <Loader size="small" /> : "Supprimer"}
             </AlertDialogAction>
           </div>
         </AlertDialogFooter>

@@ -39,7 +39,7 @@ export const AuthForm = ({ isLogin = true }: { isLogin: boolean }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-1/3 flex flex-col gap-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       {!isLogin && (
         <div>
           <Input
@@ -50,7 +50,7 @@ export const AuthForm = ({ isLogin = true }: { isLogin: boolean }) => {
             onChange={(e) => setUser({ ...user, name: e.target.value })}
           />
           {validationErrors.name && (
-            <p className="error-message mt-1">{validationErrors.name}</p>
+            <p className="error-message mt-2">{validationErrors.name}</p>
           )}
         </div>
       )}
@@ -63,25 +63,35 @@ export const AuthForm = ({ isLogin = true }: { isLogin: boolean }) => {
           onChange={(e) => setUser({ ...user, email: e.target.value })}
         />
         {validationErrors.email && (
-          <p className="error-message mt-1">{validationErrors.email}</p>
+          <p className="error-message mt-2">{validationErrors.email}</p>
         )}
       </div>
 
       <div>
         <Input
-          type="text"
+          type="password"
           placeholder="Mot de passe"
           data-testid="password-input"
           value={user.password}
           onChange={(e) => setUser({ ...user, password: e.target.value })}
         />
         {validationErrors.password && (
-          <p className="error-message mt-1">{validationErrors.password}</p>
+          <p className="error-message mt-2">{validationErrors.password}</p>
         )}
       </div>
 
-      <Button type="submit" className="mt-3" data-testid="auth-submit">
-        {isLoading ? <Loader /> : isLogin ? "Se connecter" : "S'inscrire"}
+      <Button
+        type="submit"
+        className="mt-3 w-2/3 md:w-1/2 self-center"
+        data-testid="auth-submit"
+      >
+        {isLoading ? (
+          <Loader size="small" />
+        ) : isLogin ? (
+          "Se connecter"
+        ) : (
+          "S'inscrire"
+        )}
       </Button>
 
       {authError && (

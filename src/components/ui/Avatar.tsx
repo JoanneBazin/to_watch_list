@@ -2,7 +2,10 @@ import { AvatarProps } from "@/src/types";
 import clsx from "clsx";
 import Image from "next/image";
 
-export const Avatar = ({ size = "medium", img }: AvatarProps) => {
+export const Avatar = ({
+  size = "medium",
+  img = "/avatar.svg",
+}: AvatarProps) => {
   let sizeAvatar: string;
 
   switch (size) {

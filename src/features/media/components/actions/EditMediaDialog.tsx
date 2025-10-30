@@ -2,8 +2,8 @@ import { Button, Modal } from "@/src/components/ui";
 import { MediaDialogProps } from "@/src/types";
 import clsx from "clsx";
 import { useState } from "react";
-import { BiSolidEditAlt } from "react-icons/bi";
-import { EditMediaForm } from "../forms/EditMediaForm";
+import { PenLine } from "lucide-react";
+import { EditMediaForm } from "../forms";
 
 export const EditMediaDialog = ({
   media,
@@ -28,7 +28,7 @@ export const EditMediaDialog = ({
                 "bg-accent-dark text-black hover:bg-muted border-black"
             )}
           >
-            <BiSolidEditAlt />
+            <PenLine size={16} />
           </Button>
         )
       }

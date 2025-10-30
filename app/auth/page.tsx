@@ -23,7 +23,7 @@ const Authentification = () => {
         {isLogin ? "Connexion" : "Inscription"}
       </h1>
 
-      <div className="flex flex-col gap-6 sm:gap-8 items-center">
+      <div className="flex flex-col gap-6 sm:gap-8 mx-auto w-3/4">
         <AuthForm isLogin={isLogin} />
         <button
           onClick={() => setIsLogin(!isLogin)}

@@ -15,7 +15,7 @@ const FriendProfilePage = ({ params }: { params: { userId: string } }) => {
   return (
     <main className="flex-1 flex flex-col items-center w-full max-w-[768px]">
       <h1 className="sr-only">Profil utilisateur</h1>
-      {isLoading && <Loader />}
+      {isLoading && <Loader size="large" />}
       {error && <p className="error-message text-center mt-12">{error}</p>}
 
       {friendProfile && (

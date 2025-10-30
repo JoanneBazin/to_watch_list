@@ -2,7 +2,7 @@
 
 import { Avatar, Button, Input, Loader } from "@/src/components/ui";
 import { FormEvent, useRef, useState } from "react";
-import { useUpdateUser } from "../hooks";
+import { useUpdateUser } from "../../hooks";
 
 export const EditUserAvatar = ({
   userAvatar,
@@ -75,7 +75,7 @@ export const EditUserAvatar = ({
           />
         </div>
         <Button variant="outline" className="w-1/2 sm:w-fit">
-          {isUpdatingImage ? <Loader /> : "Valider"}
+          {isUpdatingImage ? <Loader size="small" /> : "Valider"}
         </Button>
       </form>
       {updateImageError && <p className="error-message">{updateImageError}</p>}

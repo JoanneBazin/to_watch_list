@@ -1,6 +1,6 @@
 import { MediaCardProps } from "@/src/types";
 import { Badge, Modal } from "@/src/components/ui";
-import { EditMediaDialog } from "../actions/EditMediaDialog";
+import { EditMediaDialog } from "../actions";
 
 export const MediaCard = ({ media, children }: MediaCardProps) => {
   return (
@@ -12,15 +12,15 @@ export const MediaCard = ({ media, children }: MediaCardProps) => {
       }
       title={media.title}
     >
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="relative flex flex-col gap-1">
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="relative flex flex-col gap-1 min-w-[50%]">
           {!media.tmdbId && (
-            <div className="absolute -top-10 right-6">
+            <div className="absolute -top-12 right-6">
               <EditMediaDialog media={media} />
             </div>
           )}
           {media.originalTitle && (
-            <p className="text-xs sm:text-sm text-accent">
+            <p className="text-xs sm:text-sm lg:text-base text-accent">
               {media.originalTitle}
             </p>
           )}

@@ -1,9 +1,9 @@
 import { Button } from "@/src/components/ui";
 import clsx from "clsx";
-import { FaCheck } from "react-icons/fa";
 import { useToggleWatched } from "../../hooks";
 import { useEffect } from "react";
 import { MediaOptionButtonProps } from "@/src/types";
+import { Check } from "lucide-react";
 
 export const ToggleWatchedButton = ({
   mediaId,
@@ -31,7 +31,7 @@ export const ToggleWatchedButton = ({
         watched && "bg-accent-dark text-black hover:bg-muted md:border-black"
       )}
     >
-      <FaCheck />
+      <Check size={18} />
     </Button>
   );
 };

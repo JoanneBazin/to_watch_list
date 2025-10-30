@@ -32,7 +32,7 @@ export const SendSuggestion = ({
         variant="outline"
       >
         {isLoading ? (
-          <Loader />
+          <Loader size="small" />
         ) : (
           <>
             <p>Envoyer</p>
