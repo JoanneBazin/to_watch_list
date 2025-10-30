@@ -18,8 +18,8 @@ export const useSearchMedia = () => {
     setMediaResults([]);
 
     try {
-      const queryResult = await fetchMediaQuery(query, entry);
-      setMediaResults(queryResult);
+      const tmdbMedia = await fetchMediaQuery(query, entry);
+      setMediaResults(tmdbMedia);
     } catch (error) {
       handleError(error, setError);
     } finally {
