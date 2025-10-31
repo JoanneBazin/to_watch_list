@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useUserHydratation } from "@/src/features/user/hooks";
 import { useMediaHydratation } from "@/src/features/media/hooks";
-import { PrivateHeader } from "@/src/components/layout";
+import { Footer, PrivateHeader } from "@/src/components/layout";
+import { Loader } from "@/src/components/ui";
 
 const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -20,7 +21,7 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
     }
   }, [session, router, isPending]);
 
-  if (isPending) return null;
+  if (isPending) return <Loader size="large" />;
 
   if (!session?.user) return null;
 
@@ -28,6 +29,7 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
     <div className="flex flex-col min-h-screen">
       <PrivateHeader />
       {children}
+      <Footer />
     </div>
   );
 };
