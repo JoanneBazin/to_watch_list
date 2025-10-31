@@ -26,8 +26,12 @@ export const EditUserName = ({ username }: { username: string }) => {
         onSubmit={handleEditName}
         className="flex flex-col sm:flex-row items-end sm:items-center justify-end gap-3 sm:gap-6"
       >
+        <label htmlFor="user-name" className="sr-only">
+          Modifier le nom utilisateur
+        </label>
         <Input
           defaultValue={name}
+          id="user-name"
           placeholder={username}
           onChange={(e) => setName(e.target.value)}
           className="sm:w-1/3"
@@ -36,8 +40,12 @@ export const EditUserName = ({ username }: { username: string }) => {
           {isUpdatingName ? <Loader size="small" /> : "Modifier"}
         </Button>
       </form>
-      {updateNameError && <p className="error-message">{updateNameError}</p>}
-      {validationError && <p className="error-message">{validationError}</p>}
+      {updateNameError && (
+        <p className="error-message text-end mt-3">{updateNameError}</p>
+      )}
+      {validationError && (
+        <p className="error-message text-end mt-3">{validationError}</p>
+      )}
     </div>
   );
 };

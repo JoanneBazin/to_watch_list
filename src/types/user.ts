@@ -33,4 +33,5 @@ export interface UserStore {
 export interface AvatarProps {
   size?: "small" | "medium" | "large";
   img?: string | null;
+  alt?: string;
 }

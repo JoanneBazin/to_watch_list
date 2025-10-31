@@ -29,7 +29,7 @@ export const PrivateHeader = () => {
   return (
     <header className="bg-accent-dark relative p-2 md:p-3 w-full">
       <div className="relative container mx-auto px-2 sm:px-4 flex justify-between items-center">
-        <Logo size="medium" />
+        <Logo size="medium" img="/watchers_logo.svg" alt="Logo Watchers" />
 
         {isPending ? (
           <Skeleton className="h-14 w-18" />
@@ -37,6 +37,7 @@ export const PrivateHeader = () => {
           <div ref={menuRef}>
             <Button
               variant="outline"
+              aria-label="Ouvrir le menu"
               className="relative px-5 md:hidden"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
@@ -101,6 +102,7 @@ export const PrivateHeader = () => {
               <div ref={profileRef} className="hidden md:block">
                 <button
                   className="font-bold hover:text-accent flex items-center gap-3"
+                  aria-label="Ouvrir le menu utilisateur"
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                   data-testid="open-profile-menu"
                 >

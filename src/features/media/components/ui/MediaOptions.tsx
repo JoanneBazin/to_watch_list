@@ -26,6 +26,7 @@ export const MediaOptions = ({ media, onError }: MediaOptionsProps) => {
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
+            aria-label="Voir les options"
             className={clsx(
               "table-button p-0",
               media.watched &&

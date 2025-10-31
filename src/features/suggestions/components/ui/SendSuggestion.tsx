@@ -18,8 +18,12 @@ export const SendSuggestion = ({
 
   return (
     <div>
+      <label htmlFor="comment" className="sr-only">
+        Envoyer un commentaire
+      </label>
       <Textarea
         onChange={(e) => setComment(e.target.value)}
+        id="comment"
         value={comment}
         name="comment"
         placeholder="Laisser un commentaire ?"

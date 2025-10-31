@@ -5,6 +5,7 @@ import Image from "next/image";
 export const Avatar = ({
   size = "medium",
   img = "/avatar.svg",
+  alt = "Avatar de l'utilisateur",
 }: AvatarProps) => {
   let sizeAvatar: string;
 
@@ -24,7 +25,7 @@ export const Avatar = ({
     <div className={clsx(sizeAvatar, "bg-zinc-600 rounded-full")}>
       <Image
         src={img || "/avatar.svg"}
-        alt="user avatar"
+        alt={alt}
         width={0}
         height={0}
         sizes="100vw"

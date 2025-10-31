@@ -26,6 +26,7 @@ export const ShareMediaDialog = ({
         mobile ? null : (
           <Button
             variant="outline"
+            aria-label="Partager le titre"
             className={clsx(
               "table-button",
               media.watched &&

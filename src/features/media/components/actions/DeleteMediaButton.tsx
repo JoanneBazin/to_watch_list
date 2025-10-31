@@ -26,6 +26,7 @@ export const DeleteMediaButton = ({
   return (
     <Button
       variant={mobile ? "ghost" : "outline"}
+      aria-label="Supprimer le titre de la liste"
       onClick={handleDelete}
       className={clsx(
         "table-button",

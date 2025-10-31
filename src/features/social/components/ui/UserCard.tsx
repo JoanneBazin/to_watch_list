@@ -49,7 +49,7 @@ export const UserCard = ({ user }: { user: SearchContact }) => {
         <CardTitle className="text-center">{user.name}</CardTitle>
       </CardHeader>
       <CardContent>
-        <Avatar img={user.image} size="large" />
+        <Avatar img={user.image} size="large" alt={`Avatar de ${user.name}`} />
       </CardContent>
       <CardFooter className="flex justify-center">{actionSection}</CardFooter>
     </Card>

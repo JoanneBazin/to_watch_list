@@ -86,7 +86,7 @@ export const MediaTable = ({ data }: { data: MediaItem[] }) => {
 
     {
       accessorKey: "watched",
-      header: "",
+      header: () => <span className="sr-only">Statut vu</span>,
       cell: ({ row }) => (
         <ToggleWatchedButton
           mediaId={row.original.id}
@@ -101,6 +101,7 @@ export const MediaTable = ({ data }: { data: MediaItem[] }) => {
 
     {
       id: "delete",
+      header: () => <span className="sr-only">Supprimer</span>,
       cell: ({ row }) => (
         <DeleteMediaButton
           mediaId={row.original.id}
@@ -115,6 +116,7 @@ export const MediaTable = ({ data }: { data: MediaItem[] }) => {
 
     {
       id: "suggest",
+      header: () => <span className="sr-only">Partager</span>,
       cell: ({ row }) => <ShareMediaDialog media={row.original} />,
       meta: {
         className: "hidden md:table-cell p-4",
@@ -123,6 +125,7 @@ export const MediaTable = ({ data }: { data: MediaItem[] }) => {
 
     {
       id: "mobileOptions",
+      header: () => <span className="sr-only">Options</span>,
       cell: ({ row }) => (
         <MediaOptions media={row.original} onError={setUpdateError} />
       ),
