@@ -37,6 +37,7 @@ const Authentification = () => {
       <Link
         href="/"
         className="flex justify-center items-center gap-3 text-sm my-4"
+        aria-label="Retour à la page précédente"
       >
         <MoveLeft size={28} />
         Retour

@@ -32,7 +32,10 @@ export const useUpdateRequest = () => {
     const result = await updateFriendRequestStatus(requestId, status);
     if (!result) throw new ApiError(500, "Erreur lors de la mise à jour");
     if (result.status === "ACCEPTED") {
-      setContacts([...contacts, { ...result.sender, suggestionsFromUser: [] }]);
+      setContacts([
+        ...contacts,
+        { ...result.sender, suggestionsFromUser: { dbId: [], tmdbId: [] } },
+      ]);
     }
     setCounts({ ...counts, friendRequests: counts.friendRequests - 1 });
   };

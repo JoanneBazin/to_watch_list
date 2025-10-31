@@ -9,11 +9,19 @@ import {
 import { ApiError } from "@/src/utils/shared";
 
 export const updateUserName = async (name: string) => {
+  if (name.length > 20) throw new ApiError(400, "Le nom est trop long");
   try {
     const session = await requireAuth();
     const userId = session.user.id;
 
-    if (name.length > 20) throw new ApiError(400, "Le nom est trop long");
+    const existantUser = await prisma.user.findFirst({
+      where: {
+        AND: [{ id: { not: userId } }, { name }],
+      },
+    });
+
+    if (existantUser)
+      throw new ApiError(409, "Ce nom d'utilisateur est déjà utilisé");
 
     return await prisma.user.update({
       where: {

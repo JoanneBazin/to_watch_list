@@ -6,6 +6,7 @@ export const middleware = async (request: NextRequest) => {
 
   const isPublicPath =
     pathname === "/" ||
+    pathname === "/about" ||
     pathname === "/auth" ||
     pathname.startsWith("/api/auth/");
 
@@ -22,5 +23,5 @@ export const middleware = async (request: NextRequest) => {
 };
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|public/).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)"],
 };
