@@ -30,9 +30,11 @@ export const SuggestionCard = ({ media }: { media: MediaItem }) => {
       </CardHeader>
 
       <CardContent className="p-0 h-full flex flex-col justify-between">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="flex flex-col sm:flex-row gap-8">
           <div className="text-sm md:text-base">
-            {media.real && <p className="font-semibold">{media.real}</p>}
+            {media.real && (
+              <p className="font-semibold sm:mb-2 text-sm">{media.real}</p>
+            )}
             <p className="text-secondary-foreground">
               {media.categories.join(" | ")}
             </p>
@@ -46,7 +48,7 @@ export const SuggestionCard = ({ media }: { media: MediaItem }) => {
           </div>
 
           {media.suggestions && (
-            <div>
+            <div className="min-w-[35%]">
               <div className="md:hidden w-full h-[2px] bg-gradient-to-r from-transparent via-accent to-transparent my-4 sm:my-6"></div>
               <p className="text-xs lg:text-sm">envoyé par</p>
               {media.suggestions.map((s) => (
@@ -55,7 +57,11 @@ export const SuggestionCard = ({ media }: { media: MediaItem }) => {
                   className="flex md:flex-col gap-6 md:gap-3 items-start my-4"
                 >
                   <div className="flex gap-3">
-                    <Avatar size="small" img={s.sender.image} />
+                    <Avatar
+                      size="small"
+                      img={s.sender.image}
+                      alt={`Avatar de ${s.sender.name}`}
+                    />
                     <p> {s.sender.name}</p>
                   </div>
                   {s.senderComment && (

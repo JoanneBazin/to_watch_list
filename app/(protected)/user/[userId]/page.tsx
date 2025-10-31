@@ -22,7 +22,11 @@ const FriendProfilePage = ({ params }: { params: { userId: string } }) => {
         <>
           <section className="my-12" data-testid="contact-profile">
             <div className="flex gap-6 sm:gap-10 items-center justify-center">
-              <Avatar img={friendProfile.image} size="large" />
+              <Avatar
+                img={friendProfile.image}
+                size="large"
+                alt={`Avatar de ${friendProfile.name}`}
+              />
               <h2 className="text-2xl sm:text-4xl text-center">
                 {friendProfile.name}
               </h2>
