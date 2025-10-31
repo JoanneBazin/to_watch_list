@@ -1,15 +1,14 @@
 import clsx from "clsx";
 import Image from "next/image";
-import LogoSVG from "@/public/watchers_logo.svg";
+import { LogoProps } from "@/src/types";
 
-interface LogoProps {
-  size?: "small" | "medium" | "large";
-}
-
-export const Logo = ({ size = "large" }: LogoProps) => {
+export const Logo = ({ size = "large", img, alt }: LogoProps) => {
   let sizeLogo: string;
 
   switch (size) {
+    case "x-small":
+      sizeLogo = "w-[25px] sm:w-[45px] h-auto";
+      break;
     case "small":
       sizeLogo = "w-[30px] sm:w-[50px] h-auto";
       break;
@@ -24,8 +23,8 @@ export const Logo = ({ size = "large" }: LogoProps) => {
   return (
     <div className={clsx(sizeLogo)}>
       <Image
-        src={LogoSVG}
-        alt="logo Watchers"
+        src={img || "/watchers_logo.svg"}
+        alt={alt || "Logo"}
         width={0}
         height={0}
         sizes="100vw"
