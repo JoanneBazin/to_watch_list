@@ -22,6 +22,7 @@ export const EditMediaDialog = ({
         mobile ? null : (
           <Button
             variant="outline"
+            aria-label="Modifier les informations du média"
             className={clsx(
               "table-button",
               media.watched &&

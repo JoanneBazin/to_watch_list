@@ -25,6 +25,7 @@ export const ToggleWatchedButton = ({
   return (
     <Button
       variant="outline"
+      aria-label="Marquer le titre comme vu/non-vu"
       onClick={handleToggleWatched}
       className={clsx(
         "table-button border-background md:border-input",

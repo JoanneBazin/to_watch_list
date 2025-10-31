@@ -75,11 +75,11 @@ export const AddEntryForm = ({
           <p className="error-message text-end">{errors.title.message}</p>
         )}
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="title" className="input-label">
+          <Label htmlFor="original-title" className="input-label">
             Titre original
           </Label>
           <Input
-            id="originalTitle"
+            id="original-title"
             {...register("originalTitle")}
             className="col-span-3"
           />
@@ -132,6 +132,9 @@ export const AddEntryForm = ({
               <p className="error-message">{errors.categories.message}</p>
             )}
           </div>
+          <label htmlFor="category" className="sr-only">
+            Catégorie
+          </label>
           <select
             id="category"
             {...register("categories")}

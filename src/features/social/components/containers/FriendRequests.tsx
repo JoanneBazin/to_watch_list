@@ -26,7 +26,10 @@ export const FriendRequests = () => {
               data-testid="request-card"
             >
               <div className="flex gap-3 items-center">
-                <Avatar img={request.sender.image} />
+                <Avatar
+                  img={request.sender.image}
+                  alt={`Avatar de ${request.sender.name}`}
+                />
                 <span className="text-sm sm:text-base">
                   {request.sender.name}
                 </span>

@@ -28,7 +28,9 @@ export const SearchMediaForm = ({
         onSubmit={handleSearch}
         className="flex flex-col sm:flex-row gap-4 sm:gap-8 sm:my-3"
       >
-        <Label htmlFor="media-search" />
+        <Label htmlFor="media-search" className="sr-only">
+          Chercher un titre
+        </Label>
         <Input
           id="media-search"
           className="sm:w-2/3"

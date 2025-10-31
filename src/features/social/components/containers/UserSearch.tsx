@@ -12,8 +12,12 @@ export const UserSearch = () => {
     <section className="max-w-[768px] mx-auto">
       <h2 className="sr-only">Rechercher un contact</h2>
       <div className="mt-5 mb-3 sm:my-5">
+        <label htmlFor="user-search" className="sr-only">
+          Chercher un utilisateur
+        </label>
         <Input
           className="w-3/4 sm:w-2/3"
+          id="user-search"
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}

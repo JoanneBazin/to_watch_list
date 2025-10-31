@@ -35,7 +35,11 @@ export const SuggestMediaToContact = ({
       <AccordionItem value={contact.id}>
         <AccordionTrigger>
           <div className="flex gap-4">
-            <Avatar img={contact.image} size="small" />
+            <Avatar
+              img={contact.image}
+              size="small"
+              alt={`Avatar de ${contact.name}`}
+            />
             <span className="mr-6">{contact.name}</span>
           </div>
         </AccordionTrigger>

@@ -23,7 +23,7 @@ export const FriendsList = () => {
               className="flex gap-5 items-center"
               data-testid="contact-card"
             >
-              <Avatar img={contact.image} />
+              <Avatar img={contact.image} alt={`Avatar de ${contact.name}`} />
               <Link href={`/user/${contact.id}`}>{contact.name}</Link>
             </div>
           ))}

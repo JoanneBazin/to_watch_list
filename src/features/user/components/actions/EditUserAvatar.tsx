@@ -65,9 +65,12 @@ export const EditUserAvatar = ({
       >
         <div className="flex items-center gap-4">
           <Avatar img={preview ?? userAvatar} size="medium" />
+          <label htmlFor="user-avatar" className="sr-only">
+            Mofifier avatar
+          </label>
           <Input
             type="file"
-            id="user_avatar"
+            id="user-avatar"
             accept="image/*"
             onChange={handlePreviewAvatar}
             ref={fileInput}
@@ -78,8 +81,10 @@ export const EditUserAvatar = ({
           {isUpdatingImage ? <Loader size="small" /> : "Valider"}
         </Button>
       </form>
-      {updateImageError && <p className="error-message">{updateImageError}</p>}
-      {fileError && <p className="error-message">{fileError}</p>}
+      {updateImageError && (
+        <p className="error-message text-end mt-3">{updateImageError}</p>
+      )}
+      {fileError && <p className="error-message text-end mt-3">{fileError}</p>}
     </div>
   );
 };
