@@ -19,11 +19,11 @@ export async function GET(req: Request) {
   });
 }
 
-export async function POST(req: Request) {
-  const json = await req.json();
+// export async function POST(req: Request) {
+//   const json = await req.json();
 
-  const addCategory = await prisma.category.create({
-    data: json,
-  });
-  return new NextResponse(JSON.stringify(addCategory), { status: 201 });
-}
+//   const addCategory = await prisma.category.create({
+//     data: json,
+//   });
+//   return new NextResponse(JSON.stringify(addCategory), { status: 201 });
+// }
