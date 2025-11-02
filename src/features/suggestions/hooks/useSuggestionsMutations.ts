@@ -5,8 +5,8 @@ import {
 } from "../suggestions.actions";
 import { useMediaStore } from "../../media/media.store";
 import { useUserStore } from "../../user/user.store";
-import { ApiError } from "@/src/utils/shared";
 import { useAsyncAction } from "@/src/hooks";
+import { unwrapActionResponse } from "@/src/utils/client";
 
 export const useUpdateSuggestionStatus = () => {
   const { watchlist, setWatchlist } = useMediaStore.getState();
@@ -17,10 +17,9 @@ export const useUpdateSuggestionStatus = () => {
     status: SuggestionsStatus
   ) => {
     const result = await updateReceivedSuggestions(mediaId, status);
-    if (!result) throw new ApiError(500, "Erreur lors de la mise à jour");
+    const newMedia = unwrapActionResponse(result);
 
     if (status === "ACCEPTED") {
-      const newMedia = { ...result, ...result.media, media: undefined };
       setWatchlist([newMedia, ...watchlist]);
     }
     setCounts({ ...counts, suggestions: counts.suggestions - 1 });
@@ -40,16 +39,16 @@ export const useUpdateSuggestionResponse = () => {
 
   const addResponseComment = async (suggestionId: string, comment: string) => {
     const result = await updateSuggestionResponse(suggestionId, comment);
-    if (!result) throw new ApiError(500, "Erreur lors de la mise à jour");
+    const suggestion = unwrapActionResponse(result);
 
     setWatchlist(
       watchlist.map((media) =>
-        media.id === result.mediaId
+        media.id === suggestion.mediaId
           ? {
               ...media,
               suggestions: media.suggestions?.map((s) =>
-                s.id === result.id
-                  ? { ...s, receiverComment: result.receiverComment }
+                s.id === suggestion.id
+                  ? { ...s, receiverComment: suggestion.receiverComment }
                   : s
               ),
             }

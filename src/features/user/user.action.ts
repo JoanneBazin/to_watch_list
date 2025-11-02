@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/src/lib/server";
+import { ActionResponse } from "@/src/types";
 import {
   handleActionError,
   requireAuth,
@@ -8,7 +9,9 @@ import {
 } from "@/src/utils/server";
 import { ApiError } from "@/src/utils/shared";
 
-export const updateUserName = async (name: string) => {
+export const updateUserName = async (
+  name: string
+): Promise<ActionResponse<{ name: string }>> => {
   if (name.length > 20) throw new ApiError(400, "Le nom est trop long");
   try {
     const session = await requireAuth();
@@ -23,7 +26,7 @@ export const updateUserName = async (name: string) => {
     if (existantUser)
       throw new ApiError(409, "Ce nom d'utilisateur est déjà utilisé");
 
-    return await prisma.user.update({
+    const username = await prisma.user.update({
       where: {
         id: userId,
       },
@@ -32,12 +35,15 @@ export const updateUserName = async (name: string) => {
         name: true,
       },
     });
+    return { success: true, data: username };
   } catch (error) {
-    handleActionError(error, "Update username");
+    return handleActionError(error, "Update username");
   }
 };
 
-export const updateUserAvatar = async (formData: FormData) => {
+export const updateUserAvatar = async (
+  formData: FormData
+): Promise<ActionResponse<{ image: string | null }>> => {
   try {
     const session = await requireAuth();
     const userId = session.user.id;
@@ -55,7 +61,7 @@ export const updateUserAvatar = async (formData: FormData) => {
 
     const imageUrl = await uploadImages(image, userId);
 
-    return await prisma.user.update({
+    const userAvatar = await prisma.user.update({
       where: {
         id: userId,
       },
@@ -64,12 +70,13 @@ export const updateUserAvatar = async (formData: FormData) => {
         image: true,
       },
     });
+    return { success: true, data: userAvatar };
   } catch (error) {
-    handleActionError(error, "Update user avatar");
+    return handleActionError(error, "Update user avatar");
   }
 };
 
-export const deleteUserAccount = async () => {
+export const deleteUserAccount = async (): Promise<ActionResponse> => {
   try {
     const session = await requireAuth();
     const userId = session.user.id;
@@ -79,7 +86,8 @@ export const deleteUserAccount = async () => {
         id: userId,
       },
     });
+    return { success: true };
   } catch (error) {
-    handleActionError(error, "Delete account");
+    return handleActionError(error, "Delete account");
   }
 };

@@ -1,6 +1,6 @@
 import { SuggestionsProps } from "./suggestion";
 
-export interface MediaItem {
+export interface MediaType {
   id: string;
   tmdbId: number | null;
   title: string;
@@ -10,6 +10,10 @@ export interface MediaItem {
   real: string | null;
   platform: string | null;
   categories: string[];
+  type: EntryType;
+}
+
+export interface MediaItem extends MediaType {
   addedAt: Date;
   watched: boolean;
   type: EntryType;

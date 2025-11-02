@@ -16,7 +16,7 @@ import { useUserStore } from "../../user/user.store";
 import { useAsyncAction } from "@/src/hooks";
 import { MediaFormData, UpdateMediaFormData } from "../media.schema";
 import { EntryType, MediaItem } from "@/src/types";
-import { ApiError } from "@/src/utils/shared";
+import { unwrapActionResponse } from "@/src/utils/client";
 
 export const useAddTMDBMedia = (isSuggestion = false, receiverId?: string) => {
   const { watchlist, setWatchlist } = useMediaStore.getState();
@@ -34,18 +34,20 @@ export const useAddTMDBMedia = (isSuggestion = false, receiverId?: string) => {
         entry,
         senderComment
       );
-      if (!result) throw new ApiError(500, "Erreur lors de la création");
+      const suggestion = unwrapActionResponse(result);
 
       setContacts(
         contacts.map((c) =>
-          c.id === result.receiverId
+          c.id === suggestion.receiverId
             ? {
                 ...c,
                 suggestionsFromUser: {
-                  dbId: [...c.suggestionsFromUser.dbId, result.mediaId],
+                  dbId: [...c.suggestionsFromUser.dbId, suggestion.mediaId],
                   tmdbId: [
                     ...c.suggestionsFromUser.tmdbId,
-                    ...(result.media.tmdbId ? [result.media.tmdbId] : []),
+                    ...(suggestion.media.tmdbId
+                      ? [suggestion.media.tmdbId]
+                      : []),
                   ],
                 },
               }
@@ -54,9 +56,9 @@ export const useAddTMDBMedia = (isSuggestion = false, receiverId?: string) => {
       );
     } else {
       const result = await addSearchedMediaToWatchlist(mediaId, entry);
-      if (!result) throw new ApiError(500, "Erreur lors de la création");
+      const newMedia = unwrapActionResponse(result);
 
-      setWatchlist([result, ...watchlist]);
+      setWatchlist([newMedia, ...watchlist]);
     }
   };
 
@@ -76,15 +78,15 @@ export const useCreateMedia = (isSuggestion = false, receiverId?: string) => {
   const create = async (media: MediaFormData, senderComment?: string) => {
     if (isSuggestion && receiverId) {
       const result = await suggestCustomMedia(media, receiverId, senderComment);
-      if (!result) throw new ApiError(500, "Erreur lors de la création");
+      const suggestion = unwrapActionResponse(result);
 
       setContacts(
         contacts.map((c) =>
-          c.id === result.receiverId
+          c.id === suggestion.receiverId
             ? {
                 ...c,
                 suggestionsFromUser: {
-                  dbId: [...c.suggestionsFromUser.dbId, result.mediaId],
+                  dbId: [...c.suggestionsFromUser.dbId, suggestion.mediaId],
                   tmdbId: [...c.suggestionsFromUser.tmdbId],
                 },
               }
@@ -93,10 +95,10 @@ export const useCreateMedia = (isSuggestion = false, receiverId?: string) => {
       );
     } else {
       const result = await createCustomMedia(media);
-      if (!result) throw new ApiError(500, "Erreur lors de la création");
+      const newMedia = unwrapActionResponse(result);
 
       const newItem: MediaItem = {
-        ...result,
+        ...newMedia,
         addedAt: new Date(),
         watched: false,
       };
@@ -128,17 +130,20 @@ export const useAddExistantMedia = (
         receiverId,
         senderComment
       );
-      if (!result) throw new ApiError(500, "Erreur lors de l'envoi'");
+      const suggestion = unwrapActionResponse(result);
+
       setContacts(
         contacts.map((c) =>
-          c.id === receiverId
+          c.id === suggestion.receiverId
             ? {
                 ...c,
                 suggestionsFromUser: {
-                  dbId: [...c.suggestionsFromUser.dbId, result.mediaId],
+                  dbId: [...c.suggestionsFromUser.dbId, suggestion.mediaId],
                   tmdbId: [
                     ...c.suggestionsFromUser.tmdbId,
-                    ...(result.media.tmdbId ? [result.media.tmdbId] : []),
+                    ...(suggestion.media.tmdbId
+                      ? [suggestion.media.tmdbId]
+                      : []),
                   ],
                 },
               }
@@ -147,8 +152,9 @@ export const useAddExistantMedia = (
       );
     } else {
       const result = await addExistantMediaToWatchlist(mediaId);
-      if (!result) throw new ApiError(500, "Erreur lors de l'ajout");
-      setWatchlist([result, ...watchlist]);
+      const newMedia = unwrapActionResponse(result);
+
+      setWatchlist([newMedia, ...watchlist]);
     }
   };
 
@@ -166,10 +172,11 @@ export const useUpdateMedia = () => {
 
   const updateItem = async (id: string, data: UpdateMediaFormData) => {
     const result = await updateMedia(id, data);
-    if (!result) throw new ApiError(500, "Erreur lors de la mise à jour");
+    const updatedMedia = unwrapActionResponse(result);
+
     setWatchlist(
       watchlist.map((media) =>
-        media.id === result.id ? { ...media, ...result } : media
+        media.id === updatedMedia.id ? { ...media, ...updatedMedia } : media
       )
     );
   };
@@ -188,11 +195,12 @@ export const useToggleWatched = () => {
 
   const updateWatchedItem = async (id: string) => {
     const result = await updateWatched(id);
-    if (!result) throw new ApiError(500, "Erreur lors de la mise à jour");
+    const updatedMedia = unwrapActionResponse(result);
+
     setWatchlist(
       watchlist.map((media) =>
-        media.id === result.mediaId
-          ? { ...media, watched: result.watched }
+        media.id === updatedMedia.mediaId
+          ? { ...media, watched: updatedMedia.watched }
           : media
       )
     );
@@ -211,8 +219,11 @@ export const useDeleteFromWatchlist = () => {
 
   const deleteItem = async (id: string) => {
     const result = await deleteFromWatchlist(id);
-    if (!result) throw new ApiError(500, "Erreur lors de la suppression");
-    setWatchlist(watchlist.filter((media) => media.id !== result.mediaId));
+    const deletedMedia = unwrapActionResponse(result);
+
+    setWatchlist(
+      watchlist.filter((media) => media.id !== deletedMedia.mediaId)
+    );
   };
 
   const {

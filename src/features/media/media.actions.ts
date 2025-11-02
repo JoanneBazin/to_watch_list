@@ -12,7 +12,13 @@ import {
   updateMediaServerSchema,
 } from "./media.schema";
 import { ApiError } from "@/src/utils/shared";
-import { EntryType } from "@/src/types";
+import {
+  ActionResponse,
+  EntryType,
+  MediaItem,
+  MediaType,
+  SuggestionResponseType,
+} from "@/src/types";
 import {
   createMediaWithUser,
   getMedia,
@@ -23,48 +29,56 @@ import {
 export const addSearchedMediaToWatchlist = async (
   mediaId: number,
   entry: EntryType
-) => {
+): Promise<ActionResponse<MediaItem>> => {
   try {
     const session = await requireAuth();
     const userId = session.user.id;
+    let formattedMedia: MediaItem;
 
     const { source, media } = await getMedia(mediaId, entry);
 
     if (source === "database") {
       const result = await linkMediaToUser(media.id, userId);
-      return { ...result, ...result.media, media: undefined };
+      const { media: nestedMedia, ...rest } = result;
+      formattedMedia = { ...rest, ...(nestedMedia ?? {}) };
+    } else {
+      const newMedia = await createMediaWithUser(media, userId);
+      formattedMedia = await getMediaDetailsFromDB(userId, newMedia.id);
     }
 
-    const newMedia = await createMediaWithUser(media, userId);
-    return getMediaDetailsFromDB(userId, newMedia.id);
+    return { success: true, data: formattedMedia };
   } catch (error) {
-    handleActionError(error, "Add TMDB media");
+    return handleActionError(error, "Add TMDB media");
   }
 };
 
 export const createCustomMedia = async (
   media: MediaFormData,
   userId?: string
-) => {
+): Promise<ActionResponse<MediaType>> => {
   try {
     const session = await requireAuth();
     const targetUserId = userId || session.user.id;
 
-    return createMediaWithUser(media, targetUserId);
+    const data = await createMediaWithUser(media, targetUserId);
+    return { success: true, data };
   } catch (error) {
-    handleActionError(error, "Create media");
+    return handleActionError(error, "Create media");
   }
 };
 
-export const addExistantMediaToWatchlist = async (mediaId: string) => {
+export const addExistantMediaToWatchlist = async (
+  mediaId: string
+): Promise<ActionResponse<MediaItem>> => {
   try {
     const session = await requireAuth();
     const userId = session.user.id;
-
     const result = await linkMediaToUser(mediaId, userId);
-    return { ...result, ...result.media, media: undefined };
+    const { media: nestedMedia, ...rest } = result;
+    const data = { ...rest, ...(nestedMedia ?? {}) };
+    return { success: true, data };
   } catch (error) {
-    handleActionError(error, "Add existant media");
+    return handleActionError(error, "Add existant media");
   }
 };
 
@@ -73,12 +87,12 @@ export const suggestSearchedMedia = async (
   receiverId: string,
   entry: EntryType,
   senderComment?: string
-) => {
+): Promise<ActionResponse<SuggestionResponseType>> => {
   try {
     const session = await requireAuth();
     const { source, media } = await getMedia(mediaId, entry);
 
-    return await prisma.$transaction(async (tx) => {
+    const suggestion = await prisma.$transaction(async (tx) => {
       let dbMediaId: string;
 
       if (source === "database") {
@@ -103,8 +117,9 @@ export const suggestSearchedMedia = async (
         },
       });
     });
+    return { success: true, data: suggestion };
   } catch (error) {
-    handleActionError(error, "Suggest TMDB media");
+    return handleActionError(error, "Suggest TMDB media");
   }
 };
 
@@ -112,12 +127,12 @@ export const suggestCustomMedia = async (
   media: MediaFormData,
   receiverId: string,
   senderComment?: string
-) => {
+): Promise<ActionResponse<Omit<SuggestionResponseType, "media">>> => {
   try {
     const session = await requireAuth();
     const userId = session.user.id;
 
-    return await prisma.$transaction(async (tx) => {
+    const suggestion = await prisma.$transaction(async (tx) => {
       const newMedia = await createMediaWithUser(media, receiverId, tx);
 
       return await tx.suggestion.create({
@@ -129,8 +144,9 @@ export const suggestCustomMedia = async (
         },
       });
     });
+    return { success: true, data: suggestion };
   } catch (error) {
-    handleActionError(error, "Suggest custom media");
+    return handleActionError(error, "Suggest custom media");
   }
 };
 
@@ -138,12 +154,12 @@ export const suggestExistantMedia = async (
   mediaId: string,
   receiverId: string,
   senderComment?: string
-) => {
+): Promise<ActionResponse<SuggestionResponseType>> => {
   try {
     const session = await requireAuth();
     const userId = session.user.id;
 
-    return await prisma.$transaction(async (tx) => {
+    const suggestion = await prisma.$transaction(async (tx) => {
       const { media } = await linkMediaToUser(mediaId, receiverId, tx, false);
 
       return await tx.suggestion.create({
@@ -160,34 +176,41 @@ export const suggestExistantMedia = async (
         },
       });
     });
+    return { success: true, data: suggestion };
   } catch (error) {
-    handleActionError(error, "Suggest existant media");
+    return handleActionError(error, "Suggest existant media");
   }
 };
 
 export const updateMedia = async (
   mediaId: string,
   media: UpdateMediaFormData
-) => {
+): Promise<ActionResponse<MediaType>> => {
   try {
-    const { data } = strictValidateSchema(updateMediaServerSchema, media);
+    const { data: validatedMedia } = strictValidateSchema(
+      updateMediaServerSchema,
+      media
+    );
 
     if (!mediaId) throw new ApiError(400, "Media ID manquant");
 
     await requireAuth();
 
-    return await prisma.watchList.update({
+    const updatedMedia = await prisma.watchList.update({
       where: {
         id: mediaId,
       },
-      data,
+      data: validatedMedia,
     });
+    return { success: true, data: updatedMedia };
   } catch (error) {
-    handleActionError(error, "Update media");
+    return handleActionError(error, "Update media");
   }
 };
 
-export const updateWatched = async (mediaId: string) => {
+export const updateWatched = async (
+  mediaId: string
+): Promise<ActionResponse<{ mediaId: string; watched: boolean }>> => {
   try {
     if (!mediaId) throw new ApiError(400, "Media ID manquant");
 
@@ -209,7 +232,7 @@ export const updateWatched = async (mediaId: string) => {
     if (!current)
       throw new ApiError(404, "Elément introuvable dans la watchlist");
 
-    return await prisma.usersWatchList.update({
+    const updatedMedia = await prisma.usersWatchList.update({
       where: {
         userId_mediaId: {
           userId,
@@ -222,31 +245,34 @@ export const updateWatched = async (mediaId: string) => {
       select: {
         mediaId: true,
         watched: true,
-        media: { select: { type: true } },
       },
     });
+    return { success: true, data: updatedMedia };
   } catch (error) {
-    handleActionError(error, "Update media");
+    return handleActionError(error, "Update media");
   }
 };
 
-export const deleteFromWatchlist = async (mediaId: string) => {
+export const deleteFromWatchlist = async (
+  mediaId: string
+): Promise<ActionResponse<{ mediaId: string }>> => {
   try {
     if (!mediaId) throw new ApiError(400, "Media ID manquant");
     const session = await requireAuth();
 
     const userId = session.user.id;
 
-    return await prisma.usersWatchList.delete({
+    const deletedMedia = await prisma.usersWatchList.delete({
       where: {
         userId_mediaId: {
           userId,
           mediaId,
         },
       },
-      select: { mediaId: true, media: { select: { type: true } } },
+      select: { mediaId: true },
     });
+    return { success: true, data: deletedMedia };
   } catch (error) {
-    handleActionError(error, "Delete media");
+    return handleActionError(error, "Delete media");
   }
 };

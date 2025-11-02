@@ -11,6 +11,19 @@ export interface SuggestionsProps {
   };
 }
 
+export interface SuggestionResponseType {
+  id: string;
+  status: SuggestionsStatus;
+  mediaId: string;
+  senderId: string;
+  receiverId: string;
+  senderComment: string | null;
+  receiverComment: string | null;
+  media: {
+    tmdbId: number | null;
+  };
+}
+
 export interface SuggestMediaToContactProps {
   contact: Contact;
   mediaId: string;
@@ -27,7 +40,7 @@ export interface AddSuggestionCommentProps {
   setComment: (comment: string) => void;
 }
 
-export type SuggestionsStatus = "ACCEPTED" | "REFUSED";
+export type SuggestionsStatus = "ACCEPTED" | "REFUSED" | "PENDING";
 
 export interface MessageProps {
   id: string;

@@ -1,11 +1,17 @@
 "use server";
 
 import { prisma } from "@/src/lib/server";
-import { FriendRequestStatus } from "@/src/types";
+import {
+  ActionResponse,
+  FriendRequestStatus,
+  UpdatedContactType,
+} from "@/src/types";
 import { handleActionError, requireAuth } from "@/src/utils/server";
 import { ApiError } from "@/src/utils/shared";
 
-export const addFriendRequest = async (receiverId: string) => {
+export const addFriendRequest = async (
+  receiverId: string
+): Promise<ActionResponse> => {
   try {
     const session = await requireAuth();
     const userId = session.user.id;
@@ -37,22 +43,23 @@ export const addFriendRequest = async (receiverId: string) => {
       throw new ApiError(409, "Une demande est déjà en attente");
     }
 
-    return await prisma.friendRequest.create({
+    await prisma.friendRequest.create({
       data: {
         senderId: userId,
         receiverId,
         status: "PENDING",
       },
     });
+    return { success: true };
   } catch (error) {
-    handleActionError(error, "Add friend request");
+    return handleActionError(error, "Add friend request");
   }
 };
 
 export const updateFriendRequestStatus = async (
   requestId: string,
   status: FriendRequestStatus
-) => {
+): Promise<ActionResponse<UpdatedContactType>> => {
   try {
     const session = await requireAuth();
     const userId = session.user.id;
@@ -66,13 +73,12 @@ export const updateFriendRequestStatus = async (
       throw new ApiError(404, "Demande introuvable");
     }
 
-    return await prisma.friendRequest.update({
+    const contact = await prisma.friendRequest.update({
       where: {
         id: request.id,
       },
       data: { status },
       select: {
-        id: true,
         status: true,
         sender: {
           select: {
@@ -83,12 +89,15 @@ export const updateFriendRequestStatus = async (
         },
       },
     });
+    return { success: true, data: contact };
   } catch (error) {
-    handleActionError(error, "Update friend request");
+    return handleActionError(error, "Update friend request");
   }
 };
 
-export const deleteFriend = async (friendId: string) => {
+export const deleteFriend = async (
+  friendId: string
+): Promise<ActionResponse<string>> => {
   try {
     const session = await requireAuth();
     const userId = session.user.id;
@@ -123,8 +132,8 @@ export const deleteFriend = async (friendId: string) => {
       },
     });
 
-    return { success: true };
+    return { success: true, data: friendId };
   } catch (error) {
-    handleActionError(error, "Delete friend");
+    return handleActionError(error, "Delete friend");
   }
 };

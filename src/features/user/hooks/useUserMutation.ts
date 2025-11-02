@@ -4,7 +4,7 @@ import {
   updateUserName,
 } from "../user.action";
 import { useUserStore } from "../user.store";
-import { handleSignOut } from "@/src/utils/client";
+import { handleSignOut, unwrapActionResponse } from "@/src/utils/client";
 import { useAsyncAction } from "@/src/hooks";
 import { ApiError } from "@/src/utils/shared";
 
@@ -14,18 +14,19 @@ export const useUpdateUser = () => {
 
   const updateName = async (name: string) => {
     const result = await updateUserName(name);
-    if (!result) throw new ApiError(500, "Erreur lors de la mise à jour");
-    setUser({ ...user, name: result.name });
+    const { name: username } = unwrapActionResponse(result);
+
+    setUser({ ...user, name: username });
   };
 
   const updateAvatar = async (formData: FormData) => {
     const result = await updateUserAvatar(formData);
-    if (!result) throw new ApiError(500, "Erreur lors de la mise à jour");
+    const { image } = unwrapActionResponse(result);
 
     const cacheBuster = `?t=${Date.now()}`;
     setUser({
       ...user,
-      image: result.image ? result.image + cacheBuster : null,
+      image: image ? image + cacheBuster : null,
     });
   };
 
@@ -53,7 +54,8 @@ export const useUpdateUser = () => {
 
 export const useDeleteAccount = () => {
   const deleteUser = async () => {
-    await deleteUserAccount();
+    const result = await deleteUserAccount();
+    unwrapActionResponse(result);
     handleSignOut();
   };
 
