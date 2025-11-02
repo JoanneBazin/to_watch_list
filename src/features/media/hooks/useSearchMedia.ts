@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { handleError } from "@/src/utils/client";
 import { EntryType, TMDBMedia } from "@/src/types";
-import { fetchMediaQuery } from "@/src/lib/server/tmdbService";
+import { ApiError } from "@/src/utils/shared";
 
 export const useSearchMedia = () => {
   const [mediaResults, setMediaResults] = useState<TMDBMedia[]>([]);
@@ -18,8 +18,17 @@ export const useSearchMedia = () => {
     setMediaResults([]);
 
     try {
-      const tmdbMedia = await fetchMediaQuery(query, entry);
-      setMediaResults(tmdbMedia);
+      const response = await fetch(
+        `/api/search/media?q=${encodeURIComponent(query)}&type=${entry}`
+      );
+      const body = await response.json();
+      if (!response.ok) {
+        throw new ApiError(
+          response.status,
+          body.message ?? "Erreur inconnue lors de la recherche"
+        );
+      }
+      setMediaResults(body);
     } catch (error) {
       handleError(error, setError);
     } finally {

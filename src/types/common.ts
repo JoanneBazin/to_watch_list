@@ -14,3 +14,7 @@ export interface SectionNavButtonProps<T extends string> {
   section: T;
   setSection: (section: T) => void;
 }
+
+export type ActionResponse<T = unknown> =
+  | { success: true; data?: T }
+  | { success: false; status: number; error: string };

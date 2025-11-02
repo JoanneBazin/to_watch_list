@@ -15,12 +15,17 @@ export interface SearchContact extends Contact {
   requestId: string;
 }
 
+export interface UpdatedContactType {
+  sender: Omit<Contact, "suggestionsFromUser">;
+  status: FriendRequestStatus;
+}
+
 export interface ValidateFriendRequestProps {
   requestId: string;
   senderId: string;
 }
 
-export type FriendRequestStatus = "ACCEPTED" | "REFUSED";
+export type FriendRequestStatus = "ACCEPTED" | "REFUSED" | "PENDING";
 
 export interface ReceivedRequests {
   id: string;

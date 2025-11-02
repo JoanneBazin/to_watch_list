@@ -6,11 +6,12 @@ import {
 import { FriendRequestStatus } from "@/src/types";
 import { useUserStore } from "../../user/user.store";
 import { useAsyncAction } from "@/src/hooks";
-import { ApiError } from "@/src/utils/shared";
+import { unwrapActionResponse } from "@/src/utils/client";
 
 export const useSendFriendRequest = () => {
   const addNewFriend = async (receiverId: string) => {
-    await addFriendRequest(receiverId);
+    const result = await addFriendRequest(receiverId);
+    unwrapActionResponse(result);
   };
 
   const {
@@ -30,11 +31,12 @@ export const useUpdateRequest = () => {
     status: FriendRequestStatus
   ) => {
     const result = await updateFriendRequestStatus(requestId, status);
-    if (!result) throw new ApiError(500, "Erreur lors de la mise à jour");
-    if (result.status === "ACCEPTED") {
+    const request = unwrapActionResponse(result);
+
+    if (request.status === "ACCEPTED") {
       setContacts([
         ...contacts,
-        { ...result.sender, suggestionsFromUser: { dbId: [], tmdbId: [] } },
+        { ...request.sender, suggestionsFromUser: { dbId: [], tmdbId: [] } },
       ]);
     }
     setCounts({ ...counts, friendRequests: counts.friendRequests - 1 });
@@ -54,9 +56,9 @@ export const useDeleteFriend = () => {
 
   const deleteFriendshipLink = async (friendId: string) => {
     const result = await deleteFriend(friendId);
-    if (!result?.success)
-      throw new ApiError(500, "Erreur lors de la suppression");
-    setContacts(contacts.filter((contact) => contact.id !== friendId));
+    const contactId = unwrapActionResponse(result);
+
+    setContacts(contacts.filter((contact) => contact.id !== contactId));
   };
 
   const {

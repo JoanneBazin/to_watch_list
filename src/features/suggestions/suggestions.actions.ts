@@ -1,14 +1,19 @@
 "use server";
 
 import { prisma } from "@/src/lib/server";
-import { SuggestionsStatus } from "@/src/types";
+import {
+  ActionResponse,
+  MediaItem,
+  SuggestionResponseType,
+  SuggestionsStatus,
+} from "@/src/types";
 import { handleActionError, requireAuth } from "@/src/utils/server";
 import { ApiError } from "@/src/utils/shared";
 
 export const updateReceivedSuggestions = async (
   mediaId: string,
   status: SuggestionsStatus
-) => {
+): Promise<ActionResponse<MediaItem>> => {
   try {
     const session = await requireAuth();
     const userId = session.user.id;
@@ -30,7 +35,7 @@ export const updateReceivedSuggestions = async (
       data: { status },
     });
 
-    return prisma.usersWatchList.update({
+    const userMedia = await prisma.usersWatchList.update({
       where: { userId_mediaId: { userId, mediaId } },
       data: { addedAt: new Date() },
       select: {
@@ -53,15 +58,22 @@ export const updateReceivedSuggestions = async (
         },
       },
     });
+    const { media: nestedMedia, ...rest } = userMedia;
+    const data = { ...rest, ...(nestedMedia ?? {}) };
+    return { success: true, data };
   } catch (error) {
-    handleActionError(error, "Update suggestion status");
+    return handleActionError(error, "Update suggestion status");
   }
 };
 
 export const updateSuggestionResponse = async (
   suggestionId: string,
   comment: string
-) => {
+): Promise<
+  ActionResponse<
+    Pick<SuggestionResponseType, "id" | "mediaId" | "receiverComment">
+  >
+> => {
   try {
     const session = await requireAuth();
     const userId = session.user.id;
@@ -75,7 +87,7 @@ export const updateSuggestionResponse = async (
       throw new ApiError(404, "Suggestion introuvable");
     }
 
-    return await prisma.suggestion.update({
+    const updated = await prisma.suggestion.update({
       where: {
         id: suggestion.id,
       },
@@ -86,7 +98,9 @@ export const updateSuggestionResponse = async (
         receiverComment: true,
       },
     });
+
+    return { success: true, data: updated };
   } catch (error) {
-    handleActionError(error, "Send suggestion response");
+    return handleActionError(error, "Send suggestion response");
   }
 };

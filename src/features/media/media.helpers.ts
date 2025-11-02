@@ -157,5 +157,6 @@ export const getMediaDetailsFromDB = async (
   });
   if (!userMedia)
     throw new ApiError(404, "Erreur lors de la récupération du média");
-  return { ...userMedia, ...userMedia.media, media: undefined };
+  const { media: nestedMedia, ...rest } = userMedia;
+  return { ...rest, ...(nestedMedia ?? {}) };
 };

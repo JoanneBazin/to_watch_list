@@ -1,14 +1,21 @@
 import { ApiError } from "../shared/ApiError";
 
-export const handleActionError = (err: unknown, context?: string): never => {
+export const handleActionError = (
+  err: unknown,
+  context?: string
+): { success: false; status: number; error: string } => {
+  let message = "Erreur inattendue, veuillez réessayer ultérieurement";
+  let status = 500;
+
   if (err instanceof ApiError) {
     console.error(`[${context}] ${err.status} : ${err.message}`);
-    throw err;
+    message = err.message;
+    status = err.status;
+  } else if (err instanceof Error) {
+    console.error(`[${context}] Unexpected error : ${err.message}`);
+  } else {
+    console.error(`[${context}] Unknown error : ${err}`);
   }
 
-  console.error(`[${context}] Unexpected error : ${err}`);
-  throw new ApiError(
-    500,
-    "Erreur inattendue, veuillez réessayer ultérieurement"
-  );
+  return { success: false, status, error: message };
 };
