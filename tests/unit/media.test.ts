@@ -1,5 +1,5 @@
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
-import { setupTestEnv } from "../helpers/setup";
+import { assertSuccess, setupTestEnv } from "../helpers/setup";
 import {
   addExistantMediaToWatchlist,
   addSearchedMediaToWatchlist,
@@ -42,12 +42,16 @@ describe("Media actions", () => {
     it("should create a custom media into user watchlist", async () => {
       const mediaData = customMediaTest;
       const result = await createCustomMedia(mediaData);
-
       expect(requireAuth).toHaveBeenCalledTimes(1);
-      expect(result?.title).toBe("Test Media");
+
+      assertSuccess(result);
+      const { data } = result;
+
+      expect(data).toBeDefined();
+      expect(data.title).toBe("Test Media");
 
       const inDb = await prisma.usersWatchList.findFirst({
-        where: { userId, mediaId: result?.id },
+        where: { userId, mediaId: data.id },
       });
       expect(inDb).not.toBeNull();
     });
@@ -59,13 +63,17 @@ describe("Media actions", () => {
       );
 
       const result = await addSearchedMediaToWatchlist(tmdbFilmId, "FILM");
-
       expect(requireAuth).toHaveBeenCalledTimes(1);
-      expect(result?.title).toBe("TMDB Film");
-      expect(result?.tmdbId).toBe(tmdbFilmId);
+
+      assertSuccess(result);
+      const { data } = result;
+
+      expect(data).toBeDefined();
+      expect(data.title).toBe("TMDB Film");
+      expect(data.tmdbId).toBe(tmdbFilmId);
 
       const inDb = await prisma.usersWatchList.findFirst({
-        where: { userId, mediaId: result?.id },
+        where: { userId, mediaId: data.id },
       });
       expect(inDb).not.toBeNull();
     });
@@ -77,13 +85,17 @@ describe("Media actions", () => {
       );
 
       const result = await addSearchedMediaToWatchlist(tmdbSerieId, "SERIE");
-
       expect(requireAuth).toHaveBeenCalledTimes(1);
-      expect(result?.title).toBe("TMDB Serie");
-      expect(result?.tmdbId).toBe(tmdbSerieId);
+
+      assertSuccess(result);
+      const { data } = result;
+
+      expect(data).toBeDefined();
+      expect(data.title).toBe("TMDB Serie");
+      expect(data.tmdbId).toBe(tmdbSerieId);
 
       const inDb = await prisma.usersWatchList.findFirst({
-        where: { userId, mediaId: result?.id },
+        where: { userId, mediaId: data.id },
       });
       expect(inDb).not.toBeNull();
     });
@@ -92,9 +104,13 @@ describe("Media actions", () => {
       const existantMedia = await createTestMedia();
 
       const result = await addExistantMediaToWatchlist(existantMedia.id);
-
       expect(requireAuth).toHaveBeenCalledTimes(1);
-      expect(result?.id).toBe(existantMedia.id);
+
+      assertSuccess(result);
+      const { data } = result;
+
+      expect(data).toBeDefined();
+      expect(data.id).toBe(existantMedia.id);
 
       const inDb = await prisma.usersWatchList.findFirst({
         where: { userId, mediaId: existantMedia.id },
@@ -107,10 +123,14 @@ describe("Media actions", () => {
     it("should toggle watched", async () => {
       const { mediaId, watched } = await createTestMediaWithUser(userId);
       const result = await updateWatched(mediaId);
-
       expect(requireAuth).toHaveBeenCalledTimes(1);
-      expect(result?.mediaId).toBe(mediaId);
-      expect(result?.watched).toBe(!watched);
+
+      assertSuccess(result);
+      const { data } = result;
+
+      expect(data).toBeDefined();
+      expect(data.mediaId).toBe(mediaId);
+      expect(data.watched).toBe(!watched);
 
       const inDb = await prisma.usersWatchList.findFirst({
         where: { userId, mediaId: mediaId },
@@ -125,9 +145,13 @@ describe("Media actions", () => {
     it("should delete a media from user watchlist", async () => {
       const { mediaId } = await createTestMediaWithUser(userId);
       const result = await deleteFromWatchlist(mediaId);
-
       expect(requireAuth).toHaveBeenCalledTimes(1);
-      expect(result?.mediaId).toBe(mediaId);
+
+      assertSuccess(result);
+      const { data } = result;
+
+      expect(data).toBeDefined();
+      expect(data.mediaId).toBe(mediaId);
 
       const inDb = await prisma.usersWatchList.findFirst({
         where: { userId, mediaId: mediaId },
