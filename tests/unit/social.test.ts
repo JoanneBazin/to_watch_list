@@ -1,5 +1,5 @@
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
-import { setupTestEnv } from "../helpers/setup";
+import { assertSuccess, setupTestEnv } from "../helpers/setup";
 import { prisma } from "@/src/lib/server/prisma";
 import { requireAuth } from "@/src/utils/server";
 import {
@@ -28,10 +28,9 @@ describe("Social actions", () => {
     it("should send a new friend request", async () => {
       const contactId = await createUserIntoDb();
       const result = await addFriendRequest(contactId);
-
       expect(requireAuth).toHaveBeenCalledTimes(1);
-      expect(result?.receiverId).toBe(contactId);
-      expect(result?.status).toBe("PENDING");
+
+      assertSuccess(result);
 
       const inDb = await prisma.friendRequest.findFirst({
         where: { senderId: userId, receiverId: contactId, status: "PENDING" },
@@ -50,9 +49,13 @@ describe("Social actions", () => {
         request.id,
         newFriendshipStatus
       );
-
       expect(requireAuth).toHaveBeenCalledTimes(1);
-      expect(result?.status).toBe(newFriendshipStatus);
+
+      assertSuccess(result);
+      const { data } = result;
+
+      expect(data).toBeDefined();
+      expect(data.status).toBe(newFriendshipStatus);
 
       const inDb = await prisma.friendRequest.findFirst({
         where: {
@@ -70,9 +73,13 @@ describe("Social actions", () => {
       const request = await createContactWithFriendRequest(userId, "ACCEPTED");
       const friendId = request.senderId;
 
-      await deleteFriend(friendId);
-
+      const result = await deleteFriend(friendId);
       expect(requireAuth).toHaveBeenCalledTimes(1);
+
+      assertSuccess(result);
+      const { data } = result;
+
+      expect(data).toBe(friendId);
 
       const inDb = await prisma.friendRequest.findFirst({
         where: {

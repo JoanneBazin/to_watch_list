@@ -1,5 +1,5 @@
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
-import { setupTestEnv } from "../helpers/setup";
+import { assertSuccess, setupTestEnv } from "../helpers/setup";
 import { prisma } from "@/src/lib/server/prisma";
 import { requireAuth } from "@/src/utils/server";
 import {
@@ -48,16 +48,20 @@ describe("Suggestions actions", () => {
     it("should create a custom media into contact watchlist", async () => {
       const mediaData = customMediaTest;
       const result = await suggestCustomMedia(mediaData, contactId);
-
       expect(requireAuth).toHaveBeenCalledTimes(1);
 
+      assertSuccess(result);
+      const { data } = result;
+
+      expect(data).toBeDefined();
+
       const inDb = await prisma.usersWatchList.findFirst({
-        where: { userId: contactId, mediaId: result?.mediaId },
+        where: { userId: contactId, mediaId: data.mediaId },
         include: { suggestions: true },
       });
       expect(inDb).not.toBeNull();
       expect(inDb?.suggestions).toContainEqual(
-        expect.objectContaining({ id: result?.id })
+        expect.objectContaining({ id: data.id })
       );
     });
 
@@ -68,16 +72,20 @@ describe("Suggestions actions", () => {
       );
 
       const result = await suggestSearchedMedia(tmdbFilmId, contactId, "FILM");
-
       expect(requireAuth).toHaveBeenCalledTimes(1);
 
+      assertSuccess(result);
+      const { data } = result;
+
+      expect(data).toBeDefined();
+
       const inDb = await prisma.usersWatchList.findFirst({
-        where: { userId: contactId, mediaId: result?.mediaId },
+        where: { userId: contactId, mediaId: data.mediaId },
         include: { suggestions: true },
       });
       expect(inDb).not.toBeNull();
       expect(inDb?.suggestions).toContainEqual(
-        expect.objectContaining({ id: result?.id })
+        expect.objectContaining({ id: data.id })
       );
     });
 
@@ -92,16 +100,20 @@ describe("Suggestions actions", () => {
         contactId,
         "SERIE"
       );
-
       expect(requireAuth).toHaveBeenCalledTimes(1);
 
+      assertSuccess(result);
+      const { data } = result;
+
+      expect(data).toBeDefined();
+
       const inDb = await prisma.usersWatchList.findFirst({
-        where: { userId: contactId, mediaId: result?.mediaId },
+        where: { userId: contactId, mediaId: data.mediaId },
         include: { suggestions: true },
       });
       expect(inDb).not.toBeNull();
       expect(inDb?.suggestions).toContainEqual(
-        expect.objectContaining({ id: result?.id })
+        expect.objectContaining({ id: data.id })
       );
     });
 
@@ -109,9 +121,13 @@ describe("Suggestions actions", () => {
       const media = await createTestMedia();
 
       const result = await suggestExistantMedia(media.id, contactId);
-
       expect(requireAuth).toHaveBeenCalledTimes(1);
-      expect(result?.mediaId).toBe(media.id);
+
+      assertSuccess(result);
+      const { data } = result;
+
+      expect(data).toBeDefined();
+      expect(data.mediaId).toBe(media.id);
 
       const inDb = await prisma.suggestion.findFirst({
         where: {
@@ -137,9 +153,16 @@ describe("Suggestions actions", () => {
     it("should update suggestion status", async () => {
       const newSuggestionStatus = "ACCEPTED";
 
-      await updateReceivedSuggestions(mediaId, newSuggestionStatus);
-
+      const result = await updateReceivedSuggestions(
+        mediaId,
+        newSuggestionStatus
+      );
       expect(requireAuth).toHaveBeenCalledTimes(1);
+
+      assertSuccess(result);
+      const { data } = result;
+
+      expect(data).toBeDefined();
 
       const inDb = await prisma.suggestion.findMany({
         where: {
@@ -155,9 +178,13 @@ describe("Suggestions actions", () => {
       const userMessage = "Test message";
 
       const result = await updateSuggestionResponse(suggestionId, userMessage);
-
       expect(requireAuth).toHaveBeenCalledTimes(1);
-      expect(result?.receiverComment).toBe(userMessage);
+
+      assertSuccess(result);
+      const { data } = result;
+
+      expect(data).toBeDefined();
+      expect(data.receiverComment).toBe(userMessage);
 
       const inDb = await prisma.suggestion.findFirst({
         where: {

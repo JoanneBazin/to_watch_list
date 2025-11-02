@@ -18,10 +18,12 @@ export const mockTMDBFilmData = (id: number) => ({
   original_title: "TMDB Film",
   overview: "Synopsis mocké",
   release_date: "2020-12-02",
-  genres: {
-    id: 123,
-    name: "Horreur",
-  },
+  genres: [
+    {
+      id: 123,
+      name: "Horreur",
+    },
+  ],
   credits: {
     cast: [{ name: "Film director", job: "Director" }],
     crew: [],
@@ -35,14 +37,16 @@ export const mockTMDBFilmData = (id: number) => ({
 
 export const mockTMDBSerieData = (id: number) => ({
   id,
-  name: "TMDB Film",
-  original_name: "TMDB Film",
+  name: "TMDB Serie",
+  original_name: "TMDB Serie",
   overview: "Synopsis mocké",
   first_air_date: "2020-12-02",
-  genres: {
-    id: 123,
-    name: "Horreur",
-  },
+  genres: [
+    {
+      id: 123,
+      name: "Horreur",
+    },
+  ],
   created_by: [{ id: 125, name: "TV Creator" }],
   "watch/providers": {
     results: {
