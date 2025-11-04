@@ -40,7 +40,7 @@ export const DeleteProfile = () => {
         <AlertDialogFooter className="flex gap-4 items-center">
           {deleteError && <p className="error-message">{deleteError}</p>}
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <AlertDialogCancel>Annuler</AlertDialogCancel>
             <AlertDialogAction onClick={(e) => handleDelete(e)}>
               {isDeleting ? <Loader size="small" /> : "Supprimer"}

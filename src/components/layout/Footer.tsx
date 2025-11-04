@@ -5,7 +5,7 @@ import Link from "next/link";
 export const Footer = () => {
   return (
     <footer className="flex flex-1 items-end p-6">
-      <Link href="/about" className="underline">
+      <Link href="/about" className="underline text-xs sm:text-sm">
         A propos
       </Link>
     </footer>

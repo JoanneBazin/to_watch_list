@@ -33,7 +33,7 @@ const FriendProfilePage = ({ params }: { params: { userId: string } }) => {
             </div>
           </section>
 
-          <section className="w-full flex flex-col items-center sm:items-start gap-10 sm:flex-row sm:justify-around p-0">
+          <section className="w-full flex flex-col items-center sm:items-start gap-10 sm:flex-row sm:justify-around p-0 mb-10">
             <h3 className="sr-only">Watchlist utilisateur</h3>
             <FriendWatchlist user={friendProfile} entry="FILM" />
             <FriendWatchlist user={friendProfile} entry="SERIE" />

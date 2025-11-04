@@ -41,6 +41,14 @@ export const PrivateHeader = () => {
               className="relative px-5 md:hidden"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
+              {(counts.friendRequests > 0 || counts.suggestions > 0) && (
+                <span
+                  className={clsx(
+                    "absolute bg-accent-foreground top-0 right-0 h-2 w-2 rounded-full",
+                    isMenuOpen ? "opacity-0" : "opacity-100"
+                  )}
+                ></span>
+              )}
               <X
                 className={clsx(
                   "absolute opacity-0 rotate-90 scale-0 transition-all duration-300",
@@ -81,7 +89,7 @@ export const PrivateHeader = () => {
                 <div className="relative">
                   <p>Communauté</p>
                   {counts.friendRequests > 0 && (
-                    <span className="absolute bg-accent-foreground top-0 -right-2 md:-top-1 md:-right-3 h-2 w-2 rounded-full"></span>
+                    <span className="absolute bg-accent-foreground top-0 -right-2 md:-top-1 md:-right-3 h-1 w-1 sm:h-2 sm:w-2 rounded-full"></span>
                   )}
                 </div>
               </Link>
@@ -94,7 +102,7 @@ export const PrivateHeader = () => {
                 <div className="relative">
                   <p>Suggestions</p>
                   {counts.suggestions > 0 && (
-                    <span className="absolute bg-accent-foreground top-0 -right-2 md:-top-1 md:-right-3 h-2 w-2 rounded-full"></span>
+                    <span className="absolute bg-accent-foreground top-0 -right-2 md:-top-1 md:-right-3 h-1 w-1 sm:h-2 sm:w-2 rounded-full"></span>
                   )}
                 </div>
               </Link>
