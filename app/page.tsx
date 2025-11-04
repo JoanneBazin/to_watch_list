@@ -1,6 +1,6 @@
 "use client";
 import { Footer } from "@/src/components/layout";
-import { Logo } from "@/src/components/ui";
+import { Loader, Logo } from "@/src/components/ui";
 import { useSession } from "@/src/lib/client";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
@@ -16,6 +16,10 @@ export default function Home() {
       router.replace("/dashboard");
     }
   }, [router, session, isPending]);
+
+  if (isPending) {
+    return <Loader size="large" />;
+  }
 
   return (
     <div className="h-screen flex flex-col">
