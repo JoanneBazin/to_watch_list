@@ -32,7 +32,9 @@ export const UserCard = ({ user }: { user: SearchContact }) => {
       break;
     case "pending_received":
       actionSection = (
-        <span className="text-sm italic text-accent">Demande en attente</span>
+        <span className="text-xs sm:text-sm italic text-accent">
+          Demande en attente
+        </span>
       );
       break;
     case "none":

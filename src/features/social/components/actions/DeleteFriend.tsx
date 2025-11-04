@@ -34,10 +34,10 @@ export const DeleteFriend = ({ friendId }: { friendId: string }) => {
       <AlertDialogTrigger asChild>
         <Button
           variant="outline"
-          className=" m-4"
-          aria-label="Supprimer ce contact"
+          className="bg-zinc-900 m-4 mb-0 text-xs px-3 sm:px-4"
         >
-          <Trash />
+          <Trash size={14} className="sm:hidden" />
+          <p className="hidden sm:block">Supprimer ce contact</p>
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
@@ -49,7 +49,7 @@ export const DeleteFriend = ({ friendId }: { friendId: string }) => {
         </AlertDialogHeader>
         <AlertDialogFooter className="flex gap-4 items-center">
           {deleteError && <p className="error-message">{deleteError}</p>}
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <AlertDialogCancel>Annuler</AlertDialogCancel>
             <AlertDialogAction onClick={(e) => handleDelete(e)}>
               {isDeleting ? <Loader size="small" /> : "Supprimer"}
