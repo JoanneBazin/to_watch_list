@@ -17,7 +17,7 @@ export default function Home() {
     }
   }, [router, session, isPending]);
 
-  if (isPending) {
+  if (isPending || session) {
     return <Loader size="large" />;
   }
 
