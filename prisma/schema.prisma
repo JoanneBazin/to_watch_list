@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,51 +8,42 @@ datasource db {
 }
 
 model WatchList {
-  id           String    @id @default(cuid())
-  tmdbId       Int?
-  lastTmdbUpdate  DateTime?
-  title        String
-  originalTitle String?
-  type         MediaType
-  synopsis     String?
-  year         Int?
-  real         String?
-  platform     String?
-  categories  String[]
-
-  users       UsersWatchList[]
-  suggestions Suggestion[]
-}
-
-enum MediaType {
-  FILM
-  SERIE
+  id             String           @id @default(cuid())
+  title          String
+  type           MediaType
+  synopsis       String?
+  year           Int?
+  real           String?
+  platform       String?
+  categories     String[]
+  originalTitle  String?
+  tmdbId         Int?
+  lastTmdbUpdate DateTime?
+  suggestions    Suggestion[]
+  users          UsersWatchList[]
 }
 
 model Category {
-  id     String      @id @default(cuid())
-  name   String      @unique
+  id   String @id @default(cuid())
+  name String @unique
 }
 
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  name         String   @unique
-  createdAt    DateTime @default(now())
-  admin        Boolean  @default(false)
-
-  friendRequestSent     FriendRequest[] @relation("Sender")
-  friendRequestReceived FriendRequest[] @relation("Receiver")
-
-  suggestionsSent     Suggestion[] @relation("Sender")
-  suggestionsReceived Suggestion[] @relation("Receiver")
-
-  watchList     UsersWatchList[]
-  emailVerified Boolean          @default(false)
-  image         String?
-  updatedAt     DateTime         @default(now()) @updatedAt
-  sessions      Session[]
-  accounts      Account[]
+  id                    String           @id @default(cuid())
+  email                 String           @unique
+  name                  String           @unique
+  createdAt             DateTime         @default(now())
+  admin                 Boolean          @default(false)
+  emailVerified         Boolean          @default(false)
+  image                 String?
+  updatedAt             DateTime         @default(now()) @updatedAt
+  friendRequestReceived FriendRequest[]  @relation("Receiver")
+  friendRequestSent     FriendRequest[]  @relation("Sender")
+  suggestionsReceived   Suggestion[]     @relation("Receiver")
+  suggestionsSent       Suggestion[]     @relation("Sender")
+  watchList             UsersWatchList[]
+  accounts              Account[]
+  sessions              Session[]
 
   @@map("user")
 }
@@ -63,43 +53,32 @@ model FriendRequest {
   senderId   String
   receiverId String
   status     RequestStatus @default(PENDING)
-  sender     User          @relation("Sender", fields: [senderId], references: [id], onDelete: Cascade)
   receiver   User          @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  sender     User          @relation("Sender", fields: [senderId], references: [id], onDelete: Cascade)
 }
 
 model Suggestion {
-  id              String        @id @default(cuid())
+  id              String         @id @default(cuid())
   senderId        String
   receiverId      String
   mediaId         String
   senderComment   String?
   receiverComment String?
-  status          RequestStatus @default(PENDING)
-
-  media WatchList @relation(fields: [mediaId], references: [id], onDelete: Cascade)
-
-  sender   User @relation("Sender", fields: [senderId], references: [id], onDelete: Cascade)
-  receiver User @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
-
-  userMedia UsersWatchList? @relation(fields: [receiverId, mediaId], references: [userId, mediaId], onDelete: Cascade)
-}
-
-enum RequestStatus {
-  PENDING
-  ACCEPTED
-  REFUSED
+  status          RequestStatus  @default(PENDING)
+  media           WatchList      @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  receiver        User           @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  userMedia       UsersWatchList @relation(fields: [receiverId, mediaId], references: [userId, mediaId], onDelete: Cascade)
+  sender          User           @relation("Sender", fields: [senderId], references: [id], onDelete: Cascade)
 }
 
 model UsersWatchList {
-  user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId  String
-  media   WatchList @relation(fields: [mediaId], references: [id], onDelete: Cascade)
-  mediaId String
-
+  userId      String
+  mediaId     String
+  addedAt     DateTime     @default(now()) @db.Date
+  watched     Boolean      @default(false)
   suggestions Suggestion[]
-
-  addedAt DateTime @default(now()) @db.Date
-  watched Boolean  @default(false)
+  media       WatchList    @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, mediaId])
   @@unique([userId, mediaId])
@@ -108,7 +87,7 @@ model UsersWatchList {
 model Session {
   id        String   @id
   expiresAt DateTime
-  token     String
+  token     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   ipAddress String?
@@ -116,7 +95,6 @@ model Session {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([token])
   @@map("session")
 }
 
@@ -125,7 +103,6 @@ model Account {
   accountId             String
   providerId            String
   userId                String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
   idToken               String?
@@ -135,6 +112,7 @@ model Account {
   password              String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("account")
 }
@@ -148,4 +126,15 @@ model Verification {
   updatedAt  DateTime @default(now()) @updatedAt
 
   @@map("verification")
+}
+
+enum MediaType {
+  FILM
+  SERIE
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  REFUSED
 }
