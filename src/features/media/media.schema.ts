@@ -3,6 +3,7 @@ import { z } from "zod";
 export const mediaSchema = z.object({
   title: z.string().min(1, "Le titre est obligatoire"),
   tmdbId: z.number().optional().nullable(),
+  lastTmdbUpdate: z.date().optional().nullable(),
   originalTitle: z
     .string()
     .transform((val) => (val.trim() === "" ? null : val))

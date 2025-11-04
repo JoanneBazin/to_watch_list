@@ -11,6 +11,7 @@ datasource db {
 model WatchList {
   id           String    @id @default(cuid())
   tmdbId       Int?
+  lastTmdbUpdate  DateTime?
   title        String
   originalTitle String?
   type         MediaType
