@@ -3,6 +3,7 @@ import { signUp } from "@/src/lib/client";
 import { SignUpData, signUpSchema } from "../auth.schema";
 import { handleError, safeValidateSchema } from "@/src/utils/client";
 import { validateAuthData } from "../auth.helpers";
+import { ApiError } from "@/src/utils/shared";
 
 export const useSignUp = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -30,7 +31,10 @@ export const useSignUp = () => {
     }
 
     try {
-      await validateAuthData(user.name, user.email);
+      const result = await validateAuthData(user.name, user.email);
+      if (!result.success) {
+        throw new ApiError(409, result.message);
+      }
       await signUp.email(
         {
           name: user.name,
