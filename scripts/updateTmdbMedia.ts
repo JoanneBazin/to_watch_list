@@ -1,26 +1,38 @@
-import { mediaServerSchema } from "@/src/features/media/media.schema";
 import { prisma } from "@/src/lib/server";
 import { fetchMediaFromTMDB } from "@/src/lib/server/tmdbService";
-import { strictValidateSchema } from "@/src/utils/server";
+import { getMediaDBFormat } from "@/src/utils/server";
 
 export const updateTmdbMedia = async () => {
-  const allMedia = await prisma.watchList.findMany({
+  const sixMonthAgo = new Date();
+  sixMonthAgo.setMonth(sixMonthAgo.getMonth() - 6);
+
+  const medias = await prisma.watchList.findMany({
     where: {
       tmdbId: {
         not: null,
       },
+      OR: [{ lastTmdbUpdate: null }, { lastTmdbUpdate: { lt: sixMonthAgo } }],
     },
-    select: { id: true, tmdbId: true, type: true },
+    select: { id: true, tmdbId: true, title: true, type: true },
+    orderBy: { lastTmdbUpdate: "asc" },
   });
 
-  for (const media of allMedia) {
+  console.log(`${medias.length} TMDB media will be updated`);
+
+  for (const media of medias) {
     if (!media.tmdbId) return;
-    const updated = await fetchMediaFromTMDB(media.tmdbId, media.type);
-    const { data } = strictValidateSchema(mediaServerSchema, updated);
-    await prisma.watchList.update({
-      where: { id: media.id },
-      data,
-    });
+    try {
+      const updated = await fetchMediaFromTMDB(media.tmdbId, media.type);
+      const data = getMediaDBFormat(updated, media.type);
+      await prisma.watchList.update({
+        where: { id: media.id },
+        data: { ...data, year: Number(data.year), lastTmdbUpdate: new Date() },
+      });
+      console.log(`✅ ${media.title} updated`);
+    } catch (error) {
+      console.log(`❌ ${media.title}: ${error}`);
+    }
   }
-  console.log(`${allMedia.length} TMDB media updated`);
+
+  return { success: true, total: medias.length };
 };

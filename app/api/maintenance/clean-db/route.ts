@@ -1,7 +1,7 @@
 import { cleanWatchlist } from "@/scripts/cleanWatchlist";
 import { NextResponse } from "next/server";
 
-//  CRON TASK - Called by Vercel Scheduler
+//  CRON TASK
 
 export async function GET(req: Request) {
   if (req.headers.get("x-cron-secret") !== process.env.CRON_SECRET) {
@@ -11,7 +11,7 @@ export async function GET(req: Request) {
     await cleanWatchlist();
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return NextResponse.json({ error: "Failed" }, { status: 500 });
   }
 }

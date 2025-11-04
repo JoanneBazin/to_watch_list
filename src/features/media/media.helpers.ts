@@ -22,7 +22,10 @@ export const getMedia = async (mediaId: number, entry: EntryType) => {
   const mediaDetails = await fetchMediaFromTMDB(mediaId, entry);
   const formattedMedia = getMediaDBFormat(mediaDetails, entry);
 
-  return { source: "tmdb" as const, media: formattedMedia };
+  return {
+    source: "tmdb" as const,
+    media: { ...formattedMedia, lastTmdbUpdate: new Date() },
+  };
 };
 
 export const createMediaWithUser = async (
@@ -37,6 +40,7 @@ export const createMediaWithUser = async (
       title: data.title,
       originalTitle: data.originalTitle,
       tmdbId: data.tmdbId,
+      lastTmdbUpdate: data.lastTmdbUpdate,
       type: data.type,
       synopsis: data.synopsis,
       year: data.year,
