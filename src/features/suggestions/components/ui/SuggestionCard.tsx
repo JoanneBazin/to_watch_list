@@ -30,7 +30,7 @@ export const SuggestionCard = ({ media }: { media: MediaItem }) => {
       </CardHeader>
 
       <CardContent className="p-0 h-full flex flex-col justify-between">
-        <div className="flex flex-col sm:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-8">
           <div className="text-sm md:text-base">
             {media.real && (
               <p className="font-semibold sm:mb-2 text-sm">{media.real}</p>
@@ -54,9 +54,9 @@ export const SuggestionCard = ({ media }: { media: MediaItem }) => {
               {media.suggestions.map((s) => (
                 <div
                   key={s.id}
-                  className="flex md:flex-col gap-6 md:gap-3 items-start my-4"
+                  className="flex flex-col gap-3 items-start my-4"
                 >
-                  <div className="flex gap-3">
+                  <div className="flex items-center gap-3">
                     <Avatar
                       size="small"
                       img={s.sender.image}

@@ -1,12 +1,14 @@
 import { AvatarProps } from "@/src/types";
 import clsx from "clsx";
 import Image from "next/image";
+import { useState } from "react";
 
 export const Avatar = ({
   size = "medium",
   img = "/avatar.svg",
   alt = "Avatar de l'utilisateur",
 }: AvatarProps) => {
+  const [imgSource, setImgSource] = useState(img || "/avatar.svg");
   let sizeAvatar: string;
 
   switch (size) {
@@ -24,13 +26,14 @@ export const Avatar = ({
   return (
     <div className={clsx(sizeAvatar, "bg-zinc-600 rounded-full")}>
       <Image
-        src={img || "/avatar.svg"}
+        src={imgSource}
         alt={alt}
         width={0}
         height={0}
         sizes="100vw"
         style={{ width: "100%", height: "auto" }}
         className="rounded-full object-cover object-center"
+        onError={() => setImgSource("/avatar.svg")}
       />
     </div>
   );
