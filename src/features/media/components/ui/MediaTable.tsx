@@ -182,6 +182,7 @@ export const MediaTable = ({ data }: { data: MediaItem[] }) => {
                       ? "bg-accent-dark text-accent italic"
                       : "hover:bg-muted/50"
                   }
+                  data-testid="media-row"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell

@@ -30,10 +30,10 @@ export const SendSuggestion = ({
       />
 
       <Button
-        type="button"
         className="mt-2"
         onClick={handleSubmit}
         variant="outline"
+        data-testid="send-btn"
       >
         {isLoading ? (
           <Loader size="small" />

@@ -6,7 +6,10 @@ export const MediaCard = ({ media, children }: MediaCardProps) => {
   return (
     <Modal
       trigger={
-        <div className="cursor-pointer text-xs sm:text-sm sm:font-bold sm:p-2">
+        <div
+          className="cursor-pointer text-xs sm:text-sm sm:font-bold sm:p-2"
+          data-testid="media-item"
+        >
           {media.title}
         </div>
       }

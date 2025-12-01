@@ -35,10 +35,6 @@ describe("Media actions", () => {
   });
 
   describe("Add to Watchlist", () => {
-    beforeEach(async () => {
-      vi.clearAllMocks();
-    });
-
     it("should create a custom media into user watchlist", async () => {
       const mediaData = customMediaTest;
       const result = await createCustomMedia(mediaData);
@@ -48,7 +44,11 @@ describe("Media actions", () => {
       const { data } = result;
 
       expect(data).toBeDefined();
-      expect(data.title).toBe("Test Media");
+      expect(data).toMatchObject({
+        ...mediaData,
+        year: Number(mediaData.year),
+        id: data.id,
+      });
 
       const inDb = await prisma.usersWatchList.findFirst({
         where: { userId, mediaId: data.id },
@@ -58,7 +58,7 @@ describe("Media actions", () => {
 
     it("should add a tmdb film into user watchlist", async () => {
       const tmdbFilmId = 1234;
-      vi.mocked(fetchMediaFromTMDB).mockResolvedValue(
+      vi.mocked(fetchMediaFromTMDB).mockResolvedValueOnce(
         mockTMDBFilmData(tmdbFilmId)
       );
 
@@ -80,7 +80,7 @@ describe("Media actions", () => {
 
     it("should add a tmdb serie into user watchlist", async () => {
       const tmdbSerieId = 4567;
-      vi.mocked(fetchMediaFromTMDB).mockResolvedValue(
+      vi.mocked(fetchMediaFromTMDB).mockResolvedValueOnce(
         mockTMDBSerieData(tmdbSerieId)
       );
 

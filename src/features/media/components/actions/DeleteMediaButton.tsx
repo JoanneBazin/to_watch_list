@@ -33,6 +33,7 @@ export const DeleteMediaButton = ({
         watched && "bg-accent-dark text-black hover:bg-muted border-black",
         mobile && "p-0 text-destructive"
       )}
+      data-testid="delete-item-btn"
     >
       {mobile ? "Supprimer de la liste" : <X size={16} />}
     </Button>

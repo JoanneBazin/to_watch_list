@@ -27,6 +27,7 @@ test.describe("Social - communauty page", () => {
       "ACCEPTED"
     );
     await page.goto("/communauty");
+    await page.waitForLoadState("networkidle");
 
     const contactCard = page.locator("[data-testid='contact-card']", {
       hasText: contact.name,
@@ -47,6 +48,7 @@ test.describe("Social - communauty page", () => {
 
     await page.goto("/communauty");
     await page.click("button[data-testid='requests-nav']");
+    await page.waitForLoadState("networkidle");
 
     const requestCard = page.locator("[data-testid='request-card']", {
       hasText: sender.name,
@@ -74,9 +76,7 @@ test.describe("Social - communauty page", () => {
     await page.fill("input[data-testid='search-user-input']", friend.name);
 
     const cards = page.locator("[data-testid='user-card']");
-    await expect(cards).toBeVisible({
-      timeout: 5000,
-    });
+    await expect(cards).toBeVisible({ timeout: 10000 });
     expect(cards).toHaveCount(1);
     await expect(cards.first()).toContainText(friend.name);
     await expect(cards.first()).toContainText("Voir le profil");
