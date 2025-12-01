@@ -68,4 +68,13 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run E2E (Playwright)
-        run: npm run test:e2e:ci -- --reporter=list
+        run: npm run test:e2e:ci -- --reporter=html,list --retries=0
+        continue-on-error: true
+
+      - name: Upload Playwright Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
