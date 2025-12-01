@@ -30,6 +30,7 @@ jobs:
       NODE_ENV: test
       NEXT_PUBLIC_SUPABASE_URL: http://localhost:54321
       NEXT_PUBLIC_SUPABASE_ANON_KEY: fake-key-for-tests
+      SUPABASE_SERVICE_ROLE_KEY: fake-service-role-key-for-tests
       NEXT_PUBLIC_BASE_URL: http://localhost:3000
 
     steps:
