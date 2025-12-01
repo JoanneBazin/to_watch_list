@@ -68,7 +68,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run E2E (Playwright)
-        run: npm run test:e2e:ci -- --reporter=html,list --retries=0
+        run: npm run test:e2e:ci -- --reporter=html --reporter=list --retries=0
         continue-on-error: true
 
       - name: Upload Playwright Report
