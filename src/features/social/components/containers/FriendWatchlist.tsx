@@ -34,6 +34,7 @@ export const FriendWatchlist = ({ user, entry }: FriendWatchlistProps) => {
               variant="outline"
               className="border-background sm:border-accent"
               aria-label={`Envoyer une suggestion de ${entry}`}
+              data-testid={`create-${entry}-suggestion`}
             >
               <Send size={16} />
             </Button>

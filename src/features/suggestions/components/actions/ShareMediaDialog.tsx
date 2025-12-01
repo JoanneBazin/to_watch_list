@@ -32,6 +32,7 @@ export const ShareMediaDialog = ({
               media.watched &&
                 "bg-accent-dark text-black hover:bg-muted border-black"
             )}
+            data-testid="share-btn"
           >
             <Share2 size={16} />
           </Button>

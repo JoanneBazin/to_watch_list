@@ -41,10 +41,6 @@ describe("Suggestions actions", () => {
   });
 
   describe("Send a suggestion", () => {
-    beforeEach(async () => {
-      vi.clearAllMocks();
-    });
-
     it("should create a custom media into contact watchlist", async () => {
       const mediaData = customMediaTest;
       const result = await suggestCustomMedia(mediaData, contactId);
@@ -67,7 +63,7 @@ describe("Suggestions actions", () => {
 
     it("should add a tmdb film into contact watchlist", async () => {
       const tmdbFilmId = 1234;
-      vi.mocked(fetchMediaFromTMDB).mockResolvedValue(
+      vi.mocked(fetchMediaFromTMDB).mockResolvedValueOnce(
         mockTMDBFilmData(tmdbFilmId)
       );
 
@@ -91,7 +87,7 @@ describe("Suggestions actions", () => {
 
     it("should add a tmdb serie into contact watchlist", async () => {
       const tmdbSerieId = 4567;
-      vi.mocked(fetchMediaFromTMDB).mockResolvedValue(
+      vi.mocked(fetchMediaFromTMDB).mockResolvedValueOnce(
         mockTMDBSerieData(tmdbSerieId)
       );
 

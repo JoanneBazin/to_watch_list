@@ -56,8 +56,9 @@ export const mockTMDBSerieData = (id: number) => ({
 });
 
 export const createTestCategory = async (overrides = {}) => {
-  await prisma.category.create({
+  return prisma.category.create({
     data: { name: "Action", ...overrides },
+    select: { name: true },
   });
 };
 
@@ -71,6 +72,7 @@ export const createTestMediaWithUser = async (userId: string) => {
   const media = await createTestMedia();
   const userMedia = await prisma.usersWatchList.create({
     data: { userId, mediaId: media.id },
+    include: { media: true },
   });
   if (!userMedia) throw new Error("No media available");
   return userMedia;

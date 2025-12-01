@@ -1,12 +1,16 @@
 import test, { expect } from "@playwright/test";
 import { cleanDatabase } from "../helpers/db-helpers";
 import { signInUser, signUpUser } from "../helpers/auth-helpers";
-import { createTestMediaSuggestion } from "../helpers/media-helpers";
+import {
+  createTestCategory,
+  createTestMediaSuggestion,
+  createTestMediaWithUser,
+} from "../helpers/media-helpers";
 import { createContactWithFriendRequest } from "../helpers/social-helpers";
 
-test.describe("Suggestions page", () => {
+test.describe("Suggestions actions", () => {
   let userId: string;
-  let contactId: string;
+  let contact: { id: string; name: string };
   const user = { email: "suggestions@test.com", password: "suggestions1234" };
 
   test.beforeEach(async ({ page }) => {
@@ -14,7 +18,7 @@ test.describe("Suggestions page", () => {
     const userData = await signUpUser(page, user.email, user.password);
     userId = userData.id;
     const { sender } = await createContactWithFriendRequest(userId, "ACCEPTED");
-    contactId = sender.id;
+    contact = { id: sender.id, name: sender.name };
   });
 
   test.afterAll(async () => {
@@ -24,7 +28,7 @@ test.describe("Suggestions page", () => {
   test("should display received suggestions", async ({ page }) => {
     await signInUser(page, user.email, user.password);
 
-    const suggestion = await createTestMediaSuggestion(contactId, userId);
+    const suggestion = await createTestMediaSuggestion(contact.id, userId);
     await page.goto("/suggestions");
     await page.waitForSelector("[data-testid='suggestion-card']");
 
@@ -43,6 +47,13 @@ test.describe("Suggestions page", () => {
     await expect(
       suggestionCard.locator("text=Suggestion ajoutée")
     ).toBeVisible();
+
+    await page.goto("/dashboard");
+    await expect(
+      page
+        .locator("[data-testid='media-item']")
+        .filter({ hasText: suggestion.media.title })
+    ).toBeVisible();
   });
 
   test("should display received messages", async ({ page }) => {
@@ -50,12 +61,13 @@ test.describe("Suggestions page", () => {
 
     const suggestion = await createTestMediaSuggestion(
       userId,
-      contactId,
+      contact.id,
       "This was a great idea"
     );
 
     await page.goto("/suggestions");
     await page.click("button[data-testid='messages-nav']");
+    await page.waitForSelector("[data-testid='message-card']");
 
     const messageCard = page.locator("[data-testid='message-card']", {
       hasText: suggestion.media.title,
@@ -67,5 +79,68 @@ test.describe("Suggestions page", () => {
     if (suggestion.receiverComment) {
       await expect(messageCard).toContainText(suggestion.receiverComment);
     }
+  });
+
+  test("should send suggestion from watchlist", async ({ page }) => {
+    await signInUser(page, user.email, user.password);
+    const { media } = await createTestMediaWithUser(userId);
+
+    const mediaRow = page
+      .locator("[data-testid='media-row']")
+      .filter({ hasText: media.title });
+    await expect(mediaRow).toBeVisible();
+    await mediaRow.locator("[data-testid='share-btn']").click();
+
+    const contactRow = page
+      .locator("[data-testid='share-contact-item']")
+      .filter({ hasText: contact.name });
+    await expect(contactRow).toBeVisible();
+
+    await contactRow.click();
+    await page.click("[data-testid='send-btn']");
+
+    await expect(page.locator("[data-testid='sent-msg']")).toBeVisible();
+  });
+
+  test("should create TMDB suggestion", async ({ page }) => {
+    await signInUser(page, user.email, user.password);
+    const newMedia = { title: "Midsommar" };
+
+    await page.goto(`/user/${contact.id}`);
+    await page.waitForLoadState("networkidle");
+
+    await page.click("button[data-testid='create-FILM-suggestion']");
+
+    await page.fill("input[id='media-search']", newMedia.title);
+    await page.click("button[data-testid='search-media-btn']");
+
+    await page.waitForFunction(() => {
+      const items = document.querySelectorAll(".search-media-card");
+      return items.length > 0;
+    });
+
+    const firstCard = page.locator("div.search-media-card").first();
+    await expect(firstCard).toBeVisible();
+
+    await firstCard.locator("button[data-testid='send-btn']").click(),
+      await expect(firstCard).toContainText("Suggestion envoyée");
+  });
+
+  test("should create custom suggestion", async ({ page }) => {
+    await signInUser(page, user.email, user.password);
+    const cat = await createTestCategory();
+    const newMedia = { title: "Suggestion test", category: cat.name };
+
+    await page.goto(`/user/${contact.id}`);
+    await page.waitForLoadState("networkidle");
+
+    await page.click("button[data-testid='create-FILM-suggestion']");
+    await page.click("button[data-testid='create-media-nav']");
+
+    await page.fill("input[id='title']", newMedia.title);
+    await page.selectOption("select#category", { value: newMedia.category });
+    await page.click("button[data-testid='send-btn']");
+
+    await expect(page.locator('[role="dialog"]')).toBeHidden();
   });
 });

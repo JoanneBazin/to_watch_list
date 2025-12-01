@@ -34,7 +34,7 @@ export const SuggestMediaToContact = ({
     <Accordion type="single" collapsible className="px-4 w-full">
       <AccordionItem value={contact.id}>
         <AccordionTrigger>
-          <div className="flex gap-4">
+          <div className="flex gap-4" data-testid="share-contact-item">
             <Avatar
               img={contact.image}
               size="small"
@@ -45,7 +45,7 @@ export const SuggestMediaToContact = ({
         </AccordionTrigger>
         <AccordionContent className="pb-0">
           {sentSuggestion ? (
-            <p>Suggestion envoyée !</p>
+            <p data-testid="sent-msg">Suggestion envoyée !</p>
           ) : (
             <SendSuggestion
               onSubmit={handleSuggest}
