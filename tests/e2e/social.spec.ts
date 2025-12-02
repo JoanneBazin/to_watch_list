@@ -1,6 +1,6 @@
 import test, { expect } from "@playwright/test";
 import { cleanDatabase } from "../helpers/db-helpers";
-import { signInUser, signUpUser } from "../helpers/auth-helpers";
+import { signUpUser } from "../helpers/auth-helpers";
 import {
   createContactWithFriendRequest,
   createUserIntoDb,
@@ -21,7 +21,6 @@ test.describe("Social - communauty page", () => {
   });
 
   test("should display user contacts", async ({ page }) => {
-    await signInUser(page, user.email, user.password);
     const { sender: contact } = await createContactWithFriendRequest(
       userId,
       "ACCEPTED"
@@ -43,7 +42,6 @@ test.describe("Social - communauty page", () => {
   });
 
   test("should display pending friend requests received", async ({ page }) => {
-    await signInUser(page, user.email, user.password);
     const { sender } = await createContactWithFriendRequest(userId, "PENDING");
 
     await page.goto("/communauty");
@@ -58,8 +56,6 @@ test.describe("Social - communauty page", () => {
   });
 
   test("should display users by name", async ({ page }) => {
-    await signInUser(page, user.email, user.password);
-
     const { sender: friend } = await createContactWithFriendRequest(
       userId,
       "ACCEPTED"
