@@ -1,5 +1,6 @@
 import { auth, prisma } from "@/src/lib/server";
 import { Page } from "@playwright/test";
+import { fillWhenStable } from "./dom-helpers";
 
 export const signUpUser = async (
   page: Page,
@@ -14,9 +15,9 @@ export const signUpUser = async (
   const passwordInput = page.locator("input[data-testid='password-input']");
   const submitBtn = page.locator("button[data-testid='auth-submit']");
 
-  await nameInput.fill("Test User");
-  await emailInput.fill(email);
-  await passwordInput.fill(password);
+  await fillWhenStable(nameInput, "Test User");
+  await fillWhenStable(emailInput, email);
+  await fillWhenStable(passwordInput, password);
 
   await Promise.all([page.waitForURL("/dashboard"), submitBtn.click()]);
 
@@ -35,8 +36,8 @@ export const signInUser = async (
   const passwordInput = page.locator("input[data-testid='password-input']");
   const submitBtn = page.locator("button[data-testid='auth-submit']");
 
-  await emailInput.fill(email);
-  await passwordInput.fill(password);
+  await fillWhenStable(emailInput, email);
+  await fillWhenStable(passwordInput, password);
 
   await Promise.all([page.waitForURL("/dashboard"), submitBtn.click()]);
 };
