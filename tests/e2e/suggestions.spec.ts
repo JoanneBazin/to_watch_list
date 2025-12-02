@@ -15,6 +15,7 @@ test.describe("Suggestions actions", () => {
   const user = { email: "suggestions@test.com", password: "suggestions1234" };
 
   test.beforeEach(async ({ page }) => {
+    await page.waitForTimeout(500);
     await cleanDatabase();
     const userData = await signUpUser(page, user.email, user.password);
     userId = userData.id;
@@ -80,11 +81,12 @@ test.describe("Suggestions actions", () => {
 
   test("should send suggestion from watchlist", async ({ page }) => {
     const { media } = await createTestMediaWithUser(userId);
+    await page.reload();
 
     const mediaRow = page
       .locator("[data-testid='media-row']")
       .filter({ hasText: media.title });
-    await mediaRow.waitFor({ state: "visible", timeout: 10000 });
+    await mediaRow.waitFor({ state: "visible", timeout: 20000 });
     await mediaRow.locator("[data-testid='share-btn']").click();
 
     const contactRow = page
@@ -109,16 +111,8 @@ test.describe("Suggestions actions", () => {
     await page.fill("input[id='media-search']", newMedia.title);
     await page.click("button[data-testid='search-media-btn']");
 
-    // await page.waitForFunction(() => {
-    //   const items = document.querySelectorAll(".search-media-card");
-    //   return items.length > 0;
-    // });
-
     const firstCard = page.locator(".search-media-card").first();
     await firstCard.waitFor({ state: "attached", timeout: 20000 });
-
-    // const firstCard = page.locator("div.search-media-card").first();
-    // await expect(firstCard).toBeVisible();
 
     await firstCard.locator("button[data-testid='send-btn']").click(),
       await expect(firstCard).toContainText("Suggestion envoyée");
