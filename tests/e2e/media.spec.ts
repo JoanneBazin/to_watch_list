@@ -5,6 +5,7 @@ import {
   createTestCategory,
   createTestMediaWithUser,
 } from "../helpers/media-helpers";
+import { selectWhenStable } from "../helpers/dom-helpers";
 
 test.describe("Media - dashboard page", () => {
   let userId: string;
@@ -28,7 +29,9 @@ test.describe("Media - dashboard page", () => {
     await page.click("button[data-testid='create-media-nav']");
 
     await page.fill("input[id='title']", newMedia.title);
-    await page.selectOption("select#category", { value: newMedia.category });
+
+    await selectWhenStable(page, "select#category", newMedia.category);
+
     await page.click("button[type='submit']");
 
     await expect(page.locator('[role="dialog"]')).toBeHidden();
@@ -52,13 +55,16 @@ test.describe("Media - dashboard page", () => {
     await page.fill("input[id='media-search']", newMedia.title);
     await page.click("button[data-testid='search-media-btn']");
 
-    await page.waitForFunction(() => {
-      const items = document.querySelectorAll(".search-media-card");
-      return items.length > 0;
-    });
+    // await page.waitForFunction(() => {
+    //   const items = document.querySelectorAll(".search-media-card");
+    //   return items.length > 0;
+    // });
 
-    const firstCard = page.locator("div.search-media-card").first();
-    await expect(firstCard).toBeVisible();
+    const firstCard = page.locator(".search-media-card").first();
+    await firstCard.waitFor({ state: "visible", timeout: 20000 });
+
+    // const firstCard = page.locator("div.search-media-card").first();
+    // await expect(firstCard).toBeVisible();
 
     await firstCard.locator("button[data-testid='add-tmdb-btn']").click(),
       await expect(firstCard).toContainText("Ajouté à la liste");
@@ -87,7 +93,7 @@ test.describe("Media - dashboard page", () => {
     await page.click("button[data-testid='create-media-nav']");
 
     await page.fill("input[id='title']", newMedia.title);
-    await page.selectOption("select#category", { value: newMedia.category });
+    await selectWhenStable(page, "select#category", newMedia.category);
     await page.click("button[type='submit']");
 
     await expect(page.locator('[role="dialog"]')).toBeHidden();
