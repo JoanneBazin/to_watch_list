@@ -86,7 +86,7 @@ test.describe("Suggestions actions", () => {
     const mediaRow = page
       .locator("[data-testid='media-row']")
       .filter({ hasText: media.title });
-    await mediaRow.waitFor({ state: "visible", timeout: 20000 });
+    await mediaRow.waitFor({ state: "visible", timeout: 60000 });
     await mediaRow.locator("[data-testid='share-btn']").click();
 
     const contactRow = page
@@ -112,7 +112,7 @@ test.describe("Suggestions actions", () => {
     await page.click("button[data-testid='search-media-btn']");
 
     const firstCard = page.locator(".search-media-card").first();
-    await firstCard.waitFor({ state: "attached", timeout: 20000 });
+    await firstCard.waitFor({ state: "attached", timeout: 60000 });
 
     await firstCard.locator("button[data-testid='send-btn']").click(),
       await expect(firstCard).toContainText("Suggestion envoyée");

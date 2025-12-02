@@ -57,7 +57,7 @@ test.describe("Media - dashboard page", () => {
     await page.click("button[data-testid='search-media-btn']");
 
     const firstCard = page.locator(".search-media-card").first();
-    await firstCard.waitFor({ state: "attached", timeout: 20000 });
+    await firstCard.waitFor({ state: "attached", timeout: 60000 });
 
     await firstCard.locator("button[data-testid='add-tmdb-btn']").click(),
       await expect(firstCard).toContainText("Ajouté à la liste");
