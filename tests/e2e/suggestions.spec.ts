@@ -7,6 +7,7 @@ import {
   createTestMediaWithUser,
 } from "../helpers/media-helpers";
 import { createContactWithFriendRequest } from "../helpers/social-helpers";
+import { clickWhenStable } from "../helpers/dom-helpers";
 
 test.describe("Suggestions actions", () => {
   let userId: string;
@@ -94,10 +95,10 @@ test.describe("Suggestions actions", () => {
     const contactRow = page
       .locator("[data-testid='share-contact-item']")
       .filter({ hasText: contact.name });
-    await expect(contactRow).toBeVisible();
+    const sendBtn = page.locator("[data-testid='send-btn']");
 
-    await contactRow.click();
-    await page.click("[data-testid='send-btn']");
+    await clickWhenStable(contactRow);
+    await clickWhenStable(sendBtn);
 
     await expect(page.locator("[data-testid='sent-msg']")).toBeVisible();
   });
