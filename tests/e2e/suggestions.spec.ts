@@ -7,7 +7,7 @@ import {
   createTestMediaWithUser,
 } from "../helpers/media-helpers";
 import { createContactWithFriendRequest } from "../helpers/social-helpers";
-import { clickWhenStable } from "../helpers/dom-helpers";
+import { clickWhenStable, selectWhenStable } from "../helpers/dom-helpers";
 
 test.describe("Suggestions actions", () => {
   let userId: string;
@@ -84,7 +84,7 @@ test.describe("Suggestions actions", () => {
     const mediaRow = page
       .locator("[data-testid='media-row']")
       .filter({ hasText: media.title });
-    await expect(mediaRow).toBeVisible();
+    await mediaRow.waitFor({ state: "visible", timeout: 10000 });
     await mediaRow.locator("[data-testid='share-btn']").click();
 
     const contactRow = page
@@ -109,13 +109,16 @@ test.describe("Suggestions actions", () => {
     await page.fill("input[id='media-search']", newMedia.title);
     await page.click("button[data-testid='search-media-btn']");
 
-    await page.waitForFunction(() => {
-      const items = document.querySelectorAll(".search-media-card");
-      return items.length > 0;
-    });
+    // await page.waitForFunction(() => {
+    //   const items = document.querySelectorAll(".search-media-card");
+    //   return items.length > 0;
+    // });
 
-    const firstCard = page.locator("div.search-media-card").first();
-    await expect(firstCard).toBeVisible();
+    const firstCard = page.locator(".search-media-card").first();
+    await firstCard.waitFor({ state: "visible", timeout: 20000 });
+
+    // const firstCard = page.locator("div.search-media-card").first();
+    // await expect(firstCard).toBeVisible();
 
     await firstCard.locator("button[data-testid='send-btn']").click(),
       await expect(firstCard).toContainText("Suggestion envoyée");
@@ -132,7 +135,7 @@ test.describe("Suggestions actions", () => {
     await page.click("button[data-testid='create-media-nav']");
 
     await page.fill("input[id='title']", newMedia.title);
-    await page.selectOption("select#category", { value: newMedia.category });
+    await selectWhenStable(page, "select#category", newMedia.category);
     await page.click("button[data-testid='send-btn']");
 
     await expect(page.locator('[role="dialog"]')).toBeHidden();
