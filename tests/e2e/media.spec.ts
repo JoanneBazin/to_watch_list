@@ -1,6 +1,6 @@
 import test, { expect } from "@playwright/test";
 import { cleanDatabase } from "../helpers/db-helpers";
-import { signInUser, signUpUser } from "../helpers/auth-helpers";
+import { signUpUser } from "../helpers/auth-helpers";
 import {
   createTestCategory,
   createTestMediaWithUser,
@@ -21,7 +21,6 @@ test.describe("Media - dashboard page", () => {
   });
 
   test("should add custom film and display watchlist", async ({ page }) => {
-    await signInUser(page, user.email, user.password);
     const cat = await createTestCategory();
     const newMedia = { title: "Film test", category: cat.name };
 
@@ -46,7 +45,6 @@ test.describe("Media - dashboard page", () => {
   });
 
   test("should add TMDB film and display watchlist", async ({ page }) => {
-    await signInUser(page, user.email, user.password);
     const newMedia = { title: "Midsommar" };
 
     await page.click("button[data-testid='add-media-btn']");
@@ -80,7 +78,6 @@ test.describe("Media - dashboard page", () => {
   });
 
   test("should add custom serie and display watchlist", async ({ page }) => {
-    await signInUser(page, user.email, user.password);
     const cat = await createTestCategory();
     const newMedia = { title: "Film test", category: cat.name };
 
@@ -108,7 +105,6 @@ test.describe("Media - dashboard page", () => {
   });
 
   test("should filter and display media by category", async ({ page }) => {
-    await signInUser(page, user.email, user.password);
     const { media } = await createTestMediaWithUser(userId);
 
     await page.click("button[data-testid='categories-nav']");
@@ -124,7 +120,6 @@ test.describe("Media - dashboard page", () => {
   });
 
   test("should delete media from watchlist", async ({ page }) => {
-    await signInUser(page, user.email, user.password);
     const { media } = await createTestMediaWithUser(userId);
 
     const mediaRow = page

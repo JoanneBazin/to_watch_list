@@ -1,6 +1,6 @@
 import test, { expect } from "@playwright/test";
 import { cleanDatabase } from "../helpers/db-helpers";
-import { signInUser, signUpUser } from "../helpers/auth-helpers";
+import { signUpUser } from "../helpers/auth-helpers";
 import {
   createTestCategory,
   createTestMediaSuggestion,
@@ -27,8 +27,6 @@ test.describe("Suggestions actions", () => {
   });
 
   test("should display received suggestions", async ({ page }) => {
-    await signInUser(page, user.email, user.password);
-
     const suggestion = await createTestMediaSuggestion(contact.id, userId);
     await page.goto("/suggestions");
     await page.waitForSelector("[data-testid='suggestion-card']");
@@ -58,8 +56,6 @@ test.describe("Suggestions actions", () => {
   });
 
   test("should display received messages", async ({ page }) => {
-    await signInUser(page, user.email, user.password);
-
     const suggestion = await createTestMediaSuggestion(
       userId,
       contact.id,
@@ -83,7 +79,6 @@ test.describe("Suggestions actions", () => {
   });
 
   test("should send suggestion from watchlist", async ({ page }) => {
-    await signInUser(page, user.email, user.password);
     const { media } = await createTestMediaWithUser(userId);
 
     const mediaRow = page
@@ -104,7 +99,6 @@ test.describe("Suggestions actions", () => {
   });
 
   test("should create TMDB suggestion", async ({ page }) => {
-    await signInUser(page, user.email, user.password);
     const newMedia = { title: "Midsommar" };
 
     await page.goto(`/user/${contact.id}`);
@@ -128,7 +122,6 @@ test.describe("Suggestions actions", () => {
   });
 
   test("should create custom suggestion", async ({ page }) => {
-    await signInUser(page, user.email, user.password);
     const cat = await createTestCategory();
     const newMedia = { title: "Suggestion test", category: cat.name };
 
