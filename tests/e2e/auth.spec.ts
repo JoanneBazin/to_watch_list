@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { signUpUser } from "../helpers/auth-helpers";
+import { signInUser, signUpUser } from "../helpers/auth-helpers";
 import { cleanDatabase } from "../helpers/db-helpers";
 
 test.describe("Authentication", () => {
@@ -31,14 +31,7 @@ test.describe("Authentication", () => {
     await page.click("button[data-testid='open-profile-menu']");
     await page.click("button[data-testid='signout-btn']");
 
-    await page.goto("/auth");
-
-    await page.fill("input[data-testid='email-input']", user.email);
-    await page.fill("input[data-testid='password-input']", user.password);
-    await page.click("button[data-testid='auth-submit']");
-
-    await page.waitForURL("/dashboard");
-    await page.waitForLoadState("networkidle");
+    await signInUser(page, user.email, user.password);
 
     await expect(
       page.locator("nav[data-testid='dashboard-nav']")

@@ -9,12 +9,16 @@ export const signUpUser = async (
   await page.goto("/auth");
   await page.click("button[data-testid='toggle-auth-form']");
 
-  await page.fill("input[data-testid='name-input']", "Test User");
-  await page.fill("input[data-testid='email-input']", email);
-  await page.fill("input[data-testid='password-input']", password);
-  await page.click("button[data-testid='auth-submit']");
+  const nameInput = page.locator("input[data-testid='name-input']");
+  const emailInput = page.locator("input[data-testid='email-input']");
+  const passwordInput = page.locator("input[data-testid='password-input']");
+  const submitBtn = page.locator("button[data-testid='auth-submit']");
 
-  await page.waitForURL("/dashboard");
+  await nameInput.fill("Test User");
+  await emailInput.fill(email);
+  await passwordInput.fill(password);
+
+  await Promise.all([page.waitForURL("/dashboard"), submitBtn.click()]);
 
   const user = await prisma.user.findUnique({ where: { email } });
   return user!!;
@@ -27,11 +31,14 @@ export const signInUser = async (
 ) => {
   await page.goto("/auth");
 
-  await page.fill("input[data-testid='email-input']", email);
-  await page.fill("input[data-testid='password-input']", password);
-  await page.click("button[data-testid='auth-submit']");
+  const emailInput = page.locator("input[data-testid='email-input']");
+  const passwordInput = page.locator("input[data-testid='password-input']");
+  const submitBtn = page.locator("button[data-testid='auth-submit']");
 
-  await page.waitForURL("/dashboard");
+  await emailInput.fill(email);
+  await passwordInput.fill(password);
+
+  await Promise.all([page.waitForURL("/dashboard"), submitBtn.click()]);
 };
 
 export const createTestUser = async (overrides = {}) => {
