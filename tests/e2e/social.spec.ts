@@ -11,6 +11,7 @@ test.describe("Social - communauty page", () => {
   const user = { email: "communauty@test.com", password: "communauty1234" };
 
   test.beforeEach(async ({ page }) => {
+    await page.waitForTimeout(500);
     await cleanDatabase();
     const userData = await signUpUser(page, user.email, user.password);
     userId = userData.id;

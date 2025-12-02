@@ -35,18 +35,5 @@ export const selectWhenStable = async (
   const option = el.locator(`option[value="${value}"]`);
   await option.waitFor({ state: "attached", timeout: 10000 });
 
-  //   await page.waitForFunction(
-  //     ({ value, selector }) => {
-  //       const select = document.querySelector(
-  //         selector
-  //       ) as HTMLSelectElement | null;
-  //       return (
-  //         select !== null &&
-  //         Array.from(select?.options || []).some((opt) => opt.value === value)
-  //       );
-  //     },
-  //     { value, selector }
-  //   );
-
   await page.selectOption(selector, { value });
 };

@@ -12,6 +12,7 @@ test.describe("Media - dashboard page", () => {
   const user = { email: "dashboard@test.com", password: "dashboard1234" };
 
   test.beforeEach(async ({ page }) => {
+    await page.waitForTimeout(500);
     await cleanDatabase();
     const userData = await signUpUser(page, user.email, user.password);
     userId = userData.id;
@@ -55,16 +56,8 @@ test.describe("Media - dashboard page", () => {
     await page.fill("input[id='media-search']", newMedia.title);
     await page.click("button[data-testid='search-media-btn']");
 
-    // await page.waitForFunction(() => {
-    //   const items = document.querySelectorAll(".search-media-card");
-    //   return items.length > 0;
-    // });
-
     const firstCard = page.locator(".search-media-card").first();
     await firstCard.waitFor({ state: "attached", timeout: 20000 });
-
-    // const firstCard = page.locator("div.search-media-card").first();
-    // await expect(firstCard).toBeVisible();
 
     await firstCard.locator("button[data-testid='add-tmdb-btn']").click(),
       await expect(firstCard).toContainText("Ajouté à la liste");
