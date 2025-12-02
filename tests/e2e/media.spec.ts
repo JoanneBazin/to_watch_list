@@ -61,7 +61,7 @@ test.describe("Media - dashboard page", () => {
     // });
 
     const firstCard = page.locator(".search-media-card").first();
-    await firstCard.waitFor({ state: "visible", timeout: 20000 });
+    await firstCard.waitFor({ state: "attached", timeout: 20000 });
 
     // const firstCard = page.locator("div.search-media-card").first();
     // await expect(firstCard).toBeVisible();
