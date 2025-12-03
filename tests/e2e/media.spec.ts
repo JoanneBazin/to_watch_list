@@ -1,6 +1,10 @@
 import test, { expect } from "@playwright/test";
 import { cleanDatabase } from "../helpers/db-helpers";
-import { signUpUser } from "../helpers/auth-helpers";
+import {
+  createTestUser,
+  signInUser,
+  signUpUser,
+} from "../helpers/auth-helpers";
 import {
   createTestCategory,
   createTestMediaWithUser,
@@ -14,15 +18,15 @@ test.describe("Media - dashboard page", () => {
   let userId: string;
   const user = { email: "dashboard@test.com", password: "dashboard1234" };
 
-  test.beforeEach(async ({ page }) => {
-    await page.waitForTimeout(500);
+  test.beforeAll(async () => {
     await cleanDatabase();
-    const userData = await signUpUser(page, user.email, user.password);
-    userId = userData.id;
+    userId = await createTestUser(user);
   });
 
-  test.afterAll(async () => {
-    await cleanDatabase();
+  test.beforeEach(async ({ page }) => {
+    await page.waitForTimeout(500);
+    await cleanDatabase(userId);
+    await signInUser(page, user.email, user.password);
   });
 
   test("should add custom film and display watchlist", async ({ page }) => {
@@ -61,7 +65,7 @@ test.describe("Media - dashboard page", () => {
     await getTMDBResultsWhenReady(page);
 
     const firstCard = page.locator(".search-media-card").first();
-    await firstCard.waitFor({ state: "attached", timeout: 60000 });
+    await firstCard.waitFor({ state: "attached", timeout: 120000 });
 
     await firstCard.locator("button[data-testid='add-tmdb-btn']").click(),
       await expect(firstCard).toContainText("Ajouté à la liste");

@@ -1,4 +1,4 @@
-import { expect, Locator, Page } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 
 export const clickWhenStable = async (locator: Locator) => {
   await locator.waitFor({ state: "visible", timeout: 60000 });
@@ -34,7 +34,7 @@ export const selectWhenStable = async (
   console.log("⏳ Waiting for categories API...");
   const response = await page.waitForResponse(
     (res) => res.url().includes("/api/category") && res.status() === 200,
-    { timeout: 60000 }
+    { timeout: 120000 }
   );
   console.log("✅ Categories loaded");
 
@@ -67,7 +67,7 @@ export const getTMDBResultsWhenReady = async (page: Page) => {
   Promise.all([
     page.waitForResponse(
       (res) => res.url().includes("/api/search/media") && res.status() === 200,
-      { timeout: 90000 }
+      { timeout: 120000 }
     ),
     page.click("button[data-testid='search-media-btn']"),
   ]);

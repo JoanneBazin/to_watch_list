@@ -53,6 +53,9 @@ export const signInUser = async (
   await fillWhenStable(passwordInput, password);
 
   await Promise.all([page.waitForURL("/dashboard"), submitBtn.click()]);
+
+  const user = await prisma.user.findUnique({ where: { email } });
+  return user!!;
 };
 
 export const createTestUser = async (overrides = {}) => {

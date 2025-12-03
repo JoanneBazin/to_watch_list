@@ -1,6 +1,6 @@
 import test, { expect } from "@playwright/test";
 import { cleanDatabase } from "../helpers/db-helpers";
-import { signUpUser } from "../helpers/auth-helpers";
+import { createTestUser, signInUser } from "../helpers/auth-helpers";
 import {
   createContactWithFriendRequest,
   createUserIntoDb,
@@ -10,15 +10,15 @@ test.describe("Social - communauty page", () => {
   let userId: string;
   const user = { email: "communauty@test.com", password: "communauty1234" };
 
-  test.beforeEach(async ({ page }) => {
-    await page.waitForTimeout(500);
+  test.beforeAll(async () => {
     await cleanDatabase();
-    const userData = await signUpUser(page, user.email, user.password);
-    userId = userData.id;
+    userId = await createTestUser(user);
   });
 
-  test.afterAll(async () => {
-    await cleanDatabase();
+  test.beforeEach(async ({ page }) => {
+    await page.waitForTimeout(500);
+    await cleanDatabase(userId);
+    await signInUser(page, user.email, user.password);
   });
 
   test("should display user contacts", async ({ page }) => {
