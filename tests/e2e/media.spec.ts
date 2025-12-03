@@ -5,7 +5,10 @@ import {
   createTestCategory,
   createTestMediaWithUser,
 } from "../helpers/media-helpers";
-import { selectWhenStable } from "../helpers/dom-helpers";
+import {
+  getTMDBResultsWhenReady,
+  selectWhenStable,
+} from "../helpers/dom-helpers";
 
 test.describe("Media - dashboard page", () => {
   let userId: string;
@@ -54,7 +57,8 @@ test.describe("Media - dashboard page", () => {
     await page.click("button[data-testid='add-media-btn']");
 
     await page.fill("input[id='media-search']", newMedia.title);
-    await page.click("button[data-testid='search-media-btn']");
+
+    await getTMDBResultsWhenReady(page);
 
     const firstCard = page.locator(".search-media-card").first();
     await firstCard.waitFor({ state: "attached", timeout: 60000 });

@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test";
+import { expect, Locator, Page } from "@playwright/test";
 
 export const clickWhenStable = async (locator: Locator) => {
   await locator.waitFor({ state: "visible", timeout: 60000 });
@@ -29,11 +29,48 @@ export const selectWhenStable = async (
   selector: string,
   value: string
 ) => {
-  const el = page.locator(selector);
-  await el.waitFor({ state: "visible", timeout: 30000 });
+  console.log(`🔽 Selecting "${value}" in "${selector}"`);
 
-  const option = el.locator(`option[value="${value}"]`);
-  await option.waitFor({ state: "attached", timeout: 30000 });
+  console.log("⏳ Waiting for categories API...");
+  const response = await page.waitForResponse(
+    (res) => res.url().includes("/api/category") && res.status() === 200,
+    { timeout: 60000 }
+  );
+  console.log("✅ Categories loaded");
+
+  const categories = await response.json();
+  console.log("Categories received:", categories);
+
+  const categoryExists = categories.some((cat: any) => cat.name === value);
+  if (!categoryExists) {
+    throw new Error(
+      `Category "${value}" not found in API response: ${JSON.stringify(
+        categories
+      )}`
+    );
+  }
+
+  const select = page.locator(selector);
+  await select.waitFor({ state: "visible", timeout: 30000 });
+
+  console.log(`⏳ Waiting for option[value="${value}"]...`);
+  const option = select.locator(`option[value="${value}"]`);
+  await option.waitFor({ state: "attached", timeout: 60000 });
+  console.log("✅ Option found");
 
   await page.selectOption(selector, { value });
+  console.log("✅ Option selected");
+};
+
+export const getTMDBResultsWhenReady = async (page: Page) => {
+  console.log("⏳ Waiting for TMDB results...");
+  Promise.all([
+    page.waitForResponse(
+      (res) => res.url().includes("/api/search/media") && res.status() === 200,
+      { timeout: 90000 }
+    ),
+    page.click("button[data-testid='search-media-btn']"),
+  ]);
+
+  console.log("✅ Medias returned");
 };

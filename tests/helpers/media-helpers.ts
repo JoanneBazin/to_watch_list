@@ -1,5 +1,6 @@
 import { MediaFormData } from "@/src/features/media/media.schema";
 import { prisma } from "@/src/lib/server";
+import { Page } from "@playwright/test";
 
 export const customMediaTest: MediaFormData = {
   title: "Test Media",
