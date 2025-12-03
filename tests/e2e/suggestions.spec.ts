@@ -7,7 +7,11 @@ import {
   createTestMediaWithUser,
 } from "../helpers/media-helpers";
 import { createContactWithFriendRequest } from "../helpers/social-helpers";
-import { clickWhenStable, selectWhenStable } from "../helpers/dom-helpers";
+import {
+  clickWhenStable,
+  getTMDBResultsWhenReady,
+  selectWhenStable,
+} from "../helpers/dom-helpers";
 
 test.describe("Suggestions actions", () => {
   let userId: string;
@@ -109,7 +113,8 @@ test.describe("Suggestions actions", () => {
     await page.click("button[data-testid='create-FILM-suggestion']");
 
     await page.fill("input[id='media-search']", newMedia.title);
-    await page.click("button[data-testid='search-media-btn']");
+
+    await getTMDBResultsWhenReady(page);
 
     const firstCard = page.locator(".search-media-card").first();
     await firstCard.waitFor({ state: "attached", timeout: 60000 });

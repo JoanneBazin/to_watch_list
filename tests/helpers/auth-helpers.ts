@@ -19,7 +19,20 @@ export const signUpUser = async (
   await fillWhenStable(emailInput, email);
   await fillWhenStable(passwordInput, password);
 
-  await Promise.all([page.waitForURL("/dashboard"), submitBtn.click()]);
+  const [response] = await Promise.all([
+    page.waitForResponse((res) => res.url().includes("/api/auth/sign-up")),
+    submitBtn.click(),
+  ]);
+
+  if (response.status() === 200) {
+    await page.waitForURL("/dashboard");
+  } else {
+    const status = response.status();
+    const headers = await response.allHeaders();
+    console.log(
+      `❌ Signup failed with status ${status} : retry-after: ${headers["x-retry-after"]}`
+    );
+  }
 
   const user = await prisma.user.findUnique({ where: { email } });
   return user!!;
