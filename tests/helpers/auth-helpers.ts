@@ -41,7 +41,8 @@ export const signUpUser = async (
 export const signInUser = async (
   page: Page,
   email: string,
-  password: string
+  password: string,
+  maxAttemps = 3
 ) => {
   await page.goto("/auth");
 
@@ -52,10 +53,24 @@ export const signInUser = async (
   await fillWhenStable(emailInput, email);
   await fillWhenStable(passwordInput, password);
 
-  await Promise.all([page.waitForURL("/dashboard"), submitBtn.click()]);
-
-  const user = await prisma.user.findUnique({ where: { email } });
-  return user!!;
+  for (let i = 0; i < maxAttemps; i++) {
+    const [response] = await Promise.all([
+      page.waitForResponse((res) => res.url().includes("/api/auth/sign-up")),
+      submitBtn.click(),
+    ]);
+    if (response.status() === 200) {
+      await page.waitForURL("/dashboard");
+      const user = await prisma.user.findUnique({ where: { email } });
+      return user!!;
+    }
+    if (response.status() === 429) {
+      const ra = parseInt(response.headers()["x-retry-after"] || "1", 10);
+      await new Promise((r) => setTimeout(r, (ra + 1) * 1000));
+      continue;
+    }
+    throw new Error(`signup failed: ${response.status()}`);
+  }
+  throw new Error(`signup failed after ${maxAttemps} attemps`);
 };
 
 export const createTestUser = async (overrides = {}) => {
