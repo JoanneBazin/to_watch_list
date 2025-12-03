@@ -1,6 +1,6 @@
 import test, { expect } from "@playwright/test";
 import { cleanDatabase } from "../helpers/db-helpers";
-import { signUpUser } from "../helpers/auth-helpers";
+import { createTestUser, signInUser } from "../helpers/auth-helpers";
 import {
   createTestCategory,
   createTestMediaSuggestion,
@@ -18,17 +18,17 @@ test.describe("Suggestions actions", () => {
   let contact: { id: string; name: string };
   const user = { email: "suggestions@test.com", password: "suggestions1234" };
 
-  test.beforeEach(async ({ page }) => {
-    await page.waitForTimeout(500);
+  test.beforeAll(async () => {
     await cleanDatabase();
-    const userData = await signUpUser(page, user.email, user.password);
-    userId = userData.id;
-    const { sender } = await createContactWithFriendRequest(userId, "ACCEPTED");
-    contact = { id: sender.id, name: sender.name };
+    userId = await createTestUser(user);
   });
 
-  test.afterAll(async () => {
-    await cleanDatabase();
+  test.beforeEach(async ({ page }) => {
+    await page.waitForTimeout(500);
+    await cleanDatabase(userId);
+    await signInUser(page, user.email, user.password);
+    const { sender } = await createContactWithFriendRequest(userId, "ACCEPTED");
+    contact = { id: sender.id, name: sender.name };
   });
 
   test("should display received suggestions", async ({ page }) => {
@@ -117,7 +117,7 @@ test.describe("Suggestions actions", () => {
     await getTMDBResultsWhenReady(page);
 
     const firstCard = page.locator(".search-media-card").first();
-    await firstCard.waitFor({ state: "attached", timeout: 60000 });
+    await firstCard.waitFor({ state: "attached", timeout: 120000 });
 
     await firstCard.locator("button[data-testid='send-btn']").click(),
       await expect(firstCard).toContainText("Suggestion envoyée");

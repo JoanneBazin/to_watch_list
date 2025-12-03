@@ -8,10 +8,7 @@ test.describe("Authentication", () => {
     password: "password1234",
   };
 
-  test.beforeEach(async () => {
-    await cleanDatabase();
-  });
-  test.afterAll(async () => {
+  test.beforeAll(async () => {
     await cleanDatabase();
   });
 
@@ -22,22 +19,17 @@ test.describe("Authentication", () => {
     ).toBeVisible();
     await expect(
       page.locator("[data-testid='open-profile-menu']")
-    ).toContainText(newUser.name, { timeout: 10000 });
+    ).toContainText(newUser.name);
   });
 
   test("should login existing user", async ({ page }) => {
-    const newUser = await signUpUser(page, user.email, user.password);
-
-    await page.click("button[data-testid='open-profile-menu']");
-    await page.click("button[data-testid='signout-btn']");
-
-    await signInUser(page, user.email, user.password);
+    const existantUser = await signInUser(page, user.email, user.password);
 
     await expect(
       page.locator("nav[data-testid='dashboard-nav']")
     ).toBeVisible();
     await expect(
       page.locator("[data-testid='open-profile-menu']")
-    ).toContainText(newUser.name, { timeout: 10000 });
+    ).toContainText(existantUser.name);
   });
 });
