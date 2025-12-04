@@ -29,27 +29,6 @@ export const selectWhenStable = async (
   selector: string,
   value: string
 ) => {
-  console.log(`🔽 Selecting "${value}" in "${selector}"`);
-
-  console.log("⏳ Waiting for categories API...");
-  const response = await page.waitForResponse(
-    (res) => res.url().includes("/api/category") && res.status() === 200,
-    { timeout: 120000 }
-  );
-  console.log("✅ Categories loaded");
-
-  const categories = await response.json();
-  console.log("Categories received:", categories);
-
-  const categoryExists = categories.some((cat: any) => cat.name === value);
-  if (!categoryExists) {
-    throw new Error(
-      `Category "${value}" not found in API response: ${JSON.stringify(
-        categories
-      )}`
-    );
-  }
-
   const select = page.locator(selector);
   await select.waitFor({ state: "visible", timeout: 30000 });
 
@@ -62,15 +41,20 @@ export const selectWhenStable = async (
   console.log("✅ Option selected");
 };
 
-export const getTMDBResultsWhenReady = async (page: Page) => {
+export const getTMDBResultsWhenReady = async (
+  page: Page,
+  searchedMedia: string
+) => {
+  await page.fill("input[id='media-search']", searchedMedia);
+
   console.log("⏳ Waiting for TMDB results...");
-  Promise.all([
-    page.waitForResponse(
-      (res) => res.url().includes("/api/search/media") && res.status() === 200,
-      { timeout: 120000 }
-    ),
+  await Promise.all([
+    page.waitForSelector(".search-media-card", {
+      state: "visible",
+      timeout: 60000,
+    }),
     page.click("button[data-testid='search-media-btn']"),
   ]);
 
-  console.log("✅ Medias returned");
+  console.log("✅ Medias displayed");
 };

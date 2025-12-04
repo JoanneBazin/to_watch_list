@@ -1,6 +1,5 @@
 import { MediaFormData } from "@/src/features/media/media.schema";
 import { prisma } from "@/src/lib/server";
-import { Page } from "@playwright/test";
 
 export const customMediaTest: MediaFormData = {
   title: "Test Media",
@@ -12,49 +11,6 @@ export const customMediaTest: MediaFormData = {
   type: "FILM",
   categories: ["Action"],
 };
-
-export const mockTMDBFilmData = (id: number) => ({
-  id,
-  title: "TMDB Film",
-  original_title: "TMDB Film",
-  overview: "Synopsis mocké",
-  release_date: "2020-12-02",
-  genres: [
-    {
-      id: 123,
-      name: "Horreur",
-    },
-  ],
-  credits: {
-    cast: [{ name: "Film director", job: "Director" }],
-    crew: [],
-  },
-  "watch/providers": {
-    results: {
-      FR: { flatrate: [{ provider_name: "Netflix" }] },
-    },
-  },
-});
-
-export const mockTMDBSerieData = (id: number) => ({
-  id,
-  name: "TMDB Serie",
-  original_name: "TMDB Serie",
-  overview: "Synopsis mocké",
-  first_air_date: "2020-12-02",
-  genres: [
-    {
-      id: 123,
-      name: "Horreur",
-    },
-  ],
-  created_by: [{ id: 125, name: "TV Creator" }],
-  "watch/providers": {
-    results: {
-      FR: { flatrate: [{ provider_name: "Netflix" }] },
-    },
-  },
-});
 
 export const createTestCategory = async (overrides = {}) => {
   return prisma.category.create({

@@ -10,8 +10,6 @@ import {
   createTestMedia,
   createTestMediaSuggestion,
   customMediaTest,
-  mockTMDBFilmData,
-  mockTMDBSerieData,
 } from "../helpers/media-helpers";
 import { createContactWithFriendRequest } from "../helpers/social-helpers";
 import {
@@ -19,12 +17,7 @@ import {
   suggestExistantMedia,
   suggestSearchedMedia,
 } from "@/src/features/media/media.actions";
-import { fetchMediaFromTMDB } from "@/src/lib/server/tmdbService";
 import { cleanDatabase } from "../helpers/db-helpers";
-
-vi.mock("@/src/lib/server/tmdbService", () => ({
-  fetchMediaFromTMDB: vi.fn(),
-}));
 
 describe("Suggestions actions", () => {
   let userId: string;
@@ -63,16 +56,12 @@ describe("Suggestions actions", () => {
 
     it("should add a tmdb film into contact watchlist", async () => {
       const tmdbFilmId = 1234;
-      vi.mocked(fetchMediaFromTMDB).mockResolvedValueOnce(
-        mockTMDBFilmData(tmdbFilmId)
-      );
 
       const result = await suggestSearchedMedia(tmdbFilmId, contactId, "FILM");
       expect(requireAuth).toHaveBeenCalledTimes(1);
 
       assertSuccess(result);
       const { data } = result;
-
       expect(data).toBeDefined();
 
       const inDb = await prisma.usersWatchList.findFirst({
@@ -87,9 +76,6 @@ describe("Suggestions actions", () => {
 
     it("should add a tmdb serie into contact watchlist", async () => {
       const tmdbSerieId = 4567;
-      vi.mocked(fetchMediaFromTMDB).mockResolvedValueOnce(
-        mockTMDBSerieData(tmdbSerieId)
-      );
 
       const result = await suggestSearchedMedia(
         tmdbSerieId,
@@ -100,7 +86,6 @@ describe("Suggestions actions", () => {
 
       assertSuccess(result);
       const { data } = result;
-
       expect(data).toBeDefined();
 
       const inDb = await prisma.usersWatchList.findFirst({

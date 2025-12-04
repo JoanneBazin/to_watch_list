@@ -25,87 +25,67 @@ test.describe("Media - dashboard page", () => {
     await signInUser(page, user.email, user.password);
   });
 
-  // test("should add custom film and display watchlist", async ({ page }) => {
-  //   const cat = await createTestCategory();
-  //   const newMedia = { title: "Film test", category: cat.name };
+  test("should add custom film and display watchlist", async ({ page }) => {
+    const cat = await createTestCategory();
+    const newMedia = { title: "Film test", category: cat.name };
 
-  //   await page.click("button[data-testid='add-media-btn']");
-  //   await page.click("button[data-testid='create-media-nav']");
+    await page.click("button[data-testid='add-media-btn']");
 
-  //   await page.fill("input[id='title']", newMedia.title);
+    const [response] = await Promise.all([
+      page.waitForResponse(
+        (res) => res.url().includes("/api/category") && res.status() === 200,
+        { timeout: 120000 }
+      ),
+      page.click("button[data-testid='create-media-nav']"),
+    ]);
+    console.log("✅ Categories loaded");
 
-  //   await selectWhenStable(page, "select#category", newMedia.category);
+    const categories = await response.json();
+    console.log("Categories received:", categories);
 
-  //   await page.click("button[type='submit']");
+    await page.fill("input[id='title']", newMedia.title);
 
-  //   await expect(page.locator('[role="dialog"]')).toBeHidden();
+    await selectWhenStable(page, "select#category", newMedia.category);
 
-  //   const mediaItem = page
-  //     .locator("[data-testid='media-item']")
-  //     .filter({ hasText: newMedia.title });
-  //   await expect(mediaItem).toBeVisible();
+    await page.click("button[type='submit']");
 
-  //   await page.waitForLoadState("domcontentloaded");
-  //   await page.goto("/dashboard");
+    await expect(page.locator('[role="dialog"]')).toBeHidden();
 
-  //   await expect(mediaItem).toBeVisible();
-  // });
+    const mediaItem = page
+      .locator("[data-testid='media-item']")
+      .filter({ hasText: newMedia.title });
+    await expect(mediaItem).toBeVisible();
 
-  // test("should add TMDB film and display watchlist", async ({ page }) => {
-  //   const newMedia = { title: "Midsommar" };
+    await page.waitForLoadState("domcontentloaded");
+    await page.goto("/dashboard");
 
-  //   await page.click("button[data-testid='add-media-btn']");
+    await expect(mediaItem).toBeVisible();
+  });
 
-  //   await page.fill("input[id='media-search']", newMedia.title);
+  test("should add TMDB film and display watchlist", async ({ page }) => {
+    const newMedia = { title: "TMDB Media 1" };
+    await page.click("button[data-testid='add-media-btn']");
 
-  //   await getTMDBResultsWhenReady(page);
+    await getTMDBResultsWhenReady(page, newMedia.title);
 
-  //   const firstCard = page.locator(".search-media-card").first();
-  //   await firstCard.waitFor({ state: "attached", timeout: 120000 });
+    const firstCard = page.locator(".search-media-card").first();
 
-  //   await firstCard.locator("button[data-testid='add-tmdb-btn']").click(),
-  //     await expect(firstCard).toContainText("Ajouté à la liste");
+    await firstCard.locator("button[data-testid='add-tmdb-btn']").click(),
+      await expect(firstCard).toContainText("Ajouté à la liste");
 
-  //   await page.click('[data-testid="close-modal-btn"]');
-  //   await expect(page.locator('[role="dialog"]')).toBeHidden();
+    await page.click('[data-testid="close-modal-btn"]');
+    await expect(page.locator('[role="dialog"]')).toBeHidden();
 
-  //   const mediaItem = page
-  //     .locator("[data-testid='media-item']")
-  //     .filter({ hasText: newMedia.title });
-  //   await expect(mediaItem).toBeVisible();
+    const mediaItem = page
+      .locator("[data-testid='media-item']")
+      .filter({ hasText: newMedia.title });
+    await expect(mediaItem).toBeVisible();
 
-  //   await page.waitForLoadState("domcontentloaded");
-  //   await page.goto("/dashboard");
+    await page.waitForLoadState("domcontentloaded");
+    await page.goto("/dashboard");
 
-  //   await expect(mediaItem).toBeVisible();
-  // });
-
-  // test("should add custom serie and display watchlist", async ({ page }) => {
-  //   const cat = await createTestCategory();
-  //   const newMedia = { title: "Film test", category: cat.name };
-
-  //   await page.click("button[data-testid='series-nav']");
-
-  //   await page.click("button[data-testid='add-media-btn']");
-  //   await page.click("button[data-testid='create-media-nav']");
-
-  //   await page.fill("input[id='title']", newMedia.title);
-  //   await selectWhenStable(page, "select#category", newMedia.category);
-  //   await page.click("button[type='submit']");
-
-  //   await expect(page.locator('[role="dialog"]')).toBeHidden();
-
-  //   const mediaItem = page
-  //     .locator("[data-testid='media-item']")
-  //     .filter({ hasText: newMedia.title });
-  //   await expect(mediaItem).toBeVisible();
-
-  //   await page.waitForLoadState("domcontentloaded");
-  //   await page.goto("/dashboard");
-  //   await page.click("button[data-testid='series-nav']");
-
-  //   await expect(mediaItem).toBeVisible();
-  // });
+    await expect(mediaItem).toBeVisible();
+  });
 
   test("should filter and display media by category", async ({ page }) => {
     const { media } = await createTestMediaWithUser(userId);

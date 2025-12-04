@@ -55,7 +55,7 @@ export const signInUser = async (
 
   for (let i = 0; i < maxAttemps; i++) {
     const [response] = await Promise.all([
-      page.waitForResponse((res) => res.url().includes("/api/auth/sign-up")),
+      page.waitForResponse((res) => res.url().includes("/api/auth/sign-in")),
       submitBtn.click(),
     ]);
     if (response.status() === 200) {
