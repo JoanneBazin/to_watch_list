@@ -1,0 +1,84 @@
+name: CI — Vitest + Playwright + Prisma
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd "pg_isready -U test -d test_db"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://test:test@localhost:5432/test_db
+      NEXT_PUBLIC_SUPABASE_URL: http://localhost:54321
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: fake-key-for-tests
+      SUPABASE_SERVICE_ROLE_KEY: fake-service-role-key-for-tests
+      NEXT_PUBLIC_BASE_URL: http://localhost:3000
+      BETTER_AUTH_SECRET: fake-better-auth-secret-key-for-ci-tests-min-32-chars
+      BETTER_AUTH_URL: http://localhost:3000
+      TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      TMDB_READ_ACCESS_TOKEN: ${{ secrets.TMDB_READ_ACCESS_TOKEN }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sync test DB (Prisma)
+        run: npm run test:sync-db:ci
+
+      - name: Run unit tests (Vitest)
+        run: npm run test:unit:ci -- --reporter=dot --run
+        env:
+          NODE_ENV: test
+
+      - name: Build Next.js
+        run: npm run build
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run E2E (Playwright)
+        run: npm run test:e2e:ci
+        env:
+          USE_MOCK_TMDB: "true"
+
+      - name: Upload Playwright Report
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
