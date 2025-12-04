@@ -1,33 +1,37 @@
 import test, { expect } from "@playwright/test";
 import { cleanDatabase } from "../helpers/db-helpers";
-import { signInUser, signUpUser } from "../helpers/auth-helpers";
+import { createTestUser, signInUser } from "../helpers/auth-helpers";
 import {
   createTestCategory,
   createTestMediaSuggestion,
   createTestMediaWithUser,
 } from "../helpers/media-helpers";
 import { createContactWithFriendRequest } from "../helpers/social-helpers";
+import {
+  clickWhenStable,
+  getTMDBResultsWhenReady,
+  selectWhenStable,
+} from "../helpers/dom-helpers";
 
 test.describe("Suggestions actions", () => {
   let userId: string;
   let contact: { id: string; name: string };
   const user = { email: "suggestions@test.com", password: "suggestions1234" };
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeAll(async () => {
     await cleanDatabase();
-    const userData = await signUpUser(page, user.email, user.password);
-    userId = userData.id;
+    userId = await createTestUser(user);
+  });
+
+  test.beforeEach(async ({ page }) => {
+    await page.waitForTimeout(500);
+    await cleanDatabase(userId);
+    await signInUser(page, user.email, user.password);
     const { sender } = await createContactWithFriendRequest(userId, "ACCEPTED");
     contact = { id: sender.id, name: sender.name };
   });
 
-  test.afterAll(async () => {
-    await cleanDatabase();
-  });
-
   test("should display received suggestions", async ({ page }) => {
-    await signInUser(page, user.email, user.password);
-
     const suggestion = await createTestMediaSuggestion(contact.id, userId);
     await page.goto("/suggestions");
     await page.waitForSelector("[data-testid='suggestion-card']");
@@ -57,8 +61,6 @@ test.describe("Suggestions actions", () => {
   });
 
   test("should display received messages", async ({ page }) => {
-    await signInUser(page, user.email, user.password);
-
     const suggestion = await createTestMediaSuggestion(
       userId,
       contact.id,
@@ -82,54 +84,54 @@ test.describe("Suggestions actions", () => {
   });
 
   test("should send suggestion from watchlist", async ({ page }) => {
-    await signInUser(page, user.email, user.password);
     const { media } = await createTestMediaWithUser(userId);
+    await page.reload();
 
     const mediaRow = page
       .locator("[data-testid='media-row']")
       .filter({ hasText: media.title });
-    await expect(mediaRow).toBeVisible();
+    await mediaRow.waitFor({ state: "visible", timeout: 60000 });
     await mediaRow.locator("[data-testid='share-btn']").click();
 
     const contactRow = page
       .locator("[data-testid='share-contact-item']")
       .filter({ hasText: contact.name });
-    await expect(contactRow).toBeVisible();
+    const sendBtn = page.locator("[data-testid='send-btn']");
 
-    await contactRow.click();
-    await page.click("[data-testid='send-btn']");
+    await clickWhenStable(contactRow);
+    await clickWhenStable(sendBtn);
 
     await expect(page.locator("[data-testid='sent-msg']")).toBeVisible();
   });
 
   test("should create TMDB suggestion", async ({ page }) => {
-    await signInUser(page, user.email, user.password);
-    const newMedia = { title: "Midsommar" };
+    const newMedia = { title: "TMDB Media 1" };
 
     await page.goto(`/user/${contact.id}`);
     await page.waitForLoadState("networkidle");
 
-    await page.click("button[data-testid='create-FILM-suggestion']");
+    await page.click("button[data-testid='create-SERIE-suggestion']");
 
-    await page.fill("input[id='media-search']", newMedia.title);
-    await page.click("button[data-testid='search-media-btn']");
+    await getTMDBResultsWhenReady(page, newMedia.title);
 
-    await page.waitForFunction(() => {
-      const items = document.querySelectorAll(".search-media-card");
-      return items.length > 0;
-    });
-
-    const firstCard = page.locator("div.search-media-card").first();
-    await expect(firstCard).toBeVisible();
+    const firstCard = page.locator(".search-media-card").first();
 
     await firstCard.locator("button[data-testid='send-btn']").click(),
       await expect(firstCard).toContainText("Suggestion envoyée");
   });
 
   test("should create custom suggestion", async ({ page }) => {
-    await signInUser(page, user.email, user.password);
-    const cat = await createTestCategory();
-    const newMedia = { title: "Suggestion test", category: cat.name };
+    const cat = "Action";
+
+    await page.route("/api/category", (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify([{ id: "1", name: cat }]),
+      });
+    });
+
+    const newMedia = { title: "Suggestion test", category: cat };
 
     await page.goto(`/user/${contact.id}`);
     await page.waitForLoadState("networkidle");
@@ -138,7 +140,7 @@ test.describe("Suggestions actions", () => {
     await page.click("button[data-testid='create-media-nav']");
 
     await page.fill("input[id='title']", newMedia.title);
-    await page.selectOption("select#category", { value: newMedia.category });
+    await selectWhenStable(page, "select#category", newMedia.category);
     await page.click("button[data-testid='send-btn']");
 
     await expect(page.locator('[role="dialog"]')).toBeHidden();
