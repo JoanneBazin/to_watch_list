@@ -121,8 +121,17 @@ test.describe("Suggestions actions", () => {
   });
 
   test("should create custom suggestion", async ({ page }) => {
-    const cat = await createTestCategory();
-    const newMedia = { title: "Suggestion test", category: cat.name };
+    const cat = "Action";
+
+    await page.route("/api/category", (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify([{ id: "1", name: cat }]),
+      });
+    });
+
+    const newMedia = { title: "Suggestion test", category: cat };
 
     await page.goto(`/user/${contact.id}`);
     await page.waitForLoadState("networkidle");

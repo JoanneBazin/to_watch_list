@@ -26,8 +26,16 @@ test.describe("Media - dashboard page", () => {
   });
 
   test("should add custom film and display watchlist", async ({ page }) => {
-    const cat = await createTestCategory();
-    const newMedia = { title: "Film test", category: cat.name };
+    const cat = "Action";
+
+    await page.route("/api/category", (route) => {
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify([{ id: "1", name: cat }]),
+      });
+    });
+    const newMedia = { title: "Film test", category: cat };
 
     await page.click("button[data-testid='add-media-btn']");
     await page.click("button[data-testid='create-media-nav']");
