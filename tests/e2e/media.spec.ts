@@ -30,18 +30,7 @@ test.describe("Media - dashboard page", () => {
     const newMedia = { title: "Film test", category: cat.name };
 
     await page.click("button[data-testid='add-media-btn']");
-
-    const [response] = await Promise.all([
-      page.waitForResponse(
-        (res) => res.url().includes("/api/category") && res.status() === 200,
-        { timeout: 120000 }
-      ),
-      page.click("button[data-testid='create-media-nav']"),
-    ]);
-    console.log("✅ Categories loaded");
-
-    const categories = await response.json();
-    console.log("Categories received:", categories);
+    await page.click("button[data-testid='create-media-nav']");
 
     await page.fill("input[id='title']", newMedia.title);
 
