@@ -104,39 +104,47 @@ test.describe("Suggestions actions", () => {
     await expect(page.locator("[data-testid='sent-msg']")).toBeVisible();
   });
 
-  // test("should create TMDB suggestion", async ({ page }) => {
-  //   const newMedia = { title: "Midsommar" };
+  test("should create TMDB suggestion", async ({ page }) => {
+    const newMedia = { title: "TMDB Media 1" };
 
-  //   await page.goto(`/user/${contact.id}`);
-  //   await page.waitForLoadState("networkidle");
+    await page.goto(`/user/${contact.id}`);
+    await page.waitForLoadState("networkidle");
 
-  //   await page.click("button[data-testid='create-FILM-suggestion']");
+    await page.click("button[data-testid='create-SERIE-suggestion']");
 
-  //   await page.fill("input[id='media-search']", newMedia.title);
+    await getTMDBResultsWhenReady(page, newMedia.title);
 
-  //   await getTMDBResultsWhenReady(page);
+    const firstCard = page.locator(".search-media-card").first();
 
-  //   const firstCard = page.locator(".search-media-card").first();
-  //   await firstCard.waitFor({ state: "attached", timeout: 120000 });
+    await firstCard.locator("button[data-testid='send-btn']").click(),
+      await expect(firstCard).toContainText("Suggestion envoyée");
+  });
 
-  //   await firstCard.locator("button[data-testid='send-btn']").click(),
-  //     await expect(firstCard).toContainText("Suggestion envoyée");
-  // });
+  test("should create custom suggestion", async ({ page }) => {
+    const cat = await createTestCategory();
+    const newMedia = { title: "Suggestion test", category: cat.name };
 
-  // test("should create custom suggestion", async ({ page }) => {
-  //   const cat = await createTestCategory();
-  //   const newMedia = { title: "Suggestion test", category: cat.name };
+    await page.goto(`/user/${contact.id}`);
+    await page.waitForLoadState("networkidle");
 
-  //   await page.goto(`/user/${contact.id}`);
-  //   await page.waitForLoadState("networkidle");
+    await page.click("button[data-testid='create-FILM-suggestion']");
 
-  //   await page.click("button[data-testid='create-FILM-suggestion']");
-  //   await page.click("button[data-testid='create-media-nav']");
+    const [response] = await Promise.all([
+      page.waitForResponse(
+        (res) => res.url().includes("/api/category") && res.status() === 200,
+        { timeout: 120000 }
+      ),
+      page.click("button[data-testid='create-media-nav']"),
+    ]);
+    console.log("✅ Categories loaded");
 
-  //   await page.fill("input[id='title']", newMedia.title);
-  //   await selectWhenStable(page, "select#category", newMedia.category);
-  //   await page.click("button[data-testid='send-btn']");
+    const categories = await response.json();
+    console.log("Categories received:", categories);
 
-  //   await expect(page.locator('[role="dialog"]')).toBeHidden();
-  // });
+    await page.fill("input[id='title']", newMedia.title);
+    await selectWhenStable(page, "select#category", newMedia.category);
+    await page.click("button[data-testid='send-btn']");
+
+    await expect(page.locator('[role="dialog"]')).toBeHidden();
+  });
 });

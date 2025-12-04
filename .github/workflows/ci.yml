@@ -26,7 +26,6 @@ jobs:
 
     env:
       DATABASE_URL: postgresql://test:test@localhost:5432/test_db
-      NODE_ENV: test
       NEXT_PUBLIC_SUPABASE_URL: http://localhost:54321
       NEXT_PUBLIC_SUPABASE_ANON_KEY: fake-key-for-tests
       SUPABASE_SERVICE_ROLE_KEY: fake-service-role-key-for-tests
@@ -62,6 +61,8 @@ jobs:
 
       - name: Run unit tests (Vitest)
         run: npm run test:unit:ci -- --reporter=dot --run
+        env:
+          NODE_ENV: test
 
       - name: Build Next.js
         run: npm run build
@@ -71,6 +72,8 @@ jobs:
 
       - name: Run E2E (Playwright)
         run: npm run test:e2e:ci
+        env:
+          USE_MOCK_TMDB: "true"
 
       - name: Upload Playwright Report
         if: failure()

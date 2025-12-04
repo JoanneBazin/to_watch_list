@@ -87,7 +87,7 @@ export default defineConfig({
     reuseExistingServer: !isCI,
     timeout: 120000,
     env: {
-      NODE_ENV: "test",
+      USE_MOCK_TMDB: "true",
     },
   },
 });

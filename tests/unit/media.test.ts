@@ -13,15 +13,8 @@ import {
   createTestMedia,
   createTestMediaWithUser,
   customMediaTest,
-  mockTMDBFilmData,
-  mockTMDBSerieData,
 } from "../helpers/media-helpers";
-import { fetchMediaFromTMDB } from "@/src/lib/server/tmdbService";
 import { cleanDatabase } from "../helpers/db-helpers";
-
-vi.mock("@/src/lib/server/tmdbService", () => ({
-  fetchMediaFromTMDB: vi.fn(),
-}));
 
 describe("Media actions", () => {
   let userId: string;
@@ -58,18 +51,14 @@ describe("Media actions", () => {
 
     it("should add a tmdb film into user watchlist", async () => {
       const tmdbFilmId = 1234;
-      vi.mocked(fetchMediaFromTMDB).mockResolvedValueOnce(
-        mockTMDBFilmData(tmdbFilmId)
-      );
 
       const result = await addSearchedMediaToWatchlist(tmdbFilmId, "FILM");
       expect(requireAuth).toHaveBeenCalledTimes(1);
 
       assertSuccess(result);
       const { data } = result;
-
       expect(data).toBeDefined();
-      expect(data.title).toBe("TMDB Film");
+      expect(data.title).toBe("TMDB Media 1");
       expect(data.tmdbId).toBe(tmdbFilmId);
 
       const inDb = await prisma.usersWatchList.findFirst({
@@ -80,18 +69,14 @@ describe("Media actions", () => {
 
     it("should add a tmdb serie into user watchlist", async () => {
       const tmdbSerieId = 4567;
-      vi.mocked(fetchMediaFromTMDB).mockResolvedValueOnce(
-        mockTMDBSerieData(tmdbSerieId)
-      );
 
       const result = await addSearchedMediaToWatchlist(tmdbSerieId, "SERIE");
       expect(requireAuth).toHaveBeenCalledTimes(1);
 
       assertSuccess(result);
       const { data } = result;
-
       expect(data).toBeDefined();
-      expect(data.title).toBe("TMDB Serie");
+      expect(data.title).toBe("TMDB Media 1");
       expect(data.tmdbId).toBe(tmdbSerieId);
 
       const inDb = await prisma.usersWatchList.findFirst({
