@@ -42,7 +42,7 @@ export const PrivateHeader = () => {
               <Button
                 variant="ghost"
                 aria-label="Ouvrir le menu"
-                className="relative px-5 md:hidden"
+                className="relative px-5 hover:bg-transparent focus:bg-transparent active:bg-transparent md:hidden"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
                 {(counts.friendRequests > 0 || counts.suggestions > 0) && (
