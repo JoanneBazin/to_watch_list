@@ -12,8 +12,6 @@ Watchers permet de créer et organiser ses listes de films et séries à regarde
 
 > **Note**: L'interface est actuellement en développement actif. Un design system cohérent est en cours d'intégration pour améliorer l'expérience utilisateur.
 
-## 📸 Aperçu
-
 ### Dashboard principal
 
 ![Dashboard avec listes personnelles](./docs/screenshots/dashboard_desktop.webp)
