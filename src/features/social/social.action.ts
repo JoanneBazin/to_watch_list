@@ -11,7 +11,7 @@ import { ApiError } from "@/src/utils/shared";
 
 export const addFriendRequest = async (
   receiverId: string
-): Promise<ActionResponse> => {
+): Promise<ActionResponse<string>> => {
   try {
     const session = await requireAuth();
     const userId = session.user.id;
@@ -43,14 +43,15 @@ export const addFriendRequest = async (
       throw new ApiError(409, "Une demande est déjà en attente");
     }
 
-    await prisma.friendRequest.create({
+    const request = await prisma.friendRequest.create({
       data: {
         senderId: userId,
         receiverId,
         status: "PENDING",
       },
+      select: { id: true },
     });
-    return { success: true };
+    return { success: true, data: request.id };
   } catch (error) {
     return handleActionError(error, "Add friend request");
   }

@@ -76,7 +76,9 @@ export const updateUserAvatar = async (
   }
 };
 
-export const deleteUserAccount = async (): Promise<ActionResponse> => {
+export const deleteUserAccount = async (): Promise<
+  ActionResponse<"deleted">
+> => {
   try {
     const session = await requireAuth();
     const userId = session.user.id;
@@ -86,7 +88,7 @@ export const deleteUserAccount = async (): Promise<ActionResponse> => {
         id: userId,
       },
     });
-    return { success: true };
+    return { success: true, data: "deleted" };
   } catch (error) {
     return handleActionError(error, "Delete account");
   }
