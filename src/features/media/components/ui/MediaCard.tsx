@@ -7,7 +7,7 @@ export const MediaCard = ({ media, children }: MediaCardProps) => {
     <Modal
       trigger={
         <div
-          className="cursor-pointer text-xs sm:text-sm sm:font-bold sm:p-2"
+          className="cursor-pointer text-xs sm:text-sm sm:font-bold sm:py-1"
           data-testid="media-item"
         >
           {media.title}
@@ -33,7 +33,7 @@ export const MediaCard = ({ media, children }: MediaCardProps) => {
           {media.platform && (
             <p className="italic">Disponible sur {media.platform}</p>
           )}
-          <div className="flex gap-2 mt-4">
+          <div className="flex flex-wrap gap-2 mt-4 max-w-full">
             {media.categories.map((cat) => (
               <Badge key={cat} variant="outline">
                 {cat}
