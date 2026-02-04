@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/src/components/ui";
 import clsx from "clsx";
 import { useToggleWatched } from "../../hooks";
@@ -29,7 +31,7 @@ export const ToggleWatchedButton = ({
       onClick={handleToggleWatched}
       className={clsx(
         "table-button border-background md:border-input",
-        watched && "bg-accent-dark text-black hover:bg-muted md:border-black"
+        watched && "bg-accent-dark text-black hover:bg-muted md:border-black",
       )}
     >
       <Check size={18} />

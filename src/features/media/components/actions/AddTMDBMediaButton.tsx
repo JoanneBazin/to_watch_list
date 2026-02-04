@@ -1,3 +1,5 @@
+"use client";
+
 import { AddTMDBMediaButtonProps } from "@/src/types";
 import { useAddTMDBMedia } from "../../hooks";
 import { useMediaStore } from "../../media.store";
@@ -14,27 +16,27 @@ export const AddTMDBMediaButton = ({
 }: AddTMDBMediaButtonProps) => {
   const { addTMDBMedia, isAddingMedia, addError } = useAddTMDBMedia(
     isSuggestedMedia,
-    receiverId
+    receiverId,
   );
   const isInWatchlist = useMediaStore((s) =>
-    s.watchlist.some((m) => m.tmdbId === mediaId)
+    s.watchlist.some((m) => m.tmdbId === mediaId),
   );
   const contact = useUserStore((s) => s.contacts).find(
-    (c) => c.id === receiverId
+    (c) => c.id === receiverId,
   );
   const isAlreadySuggested = contact?.suggestionsFromUser.tmdbId.some(
-    (id) => id === mediaId
+    (id) => id === mediaId,
   );
 
   const [addedMedia, setAddedMedia] = useState(
-    isSuggestedMedia ? isAlreadySuggested : isInWatchlist
+    isSuggestedMedia ? isAlreadySuggested : isInWatchlist,
   );
 
   const handleAdd = async (comment?: string) => {
     const result = await addTMDBMedia(
       mediaId,
       entry,
-      isSuggestedMedia ? comment : undefined
+      isSuggestedMedia ? comment : undefined,
     );
     if (result.success) {
       setAddedMedia(true);

@@ -1,3 +1,5 @@
+"use client";
+
 import { useMemo, useState } from "react";
 import { useMediaStore } from "../../media.store";
 import { Button, Modal, Skeleton } from "@/src/components/ui";
@@ -17,7 +19,7 @@ export const UserWatchlist = ({ entry }: { entry: EntryType }) => {
   const { watchlist, isPending, error } = useMediaStore();
   const mediaList = useMemo(
     () => watchlist.filter((media) => media.type === entry),
-    [watchlist, entry]
+    [watchlist, entry],
   );
   const [view, setView] = useState("search");
 

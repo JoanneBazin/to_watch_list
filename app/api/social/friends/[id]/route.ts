@@ -1,16 +1,17 @@
 import { prisma } from "@/src/lib/server";
 import { handleApiRoute, requireAuth } from "@/src/utils/server";
 import { ApiError } from "@/src/utils/shared";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id: friendId } = await params;
+
   return handleApiRoute(async () => {
     const session = await requireAuth();
     const userId = session.user.id;
-    const friendId = params.id;
 
     const friendshipStatus = await prisma.friendRequest.findFirst({
       where: {

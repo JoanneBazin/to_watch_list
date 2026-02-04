@@ -1,8 +1,8 @@
 import { prisma } from "@/src/lib/server";
 import { handleApiRoute, requireAuth } from "@/src/utils/server";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   return handleApiRoute(async () => {
     const session = await requireAuth(req);
     const userId = session.user.id;

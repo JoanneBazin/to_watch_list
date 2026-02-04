@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Modal } from "@/src/components/ui";
 import { MediaDialogProps } from "@/src/types";
 import clsx from "clsx";
@@ -26,7 +28,7 @@ export const EditMediaDialog = ({
             className={clsx(
               "table-button",
               media.watched &&
-                "bg-accent-dark text-black hover:bg-muted border-black"
+                "bg-accent-dark text-black hover:bg-muted border-black",
             )}
           >
             <PenLine size={16} />
