@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Loader } from "@/src/components/ui";
 import { FriendRequestStatus, ValidateFriendRequestProps } from "@/src/types";
 import Link from "next/link";

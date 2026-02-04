@@ -1,3 +1,5 @@
+"use client";
+
 import { useForm } from "react-hook-form";
 import { AddEntryFormProps } from "@/src/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,7 +34,7 @@ export const AddEntryForm = ({
   const [comment, setComment] = useState("");
   const { createMedia, isCreating, createError } = useCreateMedia(
     isSuggestedMedia,
-    receiverId
+    receiverId,
   );
 
   const {
