@@ -1,9 +1,9 @@
 import { prisma } from "@/src/lib/server";
 import { handleApiRoute } from "@/src/utils/server";
 import { ApiError } from "@/src/utils/shared";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   return handleApiRoute(async () => {
     const categories = await prisma.category.findMany({
       orderBy: {

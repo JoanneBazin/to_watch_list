@@ -1,15 +1,15 @@
 import { prisma } from "@/src/lib/server";
 import { requireAuth, handleApiRoute } from "@/src/utils/server";
 import { ApiError } from "@/src/utils/shared";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-  req: Request,
-  { params }: { params: { user: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ user: string }> },
 ) {
-  return handleApiRoute(async () => {
-    const query = params.user;
+  const { user: query } = await params;
 
+  return handleApiRoute(async () => {
     if (!query || typeof query !== "string") {
       throw new ApiError(400, "Requête invalide");
     }

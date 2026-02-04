@@ -1,3 +1,5 @@
+"use client";
+
 import { MediaOptionButtonProps } from "@/src/types";
 import { useEffect } from "react";
 import { Button } from "@/src/components/ui";
@@ -31,7 +33,7 @@ export const DeleteMediaButton = ({
       className={clsx(
         "table-button",
         watched && "bg-accent-dark text-black hover:bg-muted border-black",
-        mobile && "p-0 text-destructive"
+        mobile && "p-0 text-destructive",
       )}
       data-testid="delete-item-btn"
     >

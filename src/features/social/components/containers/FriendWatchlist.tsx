@@ -1,3 +1,5 @@
+"use client";
+
 import { FriendWatchlistProps } from "@/src/types";
 import { useMediaStore } from "../../../media/media.store";
 import { Button, Modal } from "@/src/components/ui";

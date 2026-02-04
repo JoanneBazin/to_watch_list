@@ -1,3 +1,5 @@
+"use client";
+
 import { Button, Input, Label, Loader } from "@/src/components/ui";
 import { useState } from "react";
 import { useSearchMedia } from "../../hooks";
