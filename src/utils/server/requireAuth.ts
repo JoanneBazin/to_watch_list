@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { ApiError } from "../shared";
 
 export const requireAuth = async (req?: Request) => {
-  const requestHeaders = req?.headers || headers();
+  const requestHeaders = req?.headers || (await headers());
   const session = await auth.api.getSession({ headers: requestHeaders });
 
   if (!session) {

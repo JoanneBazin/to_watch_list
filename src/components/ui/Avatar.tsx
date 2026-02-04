@@ -1,3 +1,5 @@
+"use client";
+
 import { AvatarProps } from "@/src/types";
 import clsx from "clsx";
 import Image from "next/image";
