@@ -55,7 +55,7 @@ Watchers permet de créer et organiser ses listes de films et séries à regarde
 ### Tests & Qualité
 
 - **Tests E2E**: Playwright
-- **Tests unitaires**: Vitest
+- **Tests d'intégration**: Vitest
 - **CI/CD**: Intégration continue avec tests automatisés
 
 ### Infrastructure
