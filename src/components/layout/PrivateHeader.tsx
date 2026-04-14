@@ -27,7 +27,7 @@ export const PrivateHeader = () => {
   };
 
   return (
-    <header className="bg-accent-dark relative p-2 md:p-3 w-full">
+    <header className="relative p-2 md:p-3 w-full">
       <div className="relative container mx-auto px-2 sm:px-4 flex justify-between items-center">
         <Logo size="medium" img="/watchers_logo.svg" alt="Logo Watchers" />
 
@@ -49,14 +49,14 @@ export const PrivateHeader = () => {
                   <span
                     className={clsx(
                       "absolute bg-accent-foreground top-0 right-0 h-2 w-2 rounded-full",
-                      isMenuOpen ? "opacity-0" : "opacity-100"
+                      isMenuOpen ? "opacity-0" : "opacity-100",
                     )}
                   ></span>
                 )}
                 <X
                   className={clsx(
                     "absolute opacity-0 rotate-90 scale-0 transition-all duration-300",
-                    isMenuOpen && "opacity-100 rotate-0 scale-100"
+                    isMenuOpen && "opacity-100 rotate-0 scale-100",
                   )}
                 />
                 <Menu
@@ -64,17 +64,16 @@ export const PrivateHeader = () => {
                     "absolute transition-all duration-300",
                     isMenuOpen
                       ? "opacity-0 rotate-90 scale-0"
-                      : "opacity-100 rotate-0 scale-100"
+                      : "opacity-100 rotate-0 scale-100",
                   )}
                 />
               </Button>
 
               <nav
                 className={clsx(
-                  "bg-accent-dark",
                   "flex-col text-end text-sm sm:text-base absolute top-13 right-0 px-4 py-4 gap-3 rounded-md shadow-md z-50",
                   "md:flex-row md:items-center md:gap-8 md:static md:shadow-none md:px-0",
-                  isMenuOpen ? "flex" : "hidden md:flex"
+                  isMenuOpen ? "flex" : "hidden md:flex",
                 )}
               >
                 <Link
@@ -123,7 +122,7 @@ export const PrivateHeader = () => {
                   </button>
 
                   {isProfileOpen && (
-                    <div className="absolute top-16 right-0 w-40 bg-accent-dark p-5 rounded-md shadow-md flex flex-col gap-3">
+                    <div className="absolute top-16 right-0 w-40 p-5 rounded-md shadow-md flex flex-col gap-3">
                       <Link
                         href="/account"
                         className="text-center px-4 py-2 hover:text-accent rounded"

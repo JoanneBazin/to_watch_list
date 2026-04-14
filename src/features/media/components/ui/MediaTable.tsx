@@ -146,7 +146,7 @@ export const MediaTable = ({ data }: { data: MediaItem[] }) => {
       <div className="flex justify-center">
         {updateError && <p className="error-message">{updateError}</p>}
       </div>
-      <div className="border border-r-radius border-accent-dark mt-4 sm:mt-8">
+      <div className="border border-r-radius border-background mt-4 sm:mt-8">
         <Table>
           <TableHeader className="hidden sm:table-header-group">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -164,7 +164,7 @@ export const MediaTable = ({ data }: { data: MediaItem[] }) => {
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -179,7 +179,7 @@ export const MediaTable = ({ data }: { data: MediaItem[] }) => {
                   key={row.id}
                   className={
                     row.original.watched
-                      ? "bg-accent-dark text-accent italic"
+                      ? "bg-background text-accent italic"
                       : "hover:bg-muted/50"
                   }
                   data-testid="media-row"
@@ -194,7 +194,7 @@ export const MediaTable = ({ data }: { data: MediaItem[] }) => {
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

@@ -28,7 +28,7 @@ export const EditMediaDialog = ({
             className={clsx(
               "table-button",
               media.watched &&
-                "bg-accent-dark text-black hover:bg-muted border-black",
+                "bg-background text-black hover:bg-muted border-black",
             )}
           >
             <PenLine size={16} />

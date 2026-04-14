@@ -13,7 +13,7 @@ export const SuggestionCard = ({ media }: { media: MediaItem }) => {
   return (
     <Card
       key={media.id}
-      className="border-accent-dark p-4 sm:p-6 h-fit"
+      className="border-background p-4 sm:p-6 h-fit"
       data-testid="suggestion-card"
     >
       <CardHeader className="p-0 mb-2">

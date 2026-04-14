@@ -32,7 +32,7 @@ export const DeleteMediaButton = ({
       onClick={handleDelete}
       className={clsx(
         "table-button",
-        watched && "bg-accent-dark text-black hover:bg-muted border-black",
+        watched && "bg-background text-black hover:bg-muted border-black",
         mobile && "p-0 text-destructive",
       )}
       data-testid="delete-item-btn"

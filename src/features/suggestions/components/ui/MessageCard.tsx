@@ -19,9 +19,9 @@ export const MessageCard = ({ message }: { message: MessageProps }) => {
   return (
     <div
       className={clsx(
-        "relative border border-accent-dark bg-gradient-to-br from-background to-accent rounded-3xl flex flex-col justify-center gap-4 transition-all duration-200",
+        "relative border border-background bg-gradient-to-br from-background to-accent rounded-3xl flex flex-col justify-center gap-4 transition-all duration-200",
         message.receiverComment && getCardSpan(message.receiverComment.length),
-        isHovered && "sm:scale-110 z-50"
+        isHovered && "sm:scale-110 z-50",
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -31,7 +31,7 @@ export const MessageCard = ({ message }: { message: MessageProps }) => {
       <div
         className={clsx(
           "absolute w-full top-1/2 left 1/2 -translate-y-1/2 flex flex-col items-center gap-5 px-6 transition-all duration-300",
-          isHovered ? "opacity-0 scale-0" : "opacity-100 scale-100"
+          isHovered ? "opacity-0 scale-0" : "opacity-100 scale-100",
         )}
       >
         <MessageCircle />
@@ -41,7 +41,7 @@ export const MessageCard = ({ message }: { message: MessageProps }) => {
       <div
         className={clsx(
           "scale-0 opacity-0 px-4 py-5 sm:p-6 lg:py-8 lg:px-10 transition-all duration-300",
-          isHovered && "scale-100 opacity-100"
+          isHovered && "scale-100 opacity-100",
         )}
       >
         <p className="font-semibold md:text-lg">Re: {message.media.title}</p>
