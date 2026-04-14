@@ -30,7 +30,7 @@ export const MediaOptions = ({ media, onError }: MediaOptionsProps) => {
             className={clsx(
               "table-button p-0",
               media.watched &&
-                "bg-accent-dark text-black hover:bg-muted border-black"
+                "bg-background text-black hover:bg-muted border-black",
             )}
           >
             <EllipsisVertical size={18} />

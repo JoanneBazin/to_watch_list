@@ -1,23 +1,25 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: hsl(var(--background));
-  --color-foreground: hsl(var(--foreground));
-  --color-muted: hsl(var(--muted));
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
   --color-muted-foreground: hsl(var(--muted-foreground));
-  --color-popover: hsl(var(--popover));
-  --color-popover-foreground: hsl(var(--popover-foreground));
   --color-card: hsl(var(--card));
   --color-card-foreground: hsl(var(--card-foreground));
-  --color-border: hsl(var(--border));
-  --color-input: hsl(var(--input));
   --color-primary: hsl(var(--primary));
-  --color-primary-foreground: hsl(var(--primary-foreground));
-  --color-secondary: hsl(var(--secondary));
-  --color-secondary-foreground: hsl(var(--secondary-foreground));
-  --color-accent: hsl(var(--accent));
-  --color-accent-dark: hsl(var(--accent-dark));
-  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-primary-hover: hsl(var(--primary-hover));
+
+  --color-popover: var(--color--card);
+  --color-popover-foreground: var(--color--card-foreground);
+
+  --color-border: var(--color-muted);
+  --color-input: hsl(var(--input));
+
+  --color-secondary: var(--color-muted);
+  --color-secondary-foreground: var(--color-muted-foreground);
+  --color-accent: var(--color-muted);
+  --color-accent-foreground: var(--color-muted-foreground);
   --color-destructive: hsl(var(--destructive));
   --color-destructive-foreground: hsl(var(--destructive-foreground));
   --color-ring: hsl(var(--ring));
@@ -29,22 +31,16 @@
 
 @layer base {
   :root {
-    --background: 220 13% 18%;
-    --foreground: 219 14% 71%;
-    --muted: 220 12% 22%;
+    --background: #0f0f11;
+    --foreground: #e5e5e5;
+    --muted: #a1a1aa;
     --muted-foreground: 220 12% 72%;
-    --popover: 220 13% 15%;
-    --popover-foreground: 219 14% 81%;
-    --card: 220 13% 16%;
+    --card: #18181b;
     --card-foreground: 219 14% 76%;
-    --border: 220 3% 23%;
     --input: 220 3% 26%;
-    --primary: 220 15% 81%;
-    --primary-foreground: 220 15% 21%;
-    --secondary: 220 5% 25%;
-    --secondary-foreground: 220 5% 85%;
+    --primary: #7f1d1d;
+    --primary-hover: #991b1b;
     --accent: 220 13% 33%;
-    --accent-dark: 220 13% 15%;
     --accent-foreground: 220 13% 93%;
     --destructive: 3 84% 47%;
     --destructive-foreground: 0 0% 100%;
