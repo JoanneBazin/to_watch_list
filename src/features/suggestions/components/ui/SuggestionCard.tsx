@@ -25,7 +25,7 @@ export const SuggestionCard = ({ media }: { media: MediaItem }) => {
             </p>
           </div>
 
-          <Badge className="bg-foreground">{media.type}</Badge>
+          <Badge className="border border-muted">{media.type}</Badge>
         </CardTitle>
       </CardHeader>
 
@@ -49,7 +49,6 @@ export const SuggestionCard = ({ media }: { media: MediaItem }) => {
 
           {media.suggestions && (
             <div className="min-w-[35%]">
-              <div className="md:hidden w-full h-[2px] bg-gradient-to-r from-transparent via-accent to-transparent my-4 sm:my-6"></div>
               <p className="text-xs lg:text-sm">envoyé par</p>
               {media.suggestions.map((s) => (
                 <div
@@ -78,6 +77,7 @@ export const SuggestionCard = ({ media }: { media: MediaItem }) => {
         </div>
 
         <SuggestionResponse mediaId={media.id} />
+        <div className="md:hidden w-full h-0.5 bg-linear-to-r from-transparent via-accent to-transparent my-4 sm:my-8"></div>
       </CardContent>
     </Card>
   );

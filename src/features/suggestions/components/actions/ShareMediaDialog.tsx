@@ -30,7 +30,7 @@ export const ShareMediaDialog = ({
             className={clsx(
               "table-button",
               media.watched &&
-                "bg-background text-black hover:bg-muted border-black",
+                "bg-background text-muted hover:bg-muted border-background",
             )}
             data-testid="share-btn"
           >

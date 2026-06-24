@@ -31,7 +31,8 @@ export const ToggleWatchedButton = ({
       onClick={handleToggleWatched}
       className={clsx(
         "table-button border-background md:border-input",
-        watched && "bg-background text-black hover:bg-muted md:border-black",
+        watched &&
+          "bg-background text-muted hover:bg-muted md:border-background",
       )}
     >
       <Check size={18} />

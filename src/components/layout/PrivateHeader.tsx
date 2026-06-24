@@ -71,7 +71,7 @@ export const PrivateHeader = () => {
 
               <nav
                 className={clsx(
-                  "flex-col text-end text-sm sm:text-base absolute top-13 right-0 px-4 py-4 gap-3 rounded-md shadow-md z-50",
+                  "bg-background opacity-95 flex-col text-end text-sm sm:text-base absolute top-13 right-0 px-4 py-4 gap-3 rounded-md shadow-md z-50",
                   "md:flex-row md:items-center md:gap-8 md:static md:shadow-none md:px-0",
                   isMenuOpen ? "flex" : "hidden md:flex",
                 )}
