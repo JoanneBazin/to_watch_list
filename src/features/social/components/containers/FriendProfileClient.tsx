@@ -33,9 +33,9 @@ export const FriendProfileClient = ({ userId }: { userId: string }) => {
             <FriendWatchlist user={friendProfile} entry="FILM" />
             <FriendWatchlist user={friendProfile} entry="SERIE" />
           </section>
-          <div className="w-full flex-1 flex items-end">
+          {/* <div className="w-full flex-1 flex items-end">
             <DeleteFriend friendId={friendProfile.id} />
-          </div>
+          </div> */}
         </>
       )}
     </main>

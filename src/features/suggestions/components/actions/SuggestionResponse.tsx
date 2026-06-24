@@ -35,27 +35,21 @@ export const SuggestionResponse = ({ mediaId }: { mediaId: string }) => {
         <Loader />
       ) : (
         <>
-          <div className="flex flex-col gap-4 justify-center">
+          <div className="flex gap-5">
+            <Button
+              variant="outline"
+              onClick={() => handleUpdateSuggestion("REFUSED")}
+            >
+              <X size={16} />
+              <span className="ml-2 text-xs md:text-sm">Supprimer</span>
+            </Button>
             <Button
               variant="outline"
               onClick={() => handleUpdateSuggestion("ACCEPTED")}
               data-testid="accept-suggestion-btn"
             >
               <Plus size={16} />
-              <span className="ml-2 text-xs md:text-sm">
-                {" "}
-                Ajouter à ma watch-list
-              </span>
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => handleUpdateSuggestion("REFUSED")}
-            >
-              <X size={16} />
-              <span className="ml-2 text-xs md:text-sm">
-                {" "}
-                Supprimer la suggestion
-              </span>
+              <span className="ml-2 text-xs md:text-sm">Ajouter</span>
             </Button>
           </div>
           {updateError && (
