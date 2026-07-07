@@ -4,8 +4,8 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "kbtmhgwptzbslfsijjff.supabase.co",
-        pathname: "/storage/v1/object/public/watchers_images/**",
+        hostname: `${process.env.UPLOADTHING_APP_ID}.ufs.sh`,
+        pathname: "/f/*",
       },
       {
         protocol: "https",
