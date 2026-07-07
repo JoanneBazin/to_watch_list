@@ -1,9 +1,17 @@
 import sharp from "sharp";
-import { supabaseAdmin } from "@/src/lib/server";
+import { UTApi } from "uploadthing/server";
+
+const utApi = new UTApi();
+
+const getFileKeyFromUrl = (url: string) => {
+  if (!url || !url.includes("ufs.sh/f/")) return null;
+  return url.split("ufs.sh/f/")[1];
+};
 
 export const uploadImages = async (
   file: File,
-  userId: string
+  userId: string,
+  oldAvatarUrl: string | null,
 ): Promise<string> => {
   const buffer = Buffer.from(await file.arrayBuffer());
 
@@ -12,18 +20,29 @@ export const uploadImages = async (
     .webp({ quality: 80 })
     .toBuffer();
 
-  const filename = `${userId}/avatar.webp`;
+  const uint8Array = new Uint8Array(optimizedImage);
 
-  const { error } = await supabaseAdmin.storage
-    .from("watchers_images")
-    .upload(filename, optimizedImage, {
-      contentType: "image/webp",
-      upsert: true,
-    });
+  const optimizedFile = new File([uint8Array], `avatar-${userId}.webp`, {
+    type: "image/webp",
+  });
 
-  if (error) {
-    throw new Error(`Erreur lors de l'upload: ${error.message}`);
+  const response = await utApi.uploadFiles(optimizedFile);
+
+  if (response.error) {
+    throw new Error(`Erreur lors de l'upload: ${response.error.message}`);
   }
 
-  return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/watchers_images/${filename}`;
+  if (oldAvatarUrl) {
+    const oldFileKey = getFileKeyFromUrl(oldAvatarUrl);
+    if (oldFileKey) {
+      try {
+        await utApi.deleteFiles(oldFileKey);
+        console.log(`Avatar supprimé de UploadThing : ${oldFileKey}`);
+      } catch (error) {
+        console.error("Impossible de supprimer l'ancien avatar:", error);
+      }
+    }
+  }
+
+  return response.data.ufsUrl;
 };

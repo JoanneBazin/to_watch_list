@@ -61,7 +61,7 @@ Watchers permet de créer et organiser ses listes de films et séries à regarde
 ### Infrastructure
 
 - **Déploiement**: Vercel
-- **Stockage d'images**: Supabase (migration prévue vers une autre solution)
+- **Stockage d'images**: uploadthing
 
 ---
 
@@ -95,10 +95,9 @@ DATABASE_URL="postgresql://..."
 BETTER_AUTH_SECRET="your-secret-key"
 BETTER_AUTH_URL="http://localhost:3000"
 
-# Supabase (stockage d'images)
-SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
-NEXT_PUBLIC_SUPABASE_URL="your-supabase-url"
-NEXT_PUBLIC_SUPABASE_ANON_KEY="your-anon-key"
+# uploadthing (stockage d'images)
+UPLOADTHING_TOKEN="your-token"
+UPLOADTHING_APP_ID="your-app-id"
 
 # TMDB API
 TMDB_READ_TOKEN="your-tmdb-token"
