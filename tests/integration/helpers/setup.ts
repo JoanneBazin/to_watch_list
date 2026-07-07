@@ -1,39 +1,43 @@
 import { requireAuth } from "@/src/utils/server";
 import { vi } from "vitest";
-import { createTestUser } from "./auth-helpers";
-import { cleanDatabase } from "./db-helpers";
+import { createUserInDb } from "../../shared-helpers/db-helpers";
 import { ActionResponse } from "@/src/types";
 
-export const setupTestEnv = async () => {
-  await cleanDatabase();
-  const userId = await createTestUser();
+interface User {
+  id: string;
+  email: string;
+  name: string;
+}
 
-  vi.mocked(requireAuth).mockResolvedValue(createMockSession(userId));
-  return userId;
+export const setupTestEnv = async () => {
+  const user = await createUserInDb();
+
+  vi.mocked(requireAuth).mockResolvedValue(createMockSession(user));
+  return user;
 };
 
 export function assertSuccess<T>(
-  result: ActionResponse<T>
+  result: ActionResponse<T>,
 ): asserts result is { success: true; data: T } {
   if (!result.success) {
     throw new Error(`Expected success, got error: ${result.error}`);
   }
 }
 
-export const createMockSession = (userId: string) => ({
+export const createMockSession = (user: User) => ({
   user: {
-    id: userId,
+    id: user.id,
     createdAt: new Date(Date.now()),
     updatedAt: new Date(Date.now()),
-    email: "test@test.com",
+    email: user.email,
     emailVerified: false,
-    name: "Test User",
+    name: user.name,
   },
   session: {
     id: "1",
     createdAt: new Date(Date.now()),
     updatedAt: new Date(Date.now()),
-    userId: userId,
+    userId: user.id,
     token: "mock-token",
     expiresAt: new Date(Date.now() + 3600000),
   },
