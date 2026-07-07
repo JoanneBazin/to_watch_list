@@ -53,6 +53,10 @@ export const updateUserAvatar = async (
       select: { image: true },
     });
 
+    if (!currentUser) {
+      throw new ApiError(404, "Utilisateur introuvable");
+    }
+
     const image = formData.get("avatar") as File;
 
     if (!image) throw new ApiError(400, "Aucun fichier fourni");
