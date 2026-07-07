@@ -37,12 +37,6 @@ export const AddEntryForm = ({
     receiverId,
   );
 
-  const {
-    categories,
-    isLoading: categoryLoading,
-    error: categoryError,
-  } = useFetchCategories();
-
   const onSubmit = async (data: MediaFormData) => {
     const result = await createMedia(data);
 
@@ -128,35 +122,19 @@ export const AddEntryForm = ({
             className="col-span-3"
           />
         </div>
-        <div className="grid grid-cols-2 gap-4 items-center">
-          <div>
-            {errors.categories && (
-              <p className="error-message">{errors.categories.message}</p>
-            )}
-          </div>
-          <label htmlFor="category" className="sr-only">
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="category" className="input-label">
             Catégorie
-          </label>
-          <select
+          </Label>
+          <Input
             id="category"
             {...register("categories")}
-            className="flex gap-2 h-10 cursor-default items-center rounded-lg border border-input bg-background px-1 md:px-3 py-2 text-xs md:text-sm overflow-y-scroll ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          >
-            <option value="">Catégorie</option>
-            {categoryError && (
-              <option disabled className="italic">
-                {categoryError}
-              </option>
-            )}
-            {!categoryLoading &&
-              !categoryError &&
-              categories.map((item) => (
-                <option key={item.id} value={item.name}>
-                  {item.name}
-                </option>
-              ))}
-          </select>
+            className="col-span-3"
+          />
         </div>
+        {errors.categories && (
+          <p className="error-message text-end">{errors.categories.message}</p>
+        )}
       </div>
       <DialogFooter className="relative">
         {isSuggestedMedia ? (
@@ -171,7 +149,7 @@ export const AddEntryForm = ({
               {isCreating ? <Loader size="small" /> : "Ajouter"}
             </Button>
             {createError && (
-              <p className="absolute error-message top-2 left-0 max-w-[300px]">
+              <p className="absolute error-message top-2 left-0 max-w-75">
                 {createError}
               </p>
             )}
