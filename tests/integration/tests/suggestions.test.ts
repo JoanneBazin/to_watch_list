@@ -1,36 +1,54 @@
-import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
-import { assertSuccess, setupTestEnv } from "../helpers/setup";
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import { prisma } from "@/src/lib/server/prisma";
 import { requireAuth } from "@/src/utils/server";
 import {
   updateReceivedSuggestions,
   updateSuggestionResponse,
 } from "@/src/features/suggestions/suggestions.actions";
-import {
-  createTestMedia,
-  createTestMediaSuggestion,
-  customMediaTest,
-} from "../helpers/media-helpers";
-import { createContactWithFriendRequest } from "../helpers/social-helpers";
+
 import {
   suggestCustomMedia,
   suggestExistantMedia,
   suggestSearchedMedia,
 } from "@/src/features/media/media.actions";
-import { cleanDatabase } from "../helpers/db-helpers";
+import { assertSuccess, setupTestEnv } from "../helpers/setup";
+import {
+  cleanUserInDb,
+  createFriendRequest,
+  createTestMedia,
+  createTestMediaSuggestion,
+  createUserInDb,
+  customMediaTest,
+} from "@/tests/shared-helpers/db-helpers";
 
 describe("Suggestions actions", () => {
   let userId: string;
   let contactId: string;
 
+  beforeAll(async () => {
+    vi.clearAllMocks();
+    const user = await setupTestEnv();
+    userId = user.id;
+    const contact = await createUserInDb();
+    contactId = contact.id;
+    await createFriendRequest(userId, contactId, "ACCEPTED");
+  });
+
   beforeEach(async () => {
     vi.clearAllMocks();
-    userId = await setupTestEnv();
-    const request = await createContactWithFriendRequest(userId, "ACCEPTED");
-    contactId = request.senderId;
   });
+
   afterAll(async () => {
-    await cleanDatabase();
+    await cleanUserInDb(userId);
+    await cleanUserInDb(contactId);
   });
 
   describe("Send a suggestion", () => {
@@ -50,7 +68,7 @@ describe("Suggestions actions", () => {
       });
       expect(inDb).not.toBeNull();
       expect(inDb?.suggestions).toContainEqual(
-        expect.objectContaining({ id: data.id })
+        expect.objectContaining({ id: data.id }),
       );
     });
 
@@ -70,7 +88,7 @@ describe("Suggestions actions", () => {
       });
       expect(inDb).not.toBeNull();
       expect(inDb?.suggestions).toContainEqual(
-        expect.objectContaining({ id: data.id })
+        expect.objectContaining({ id: data.id }),
       );
     });
 
@@ -80,7 +98,7 @@ describe("Suggestions actions", () => {
       const result = await suggestSearchedMedia(
         tmdbSerieId,
         contactId,
-        "SERIE"
+        "SERIE",
       );
       expect(requireAuth).toHaveBeenCalledTimes(1);
 
@@ -94,7 +112,7 @@ describe("Suggestions actions", () => {
       });
       expect(inDb).not.toBeNull();
       expect(inDb?.suggestions).toContainEqual(
-        expect.objectContaining({ id: data.id })
+        expect.objectContaining({ id: data.id }),
       );
     });
 
@@ -136,7 +154,7 @@ describe("Suggestions actions", () => {
 
       const result = await updateReceivedSuggestions(
         mediaId,
-        newSuggestionStatus
+        newSuggestionStatus,
       );
       expect(requireAuth).toHaveBeenCalledTimes(1);
 

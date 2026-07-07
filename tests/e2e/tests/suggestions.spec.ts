@@ -5,7 +5,7 @@ import {
   createTestCategory,
   createTestMediaSuggestion,
   createTestMediaWithUser,
-} from "../helpers/media-helpers";
+} from "../integration/helpers/media-helpers";
 import { createContactWithFriendRequest } from "../helpers/social-helpers";
 import {
   clickWhenStable,
@@ -49,14 +49,14 @@ test.describe("Suggestions actions", () => {
       .locator("button[data-testid='accept-suggestion-btn']")
       .click();
     await expect(
-      suggestionCard.locator("text=Suggestion ajoutée")
+      suggestionCard.locator("text=Suggestion ajoutée"),
     ).toBeVisible();
 
     await page.goto("/dashboard");
     await expect(
       page
         .locator("[data-testid='media-item']")
-        .filter({ hasText: suggestion.media.title })
+        .filter({ hasText: suggestion.media.title }),
     ).toBeVisible();
   });
 
@@ -64,7 +64,7 @@ test.describe("Suggestions actions", () => {
     const suggestion = await createTestMediaSuggestion(
       userId,
       contact.id,
-      "This was a great idea"
+      "This was a great idea",
     );
 
     await page.goto("/suggestions");
@@ -116,8 +116,8 @@ test.describe("Suggestions actions", () => {
 
     const firstCard = page.locator(".search-media-card").first();
 
-    await firstCard.locator("button[data-testid='send-btn']").click(),
-      await expect(firstCard).toContainText("Suggestion envoyée");
+    (await firstCard.locator("button[data-testid='send-btn']").click(),
+      await expect(firstCard).toContainText("Suggestion envoyée"));
   });
 
   test("should create custom suggestion", async ({ page }) => {

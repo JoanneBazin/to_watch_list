@@ -10,7 +10,7 @@ import {
 import { ApiError } from "@/src/utils/shared";
 
 export const updateUserName = async (
-  name: string
+  name: string,
 ): Promise<ActionResponse<{ name: string }>> => {
   if (name.length > 20) throw new ApiError(400, "Le nom est trop long");
   try {
@@ -42,11 +42,20 @@ export const updateUserName = async (
 };
 
 export const updateUserAvatar = async (
-  formData: FormData
+  formData: FormData,
 ): Promise<ActionResponse<{ image: string | null }>> => {
   try {
     const session = await requireAuth();
     const userId = session.user.id;
+
+    const currentUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { image: true },
+    });
+
+    if (!currentUser) {
+      throw new ApiError(404, "Utilisateur introuvable");
+    }
 
     const image = formData.get("avatar") as File;
 
@@ -59,7 +68,7 @@ export const updateUserAvatar = async (
       throw new ApiError(400, "Format de fichier non supporté");
     }
 
-    const imageUrl = await uploadImages(image, userId);
+    const imageUrl = await uploadImages(image, userId, currentUser.image);
 
     const userAvatar = await prisma.user.update({
       where: {

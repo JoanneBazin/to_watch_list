@@ -4,7 +4,7 @@ import { createTestUser, signInUser } from "../helpers/auth-helpers";
 import {
   createTestCategory,
   createTestMediaWithUser,
-} from "../helpers/media-helpers";
+} from "../integration/helpers/media-helpers";
 import {
   getTMDBResultsWhenReady,
   selectWhenStable,
@@ -67,8 +67,8 @@ test.describe("Media - dashboard page", () => {
 
     const firstCard = page.locator(".search-media-card").first();
 
-    await firstCard.locator("button[data-testid='add-tmdb-btn']").click(),
-      await expect(firstCard).toContainText("Ajouté à la liste");
+    (await firstCard.locator("button[data-testid='add-tmdb-btn']").click(),
+      await expect(firstCard).toContainText("Ajouté à la liste"));
 
     await page.click('[data-testid="close-modal-btn"]');
     await expect(page.locator('[role="dialog"]')).toBeHidden();
