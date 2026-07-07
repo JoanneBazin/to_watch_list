@@ -1,5 +1,12 @@
-import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
-import { assertSuccess, setupTestEnv } from "../helpers/setup";
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import {
   addExistantMediaToWatchlist,
   addSearchedMediaToWatchlist,
@@ -9,22 +16,29 @@ import {
 } from "@/src/features/media/media.actions";
 import { prisma } from "@/src/lib/server";
 import { requireAuth } from "@/src/utils/server";
+import { assertSuccess, setupTestEnv } from "../helpers/setup";
 import {
+  cleanUserInDb,
   createTestMedia,
   createTestMediaWithUser,
   customMediaTest,
-} from "../helpers/media-helpers";
-import { cleanDatabase } from "../helpers/db-helpers";
+} from "@/tests/shared-helpers/db-helpers";
 
 describe("Media actions", () => {
   let userId: string;
 
+  beforeAll(async () => {
+    vi.clearAllMocks();
+    const user = await setupTestEnv();
+    userId = user.id;
+  });
+
   beforeEach(async () => {
     vi.clearAllMocks();
-    userId = await setupTestEnv();
   });
+
   afterAll(async () => {
-    await cleanDatabase();
+    await cleanUserInDb(userId);
   });
 
   describe("Add to Watchlist", () => {
@@ -124,9 +138,7 @@ describe("Media actions", () => {
       expect(inDb).not.toBeNull();
       expect(inDb?.watched).toBe(!watched);
     });
-  });
 
-  describe("Delete Media", () => {
     it("should delete a media from user watchlist", async () => {
       const { mediaId } = await createTestMediaWithUser(userId);
       const result = await deleteFromWatchlist(mediaId);

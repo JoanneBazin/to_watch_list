@@ -1,11 +1,11 @@
-import { auth, prisma } from "@/src/lib/server";
+import { prisma } from "@/src/lib/server";
 import { Page } from "@playwright/test";
 import { fillWhenStable } from "./dom-helpers";
 
 export const signUpUser = async (
   page: Page,
   email: string,
-  password: string
+  password: string,
 ) => {
   await page.goto("/auth");
   await page.click("button[data-testid='toggle-auth-form']");
@@ -30,7 +30,7 @@ export const signUpUser = async (
     const status = response.status();
     const headers = await response.allHeaders();
     console.log(
-      `❌ Signup failed with status ${status} : retry-after: ${headers["x-retry-after"]}`
+      `❌ Signup failed with status ${status} : retry-after: ${headers["x-retry-after"]}`,
     );
   }
 
@@ -42,7 +42,7 @@ export const signInUser = async (
   page: Page,
   email: string,
   password: string,
-  maxAttemps = 3
+  maxAttemps = 3,
 ) => {
   await page.goto("/auth");
 
@@ -71,18 +71,4 @@ export const signInUser = async (
     throw new Error(`signup failed: ${response.status()}`);
   }
   throw new Error(`signup failed after ${maxAttemps} attemps`);
-};
-
-export const createTestUser = async (overrides = {}) => {
-  const userData = await auth.api.signUpEmail({
-    body: {
-      email: "test@test.com",
-      name: "Test User",
-      password: "password1234",
-      ...overrides,
-    },
-  });
-  if (!userData) throw new Error("User Test creation failed");
-
-  return userData.user.id;
 };
