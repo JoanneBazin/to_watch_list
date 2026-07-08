@@ -2,22 +2,16 @@ import { prisma } from "@/src/lib/server";
 import { Page } from "@playwright/test";
 import { fillWhenStable } from "./dom-helpers";
 
-export const signUpUser = async (
-  page: Page,
-  email: string,
-  password: string,
-) => {
-  await page.goto("/auth");
-  await page.click("button[data-testid='toggle-auth-form']");
+interface User {
+  name: string;
+  email: string;
+  password: string;
+}
 
-  const nameInput = page.locator("input[data-testid='name-input']");
-  const emailInput = page.locator("input[data-testid='email-input']");
-  const passwordInput = page.locator("input[data-testid='password-input']");
-  const submitBtn = page.locator("button[data-testid='auth-submit']");
+export const signUpUser = async (page: Page, credentials: User) => {
+  await fillSignupForm(page, credentials);
 
-  await fillWhenStable(nameInput, "Test User");
-  await fillWhenStable(emailInput, email);
-  await fillWhenStable(passwordInput, password);
+  const submitBtn = page.getByTestId("auth-submit");
 
   const [response] = await Promise.all([
     page.waitForResponse((res) => res.url().includes("/api/auth/sign-up")),
@@ -34,41 +28,69 @@ export const signUpUser = async (
     );
   }
 
-  const user = await prisma.user.findUnique({ where: { email } });
+  const user = await prisma.user.findUnique({
+    where: { email: credentials.email },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+    },
+  });
   return user!!;
+};
+
+export const fillSignupForm = async (page: Page, credentials: User) => {
+  await page.goto("/auth");
+  await page.getByTestId("toggle-auth-form").click();
+
+  const nameInput = page.getByTestId("name-input");
+  const emailInput = page.getByTestId("email-input");
+  const passwordInput = page.getByTestId("password-input");
+
+  await fillWhenStable(nameInput, credentials.name);
+  await fillWhenStable(emailInput, credentials.email);
+  await fillWhenStable(passwordInput, credentials.password);
 };
 
 export const signInUser = async (
   page: Page,
-  email: string,
-  password: string,
-  maxAttemps = 3,
+  credentials: Omit<User, "name">,
+  maxAttempts = 3,
 ) => {
-  await page.goto("/auth");
+  await fillLoginForm(page, credentials);
 
-  const emailInput = page.locator("input[data-testid='email-input']");
-  const passwordInput = page.locator("input[data-testid='password-input']");
-  const submitBtn = page.locator("button[data-testid='auth-submit']");
+  const submitBtn = page.getByTestId("auth-submit");
 
-  await fillWhenStable(emailInput, email);
-  await fillWhenStable(passwordInput, password);
-
-  for (let i = 0; i < maxAttemps; i++) {
+  for (let i = 0; i < maxAttempts; i++) {
     const [response] = await Promise.all([
       page.waitForResponse((res) => res.url().includes("/api/auth/sign-in")),
       submitBtn.click(),
     ]);
     if (response.status() === 200) {
       await page.waitForURL("/dashboard");
-      const user = await prisma.user.findUnique({ where: { email } });
-      return user!!;
+      return;
     }
     if (response.status() === 429) {
       const ra = parseInt(response.headers()["x-retry-after"] || "1", 10);
       await new Promise((r) => setTimeout(r, (ra + 1) * 1000));
       continue;
     }
-    throw new Error(`signup failed: ${response.status()}`);
+    throw new Error(`login failed: ${response.status()}`);
   }
-  throw new Error(`signup failed after ${maxAttemps} attemps`);
+  throw new Error(`login failed after ${maxAttempts} attemps`);
 };
+
+export const fillLoginForm = async (
+  page: Page,
+  credentials: Omit<User, "name">,
+) => {
+  await page.goto("/auth");
+
+  const emailInput = page.getByTestId("email-input");
+  const passwordInput = page.getByTestId("password-input");
+
+  await fillWhenStable(emailInput, credentials.email);
+  await fillWhenStable(passwordInput, credentials.password);
+};
+
+export const stringOfLength = (length: number) => "a".repeat(length);

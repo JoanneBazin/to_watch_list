@@ -24,7 +24,7 @@ export const UserWatchlist = ({ entry }: { entry: EntryType }) => {
   const [view, setView] = useState("search");
 
   return (
-    <section>
+    <section data-testid="dashboard-section">
       <h2 className="sr-only">Section {entry}</h2>
 
       <Modal

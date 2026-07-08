@@ -8,24 +8,30 @@ export const cleanDatabase = async () => {
   await prisma.user.deleteMany({});
 };
 
+export const createUserInDb = async () => {
+  const uniqueId = Date.now() + Math.random().toString(36).substring(2, 7);
+  const userCredentials = {
+    email: `user-${uniqueId}@test.com`,
+    name: `User ${uniqueId}`,
+    password: "Password1234",
+  };
+  const { user } = await auth.api.signUpEmail({
+    body: userCredentials,
+  });
+  if (!user) throw new Error("User Test creation failed");
+
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    password: userCredentials.password,
+  };
+};
+
 export const cleanUserInDb = async (userId: string) => {
   await prisma.user.delete({
     where: { id: userId },
   });
-};
-
-export const createUserInDb = async () => {
-  const uniqueId = Date.now() + Math.random().toString(36).substring(2, 7);
-  const userData = await auth.api.signUpEmail({
-    body: {
-      email: `user-${uniqueId}@test.com`,
-      name: `User ${uniqueId}`,
-      password: "Password1234",
-    },
-  });
-  if (!userData) throw new Error("User Test creation failed");
-
-  return userData.user;
 };
 
 export const createTestUser = async (overrides = {}) => {

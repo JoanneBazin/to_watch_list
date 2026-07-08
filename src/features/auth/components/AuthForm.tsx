@@ -54,7 +54,12 @@ export const AuthForm = ({ isLogin = true }: { isLogin: boolean }) => {
             onChange={(e) => setUser({ ...user, name: e.target.value })}
           />
           {validationErrors.name && (
-            <p className="error-message mt-2">{validationErrors.name}</p>
+            <p
+              className="error-message mt-2"
+              data-testid="name-validation-error"
+            >
+              {validationErrors.name}
+            </p>
           )}
         </div>
       )}
@@ -72,7 +77,12 @@ export const AuthForm = ({ isLogin = true }: { isLogin: boolean }) => {
           onChange={(e) => setUser({ ...user, email: e.target.value })}
         />
         {validationErrors.email && (
-          <p className="error-message mt-2">{validationErrors.email}</p>
+          <p
+            className="error-message mt-2"
+            data-testid="email-validation-error"
+          >
+            {validationErrors.email}
+          </p>
         )}
       </div>
 
@@ -90,7 +100,12 @@ export const AuthForm = ({ isLogin = true }: { isLogin: boolean }) => {
           onChange={(e) => setUser({ ...user, password: e.target.value })}
         />
         {validationErrors.password && (
-          <p className="error-message mt-2">{validationErrors.password}</p>
+          <p
+            className="error-message mt-2"
+            data-testid="password-validation-error"
+          >
+            {validationErrors.password}
+          </p>
         )}
       </div>
 
