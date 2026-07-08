@@ -9,7 +9,10 @@ export const SearchMediaCard = ({
   receiverId,
 }: SearchMediaCardProps) => {
   return (
-    <div className="search-media-card gap-4 mb-10">
+    <div
+      className="search-media-card gap-4 mb-10"
+      data-testid="search-media-card"
+    >
       <MediaCover cover={media.poster_path} title={media.title} />
       <div className="card-header pb-4">
         <p className="sm:text-lg font-semibold">{media.title}</p>

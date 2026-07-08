@@ -12,7 +12,7 @@ import {
   Textarea,
 } from "@/src/components/ui";
 import { MediaFormData, mediaSchema } from "../../media.schema";
-import { useCreateMedia, useFetchCategories } from "../../hooks";
+import { useCreateMedia } from "../../hooks";
 import { useState } from "react";
 import { SendSuggestion } from "@/src/features/suggestions/components";
 
@@ -65,10 +65,20 @@ export const AddEntryForm = ({
           <Label htmlFor="title" className="input-label">
             Titre
           </Label>
-          <Input id="title" {...register("title")} className="col-span-3" />
+          <Input
+            id="title"
+            {...register("title")}
+            className="col-span-3"
+            data-testid="media-title-input"
+          />
         </div>
         {errors.title && (
-          <p className="error-message text-end">{errors.title.message}</p>
+          <p
+            className="error-message text-end"
+            data-testid="title-validation-error"
+          >
+            {errors.title.message}
+          </p>
         )}
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="original-title" className="input-label">
@@ -130,6 +140,7 @@ export const AddEntryForm = ({
             id="category"
             {...register("categories")}
             className="col-span-3"
+            data-testid="media-category-input"
           />
         </div>
         {errors.categories && (
@@ -145,7 +156,11 @@ export const AddEntryForm = ({
           />
         ) : (
           <>
-            <Button type="submit" className="mt-2">
+            <Button
+              type="submit"
+              className="mt-2"
+              data-testid="submit-media-btn"
+            >
               {isCreating ? <Loader size="small" /> : "Ajouter"}
             </Button>
             {createError && (

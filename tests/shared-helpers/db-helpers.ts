@@ -2,6 +2,12 @@ import { MediaFormData } from "@/src/features/media/media.schema";
 import { auth, prisma } from "@/src/lib/server";
 import { Prisma } from "@prisma/client";
 
+export interface MediaData {
+  title: string;
+  cat: string;
+  type: "FILM" | "SERIE";
+}
+
 export const cleanDatabase = async () => {
   await prisma.watchList.deleteMany({});
   await prisma.category.deleteMany({});
@@ -78,27 +84,33 @@ export const customMediaTest: MediaFormData = {
   categories: ["Action"],
 };
 
-export const createTestCategory = async (overrides = {}) => {
-  return prisma.category.create({
-    data: { name: "Action", ...overrides },
-    select: { name: true },
-  });
-};
-
-export const createTestMedia = async () => {
+export const createTestMedia = async (
+  title = "Action film",
+  cat = "Action",
+  type: "FILM" | "SERIE" = "FILM",
+) => {
   return prisma.watchList.create({
-    data: { title: "Film title", type: "FILM", categories: ["Action"] },
+    data: { title, type, categories: [cat] },
   });
 };
 
-export const createTestMediaWithUser = async (userId: string) => {
-  const media = await createTestMedia();
+export const createTestMediaWithUser = async (
+  userId: string,
+  media?: MediaData,
+) => {
+  const newMedia = await createTestMedia(media?.title, media?.cat, media?.type);
   const userMedia = await prisma.usersWatchList.create({
-    data: { userId, mediaId: media.id },
-    include: { media: true },
+    data: { userId, mediaId: newMedia.id },
+    select: { media: true },
   });
   if (!userMedia) throw new Error("No media available");
   return userMedia;
+};
+
+export const cleanWatchlistInDb = async (userId: string) => {
+  await prisma.usersWatchList.deleteMany({
+    where: { userId },
+  });
 };
 
 export const createTestMediaSuggestion = async (

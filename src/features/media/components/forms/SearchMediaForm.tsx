@@ -36,6 +36,7 @@ export const SearchMediaForm = ({
         <Input
           id="media-search"
           className="sm:w-2/3"
+          data-testid="media-search-input"
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}

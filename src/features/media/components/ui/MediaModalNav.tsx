@@ -8,7 +8,7 @@ export const MediaModalNav = ({
 }: MediaModalNavProps) => {
   return (
     <>
-      <nav className="flex justify-around mt-4">
+      <nav className="flex justify-around" data-testid="media-modal-nav">
         {views.map((v) => (
           <button
             key={v.id}
@@ -17,7 +17,7 @@ export const MediaModalNav = ({
               "text-sm sm:text-base",
               activeView === v.id
                 ? "text-accent-foreground font-semibold"
-                : "hover:text-accent"
+                : "hover:text-accent",
             )}
             onClick={() => setView(v.id)}
           >

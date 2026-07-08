@@ -27,7 +27,7 @@ export const fillWhenStable = async (locator: Locator, value: string) => {
 export const selectWhenStable = async (
   page: Page,
   selector: string,
-  value: string
+  value: string,
 ) => {
   await page.addStyleTag({
     content: `
@@ -42,22 +42,4 @@ export const selectWhenStable = async (
   await option.waitFor({ state: "attached", timeout: 60000 });
 
   await page.selectOption(selector, { value });
-};
-
-export const getTMDBResultsWhenReady = async (
-  page: Page,
-  searchedMedia: string
-) => {
-  await page.fill("input[id='media-search']", searchedMedia);
-
-  console.log("⏳ Waiting for TMDB results...");
-  await Promise.all([
-    page.waitForSelector(".search-media-card", {
-      state: "visible",
-      timeout: 60000,
-    }),
-    page.click("button[data-testid='search-media-btn']"),
-  ]);
-
-  console.log("✅ Medias displayed");
 };

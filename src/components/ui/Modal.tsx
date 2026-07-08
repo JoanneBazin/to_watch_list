@@ -19,7 +19,10 @@ export const Modal = ({
     {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
     <DialogContent className="rounded-md overflow-y-auto overflow-x-hidden max-w-xl max-h-[80vh] custom-scrollbar">
       <DialogHeader>
-        <DialogTitle className="text-left text-base lg:text-lg w-3/4">
+        <DialogTitle
+          className="text-left text-base lg:text-lg w-3/4"
+          data-testid="dialog-title"
+        >
           {title}
         </DialogTitle>
         <DialogDescription className="sr-only">{title}</DialogDescription>
