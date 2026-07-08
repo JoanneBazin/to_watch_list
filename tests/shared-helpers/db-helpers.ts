@@ -55,22 +55,28 @@ export const createTestUser = async (overrides = {}) => {
 };
 
 export const createFriendRequest = async (
-  userId: string,
-  contactId: string,
+  receiverId: string,
+  senderId: string,
   status: "ACCEPTED" | "PENDING",
 ) => {
   return prisma.friendRequest.create({
     data: {
-      senderId: contactId,
-      receiverId: userId,
+      senderId,
+      receiverId,
       status,
     },
     select: { id: true },
   });
 };
 
-export const cleanFriendRequestsInDb = async () => {
-  await prisma.friendRequest.deleteMany({});
+export const cleanFriendRequestsInDb = async (userId?: string) => {
+  const where = userId
+    ? {
+        OR: [{ senderId: userId }, { receiverId: userId }],
+      }
+    : undefined;
+
+  await prisma.friendRequest.deleteMany({ where });
 };
 
 export const customMediaTest: MediaFormData = {

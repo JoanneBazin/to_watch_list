@@ -1,81 +1,136 @@
-import test, { expect } from "@playwright/test";
-import { cleanDatabase } from "../helpers/db-helpers";
-import { createTestUser, signInUser } from "../helpers/auth-helpers";
 import {
-  createContactWithFriendRequest,
-  createUserIntoDb,
-} from "../helpers/social-helpers";
+  cleanFriendRequestsInDb,
+  createFriendRequest,
+  createUserInDb,
+} from "@/tests/shared-helpers/db-helpers";
+import { expect, test } from "../fixtures/user.fixture";
+import { signInUser } from "../helpers/auth-helpers";
 
-test.describe("Social - communauty page", () => {
-  let userId: string;
-  const user = { email: "communauty@test.com", password: "communauty1234" };
+test.describe("Social managment", () => {
+  let contact: Awaited<ReturnType<typeof createUserInDb>>;
 
   test.beforeAll(async () => {
-    await cleanDatabase();
-    userId = await createTestUser(user);
+    contact = await createUserInDb();
   });
 
-  test.beforeEach(async ({ page }) => {
-    await page.waitForTimeout(500);
-    await cleanDatabase(userId);
-    await signInUser(page, user.email, user.password);
+  test.beforeEach(async ({ user }) => {
+    await cleanFriendRequestsInDb(user.id);
   });
 
-  test("should display user contacts", async ({ page }) => {
-    const { sender: contact } = await createContactWithFriendRequest(
-      userId,
-      "ACCEPTED"
-    );
-    await page.goto("/communauty");
-    await page.waitForLoadState("networkidle");
+  test(
+    "should display user contacts",
+    { tag: ["@regression"] },
+    async ({ page, user }) => {
+      await createFriendRequest(user.id, contact.id, "ACCEPTED");
 
-    const contactCard = page.locator("[data-testid='contact-card']", {
-      hasText: contact.name,
-    });
+      await signInUser(page, { email: user.email, password: user.password });
 
-    await expect(contactCard).toBeVisible();
-    await contactCard.locator("a").click();
-    await page.waitForURL(`/user/${contact.id}`);
+      await page.goto("/communauty");
 
-    await page.waitForSelector("[data-testid='contact-profile']");
+      const contactCard = page.getByTestId("contact-card").filter({
+        hasText: contact.name,
+      });
 
-    await expect(page.locator("h2")).toContainText(contact.name);
-  });
+      await expect(contactCard).toBeVisible();
+      await contactCard.locator("a").click();
+      await page.waitForURL(`/user/${contact.id}`);
 
-  test("should display pending friend requests received", async ({ page }) => {
-    const { sender } = await createContactWithFriendRequest(userId, "PENDING");
+      await page.waitForSelector("[data-testid='contact-profile']");
 
-    await page.goto("/communauty");
-    await page.click("button[data-testid='requests-nav']");
-    await page.waitForLoadState("networkidle");
+      await expect(page.getByTestId("profile-name-title")).toContainText(
+        contact.name,
+      );
+    },
+  );
 
-    const requestCard = page.locator("[data-testid='request-card']", {
-      hasText: sender.name,
-    });
+  test(
+    "should display pending friend request received and accept it",
+    { tag: ["@regression"] },
+    async ({ page, user }) => {
+      await createFriendRequest(user.id, contact.id, "PENDING");
 
-    await expect(requestCard).toBeVisible();
-  });
+      await signInUser(page, { email: user.email, password: user.password });
 
-  test("should display users by name", async ({ page }) => {
-    const { sender: friend } = await createContactWithFriendRequest(
-      userId,
-      "ACCEPTED"
-    );
-    await createUserIntoDb({
-      email: "lambda_user@test.com",
-      name: "Lambda User",
-    });
+      await page.goto("/communauty");
+      await expect(page.getByTestId("communauty-nav")).toBeVisible();
 
-    await page.goto("/communauty");
-    await page.click("button[data-testid='search-nav']");
+      await page.getByTestId("requests-nav").click();
+      await page.waitForLoadState("networkidle");
 
-    await page.waitForSelector("input[data-testid='search-user-input']");
-    await page.fill("input[data-testid='search-user-input']", friend.name);
+      const requestCard = page.getByTestId("request-card").filter({
+        hasText: contact.name,
+      });
+      await expect(requestCard).toBeVisible();
 
-    const cards = page.locator("[data-testid='user-card']");
-    await expect(cards).toBeVisible({ timeout: 10000 });
-    expect(cards).toHaveCount(1);
-    await expect(cards.first()).toContainText(friend.name);
-    await expect(cards.first()).toContainText("Voir le profil");
-  });
+      await requestCard.getByTestId("accept-request-btn").click();
+      await expect(requestCard.getByTestId("view-profile-btn")).toBeVisible();
+
+      await page.getByTestId("contacts-nav").click();
+      const contactCard = page.getByTestId("contact-card").filter({
+        hasText: contact.name,
+      });
+
+      await expect(contactCard).toBeVisible();
+    },
+  );
+
+  test(
+    "should display pending friend request received and delete it",
+    { tag: ["@regression"] },
+    async ({ page, user }) => {
+      await createFriendRequest(user.id, contact.id, "PENDING");
+
+      await signInUser(page, { email: user.email, password: user.password });
+
+      await page.goto("/communauty");
+      await expect(page.getByTestId("communauty-nav")).toBeVisible();
+
+      await page.getByTestId("requests-nav").click();
+      await page.waitForLoadState("networkidle");
+
+      const requestCard = page.getByTestId("request-card").filter({
+        hasText: contact.name,
+      });
+      await expect(requestCard).toBeVisible();
+
+      await requestCard.getByTestId("delete-request-btn").click();
+      await expect(
+        requestCard.getByTestId("accept-request-btn"),
+      ).not.toBeVisible();
+
+      await page.getByTestId("contacts-nav").click();
+      const contactCard = page.getByTestId("contact-card").filter({
+        hasText: contact.name,
+      });
+
+      await expect(contactCard).not.toBeVisible();
+    },
+  );
+
+  test(
+    "should search and display users by name and send a friend request",
+    { tag: ["@regression"] },
+    async ({ page, user }) => {
+      await signInUser(page, { email: user.email, password: user.password });
+
+      await page.goto("/communauty");
+      await expect(page.getByTestId("communauty-nav")).toBeVisible();
+
+      await page.getByTestId("search-nav").click();
+      const searchInput = page.getByTestId("search-user-input");
+      await expect(searchInput).toBeVisible();
+      await searchInput.fill(contact.name);
+
+      const contactCard = page
+        .getByTestId("user-card")
+        .filter({ hasText: contact.name });
+      await expect(contactCard).toBeVisible({ timeout: 10000 });
+
+      const addBtn = contactCard.getByTestId("add-contact-btn");
+      await expect(addBtn).toBeVisible();
+      await addBtn.click();
+
+      await expect(contactCard.getByTestId("pending-request")).toBeVisible();
+    },
+  );
 });
