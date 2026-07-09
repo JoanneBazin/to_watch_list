@@ -1,4 +1,4 @@
-export const MOCK_TMDB_MEDIA_RESULTS = [
+export const MOCK_TMDB_FILM_RESULTS = [
   {
     id: 123,
     title: "TMDB Media 1",
@@ -9,6 +9,25 @@ export const MOCK_TMDB_MEDIA_RESULTS = [
   },
   {
     id: 456,
+    title: "TMDB Media 2",
+    original_title: "TMDB Media",
+    overview: "Synopsis mocké",
+    poster_path: null,
+    release_date: "2020-12-02",
+  },
+];
+
+export const MOCK_TMDB_SERIE_RESULTS = [
+  {
+    id: 321,
+    title: "TMDB Media 1",
+    original_title: "TMDB Media",
+    overview: "Synopsis mocké",
+    poster_path: null,
+    release_date: "2020-12-02",
+  },
+  {
+    id: 654,
     title: "TMDB Media 2",
     original_title: "TMDB Media",
     overview: "Synopsis mocké",
@@ -48,7 +67,7 @@ export const MOCK_TMDB_SERIE = (id: number) => ({
   first_air_date: "2020-12-02",
   genres: [
     {
-      id: 123,
+      id: 548,
       name: "Horreur",
     },
   ],

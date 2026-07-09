@@ -31,7 +31,7 @@ export const getMedia = async (mediaId: number, entry: EntryType) => {
 export const createMediaWithUser = async (
   media: MediaFormData,
   userId: string,
-  tx: PrismaClient = prisma
+  tx: PrismaClient = prisma,
 ) => {
   const { data } = strictValidateSchema(mediaServerSchema, media);
 
@@ -66,7 +66,7 @@ export const linkMediaToUser = async (
   mediaId: string,
   userId: string,
   tx: PrismaClient = prisma,
-  shouldUpdateSuggestions = true
+  shouldUpdateSuggestions = true,
 ) => {
   const existingMedia = await tx.usersWatchList.findUnique({
     where: { userId_mediaId: { userId, mediaId } },
@@ -135,7 +135,7 @@ export const linkMediaToUser = async (
 
 export const getMediaDetailsFromDB = async (
   userId: string,
-  mediaId: string
+  mediaId: string,
 ) => {
   const userMedia = await prisma.usersWatchList.findUnique({
     where: { userId_mediaId: { userId, mediaId } },
