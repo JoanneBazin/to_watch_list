@@ -51,20 +51,6 @@ export const cleanUserInDb = async (userId: string) => {
   });
 };
 
-export const createTestUser = async (overrides = {}) => {
-  const userData = await auth.api.signUpEmail({
-    body: {
-      email: "test@test.com",
-      name: "Test User",
-      password: "password1234",
-      ...overrides,
-    },
-  });
-  if (!userData) throw new Error("User Test creation failed");
-
-  return userData.user.id;
-};
-
 export const createFriendRequest = async (
   receiverId: string,
   senderId: string,
