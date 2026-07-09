@@ -35,8 +35,13 @@ export const EditUserName = ({ username }: { username: string }) => {
           placeholder={username}
           onChange={(e) => setName(e.target.value)}
           className="sm:w-1/3"
+          data-testid="update-name-input"
         />
-        <Button variant="outline" className="w-1/2 sm:w-fit">
+        <Button
+          variant="outline"
+          className="w-1/2 sm:w-fit"
+          data-testid="name-update-btn"
+        >
           {isUpdatingName ? <Loader size="small" /> : "Modifier"}
         </Button>
       </form>
@@ -44,7 +49,12 @@ export const EditUserName = ({ username }: { username: string }) => {
         <p className="error-message text-end mt-3">{updateNameError}</p>
       )}
       {validationError && (
-        <p className="error-message text-end mt-3">{validationError}</p>
+        <p
+          className="error-message text-end mt-3"
+          data-testid="name-validation-error"
+        >
+          {validationError}
+        </p>
       )}
     </div>
   );

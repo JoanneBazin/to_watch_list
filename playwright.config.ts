@@ -63,7 +63,7 @@ export default defineConfig({
     reuseExistingServer: !isCI,
     timeout: 120000,
     env: {
-      USE_MOCK_TMDB: "true",
+      USE_MOCK_DATA: "true",
     },
   },
 });

@@ -29,7 +29,7 @@ jobs:
       BETTER_AUTH_URL: http://localhost:3000
       TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
       TMDB_READ_ACCESS_TOKEN: ${{ secrets.TMDB_READ_ACCESS_TOKEN }}
-      USE_MOCK_TMDB: "true"
+      USE_MOCK_DATA: "true"
 
     steps:
       - name: Checkout repo
@@ -69,7 +69,7 @@ jobs:
       # - name: Run E2E (Playwright)
       #   run: npm run test:e2e:ci
       #   env:
-      #     USE_MOCK_TMDB: "true"
+      #     USE_MOCK_DATA: "true"
 
       # - name: Upload Playwright Report
       #   if: failure()

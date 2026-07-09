@@ -1,7 +1,14 @@
+import { MOCK_UTAPI } from "@/src/mocks/uploadthing";
 import sharp from "sharp";
 import { UTApi } from "uploadthing/server";
 
-const utApi = new UTApi();
+const getUTApi = () => {
+  if (process.env.USE_MOCK_DATA === "true") {
+    return MOCK_UTAPI;
+  }
+  return new UTApi();
+};
+const utApi = getUTApi();
 
 const getFileKeyFromUrl = (url: string) => {
   if (!url || !url.includes("ufs.sh/f/")) return null;

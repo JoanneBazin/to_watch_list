@@ -15,6 +15,11 @@ type CreateSuggestionOptions = {
   receiverComment?: string;
 };
 
+type UpdateUserOptions = {
+  name?: string;
+  image?: string | null;
+};
+
 export const cleanDatabase = async () => {
   await prisma.watchList.deleteMany({});
   await prisma.user.deleteMany({});
@@ -170,4 +175,14 @@ export const cleanSuggestionsInDb = async (userId?: string) => {
     : undefined;
 
   await prisma.suggestion.deleteMany({ where });
+};
+
+export const updateUserProfile = async (
+  userId: string,
+  options: UpdateUserOptions = {},
+) => {
+  await prisma.user.update({
+    where: { id: userId },
+    data: options,
+  });
 };
