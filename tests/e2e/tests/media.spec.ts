@@ -1,7 +1,6 @@
 import {
   cleanWatchlistInDb,
   createTestMediaWithUser,
-  MediaData,
 } from "@/tests/shared-helpers/db-helpers";
 import { expect, test } from "../fixtures/user.fixture";
 import { signInUser } from "../helpers/auth-helpers";
@@ -82,7 +81,7 @@ test.describe("Watchlist managment", () => {
       await expect(mediaCard).toBeVisible();
       await mediaCard.getByTestId("add-tmdb-btn").click();
 
-      await expect(mediaCard).toContainText("Ajouté à la liste");
+      await expect(mediaCard.getByTestId("media-added")).toBeVisible();
 
       await page.getByTestId("close-modal-btn").click();
       await expect(page.getByTestId("add-media-modal")).not.toBeVisible();
@@ -102,16 +101,21 @@ test.describe("Watchlist managment", () => {
     page,
     user,
   }) => {
-    const media1: MediaData = { title: "Film 1", cat: "Cat1", type: "FILM" };
-    const media2: MediaData = { title: "Serie 1", cat: "Cat2", type: "SERIE" };
-    await createTestMediaWithUser(user.id, media1);
+    const { media: media1 } = await createTestMediaWithUser(user.id, {
+      cat: "Cat1",
+      type: "FILM",
+    });
+    const { media: media2 } = await createTestMediaWithUser(user.id, {
+      cat: "Cat2",
+      type: "SERIE",
+    });
     await createTestMediaWithUser(user.id, media2);
     await signInUser(page, { email: user.email, password: user.password });
 
     await page.getByTestId("categories-nav").click();
 
     await page.selectOption("select#category-filter", {
-      value: media1.cat,
+      value: media1.categories[0],
     });
 
     const mediaItem1 = page

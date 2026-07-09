@@ -43,3 +43,11 @@ export const selectWhenStable = async (
 
   await page.selectOption(selector, { value });
 };
+
+export const goToWatchlist = async (page: Page, type: "FILM" | "SERIE") => {
+  await page.goto("/dashboard");
+
+  if (type === "SERIE") {
+    await page.getByTestId("series-nav").click();
+  }
+};

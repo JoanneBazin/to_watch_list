@@ -45,7 +45,7 @@ export const AddTMDBMediaButton = ({
 
   if (addedMedia) {
     return (
-      <p className="info-message">
+      <p className="info-message" data-testid="media-added">
         {isSuggestedMedia ? "Suggestion envoyée" : "Ajouté à la liste"}
       </p>
     );

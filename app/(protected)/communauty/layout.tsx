@@ -19,7 +19,7 @@ const CommunautyLayoutContent = ({
     <div>
       <nav
         className="flex sm:gap-6 items-center justify-center p-6 sm:p-10"
-        data-testid="communauty-nav"
+        data-testid="communauty-navbar"
       >
         <SectionNavButton
           label="Contacts"

@@ -146,7 +146,7 @@ describe("Suggestions actions", () => {
 
     beforeEach(async () => {
       const suggestion = await createTestMediaSuggestion(contactId, userId);
-      mediaId = suggestion.mediaId;
+      mediaId = suggestion.media.id;
       suggestionId = suggestion.id;
     });
     it("should update suggestion status", async () => {

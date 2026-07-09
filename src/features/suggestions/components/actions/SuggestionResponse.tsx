@@ -23,10 +23,18 @@ export const SuggestionResponse = ({ mediaId }: { mediaId: string }) => {
   };
 
   if (deletedSuggestion) {
-    return <p className="info-message text-sm">Suggestion ignorée</p>;
+    return (
+      <p className="info-message text-sm" data-testid="deleted-suggestion">
+        Suggestion ignorée
+      </p>
+    );
   }
   if (acceptedSuggestion) {
-    return <p className="info-message text-sm">Suggestion ajoutée</p>;
+    return (
+      <p className="info-message text-sm" data-testid="added-suggestion">
+        Suggestion ajoutée
+      </p>
+    );
   }
 
   return (
@@ -39,6 +47,7 @@ export const SuggestionResponse = ({ mediaId }: { mediaId: string }) => {
             <Button
               variant="outline"
               onClick={() => handleUpdateSuggestion("REFUSED")}
+              data-testid="delete-suggestion-btn"
             >
               <X size={16} />
               <span className="ml-2 text-xs md:text-sm">Supprimer</span>

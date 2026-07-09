@@ -25,7 +25,7 @@ test.describe("Social managment", () => {
 
       await signInUser(page, { email: user.email, password: user.password });
 
-      await page.goto("/communauty");
+      await page.getByTestId("communauty-nav").click();
 
       const contactCard = page.getByTestId("contact-card").filter({
         hasText: contact.name,
@@ -51,8 +51,8 @@ test.describe("Social managment", () => {
 
       await signInUser(page, { email: user.email, password: user.password });
 
-      await page.goto("/communauty");
-      await expect(page.getByTestId("communauty-nav")).toBeVisible();
+      await page.getByTestId("communauty-nav").click();
+      await expect(page.getByTestId("communauty-navbar")).toBeVisible();
 
       await page.getByTestId("requests-nav").click();
       await page.waitForLoadState("networkidle");
@@ -82,8 +82,8 @@ test.describe("Social managment", () => {
 
       await signInUser(page, { email: user.email, password: user.password });
 
-      await page.goto("/communauty");
-      await expect(page.getByTestId("communauty-nav")).toBeVisible();
+      await page.getByTestId("communauty-nav").click();
+      await expect(page.getByTestId("communauty-navbar")).toBeVisible();
 
       await page.getByTestId("requests-nav").click();
       await page.waitForLoadState("networkidle");
@@ -113,8 +113,8 @@ test.describe("Social managment", () => {
     async ({ page, user }) => {
       await signInUser(page, { email: user.email, password: user.password });
 
-      await page.goto("/communauty");
-      await expect(page.getByTestId("communauty-nav")).toBeVisible();
+      await page.getByTestId("communauty-nav").click();
+      await expect(page.getByTestId("communauty-navbar")).toBeVisible();
 
       await page.getByTestId("search-nav").click();
       const searchInput = page.getByTestId("search-user-input");

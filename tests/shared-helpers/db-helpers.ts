@@ -2,15 +2,21 @@ import { MediaFormData } from "@/src/features/media/media.schema";
 import { auth, prisma } from "@/src/lib/server";
 import { Prisma } from "@prisma/client";
 
-export interface MediaData {
-  title: string;
-  cat: string;
-  type: "FILM" | "SERIE";
-}
+type MediaType = "FILM" | "SERIE";
+
+type CreateMediaOptions = {
+  type?: MediaType;
+  cat?: string;
+};
+
+type CreateSuggestionOptions = {
+  type?: MediaType;
+  senderComment?: string;
+  receiverComment?: string;
+};
 
 export const cleanDatabase = async () => {
   await prisma.watchList.deleteMany({});
-  await prisma.category.deleteMany({});
   await prisma.user.deleteMany({});
 };
 
@@ -90,24 +96,27 @@ export const customMediaTest: MediaFormData = {
   categories: ["Action"],
 };
 
-export const createTestMedia = async (
-  title = "Action film",
-  cat = "Action",
-  type: "FILM" | "SERIE" = "FILM",
-) => {
+export const createTestMedia = async (options: CreateMediaOptions = {}) => {
+  const { type = "FILM", cat = "Cat01" } = options;
+  const uniqueId = Date.now() + Math.random().toString(36).substring(2, 7);
+
   return prisma.watchList.create({
-    data: { title, type, categories: [cat] },
+    data: { title: `Media ${uniqueId}`, type, categories: [cat] },
   });
 };
 
 export const createTestMediaWithUser = async (
   userId: string,
-  media?: MediaData,
+  options: CreateMediaOptions = {},
 ) => {
-  const newMedia = await createTestMedia(media?.title, media?.cat, media?.type);
+  const newMedia = await createTestMedia(options);
   const userMedia = await prisma.usersWatchList.create({
     data: { userId, mediaId: newMedia.id },
-    select: { media: true },
+    select: {
+      watched: true,
+      mediaId: true,
+      media: true,
+    },
   });
   if (!userMedia) throw new Error("No media available");
   return userMedia;
@@ -122,9 +131,10 @@ export const cleanWatchlistInDb = async (userId: string) => {
 export const createTestMediaSuggestion = async (
   senderId: string,
   receiverId: string,
-  comment?: string,
+  options: CreateSuggestionOptions = {},
 ) => {
-  const media = await createTestMedia();
+  const { type = "FILM", senderComment, receiverComment } = options;
+  const media = await createTestMedia({ type });
 
   return await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     await tx.usersWatchList.create({
@@ -139,9 +149,25 @@ export const createTestMediaSuggestion = async (
         senderId,
         receiverId,
         mediaId: media.id,
-        receiverComment: comment,
+        senderComment,
+        receiverComment,
       },
-      include: { media: true, sender: true },
+      select: {
+        id: true,
+        media: {
+          select: { id: true, title: true },
+        },
+      },
     });
   });
+};
+
+export const cleanSuggestionsInDb = async (userId?: string) => {
+  const where = userId
+    ? {
+        OR: [{ senderId: userId }, { receiverId: userId }],
+      }
+    : undefined;
+
+  await prisma.suggestion.deleteMany({ where });
 };

@@ -80,6 +80,7 @@ export const PrivateHeader = () => {
                   href="/dashboard"
                   onClick={closeMenus}
                   className="hover:text-accent"
+                  data-testid="watchlist-nav"
                 >
                   <p>Watchlist</p>
                 </Link>
@@ -88,6 +89,7 @@ export const PrivateHeader = () => {
                   href="/communauty"
                   onClick={closeMenus}
                   className="hover:text-accent"
+                  data-testid="communauty-nav"
                 >
                   <div className="relative">
                     <p>Communauté</p>
@@ -101,6 +103,7 @@ export const PrivateHeader = () => {
                   href="/suggestions"
                   onClick={closeMenus}
                   className="hover:text-accent"
+                  data-testid="suggestions-nav"
                 >
                   <div className="relative">
                     <p>Suggestions</p>
@@ -127,6 +130,7 @@ export const PrivateHeader = () => {
                         href="/account"
                         className="text-center px-4 py-2 hover:text-accent rounded"
                         onClick={() => setIsProfileOpen(false)}
+                        data-testid="profile-nav"
                       >
                         Profil
                       </Link>
