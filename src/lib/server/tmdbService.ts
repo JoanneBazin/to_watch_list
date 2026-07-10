@@ -13,7 +13,7 @@ export const fetchMediaQuery = async (
   query: string,
   entry: EntryType,
 ): Promise<TMDBMedia[]> => {
-  if (process.env.USE_MOCK_DATA === "true") {
+  if (process.env.USE_MOCK_TMDB === "true") {
     return entry === "FILM" ? MOCK_TMDB_FILM_RESULTS : MOCK_TMDB_SERIE_RESULTS;
   }
 
@@ -52,7 +52,7 @@ export const fetchMediaQuery = async (
 };
 
 export const fetchMediaFromTMDB = async (mediaId: number, entry: EntryType) => {
-  if (process.env.USE_MOCK_DATA === "true") {
+  if (process.env.USE_MOCK_TMDB === "true") {
     return entry === "FILM"
       ? MOCK_TMDB_FILM(mediaId)
       : MOCK_TMDB_SERIE(mediaId);

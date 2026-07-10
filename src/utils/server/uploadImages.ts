@@ -3,7 +3,7 @@ import sharp from "sharp";
 import { UTApi } from "uploadthing/server";
 
 const getUTApi = () => {
-  if (process.env.USE_MOCK_DATA === "true") {
+  if (process.env.USE_MOCK_UPLOADTHING === "true") {
     return MOCK_UTAPI;
   }
   return new UTApi();

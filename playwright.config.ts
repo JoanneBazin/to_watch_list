@@ -5,11 +5,11 @@ const isCI = !!process.env.CI;
 export default defineConfig({
   testDir: "./tests/e2e",
   globalTeardown: "./tests/e2e/playwright.global-teardown.ts",
-  fullyParallel: false,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: 1,
-  reporter: "html",
+  fullyParallel: true,
+  forbidOnly: isCI,
+  retries: isCI ? 2 : 0,
+  workers: isCI ? 2 : 1,
+  reporter: [["html"], isCI ? ["github"] : ["list"]],
   timeout: 180000,
   expect: {
     timeout: 60000,
@@ -35,26 +35,6 @@ export default defineConfig({
     //   name: "webkit",
     //   use: { ...devices["Desktop Safari"] },
     // },
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
   ],
 
   webServer: {
@@ -62,8 +42,5 @@ export default defineConfig({
     url: "http://localhost:3000",
     reuseExistingServer: !isCI,
     timeout: 120000,
-    env: {
-      USE_MOCK_DATA: "true",
-    },
   },
 });

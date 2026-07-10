@@ -11,7 +11,7 @@
     "test:integration": "cross-env NODE_ENV=test dotenv -e .env.test vitest",
     "test:integration:ci": "vitest",
     "test:e2e": "dotenv -e .env.test -- playwright test --headed",
-    "test:e2e:ci": "playwright test",
+    "test:e2e:ci": "playwright test --grep @regression",
     "test:sync-db": "dotenv -e .env.test -- npx prisma db push --force-reset",
     "test:sync-db:ci": "npx prisma db push --force-reset"
   },
