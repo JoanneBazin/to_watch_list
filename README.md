@@ -70,7 +70,7 @@ Watchers permet de créer et organiser ses listes de films et séries à regarde
 - **Gestion d'état hybride** : combinaison de Zustand pour l'état client et Server Actions pour les mutations côté serveur
 - **Authentification robuste** : implémentation de Better Auth avec gestion sécurisée des sessions
 - **Validation de données** : schémas Zod partagés entre frontend et backend pour garantir la cohérence
-- **Tests automatisés** : mise en place d'une suite de tests E2E et unitaires intégrée au pipeline CI
+- **Tests automatisés** : mise en place d'une suite de tests E2E et d'intégration intégrée au pipeline CI
 
 ---
 
@@ -126,8 +126,8 @@ L'application sera accessible sur [http://localhost:3000](http://localhost:3000)
 > **Note**: Les tests nécessitent un fichier `.env.test` avec une base de données dédiée pour éviter de polluer les données de développement. Dupliquez `.env.local` en `.env.test` et modifiez le `DATABASE_URL` vers une base de test.
 
 ```bash
-# Tests unitaires
-npm run test:unit
+# Tests integration
+npm run test:integration
 
 # Tests E2E
 npm run test:e2e
@@ -138,7 +138,6 @@ npm run test:e2e
 ## 🗺️ Roadmap
 
 - [ ] Refonte du design system pour une interface cohérente
-- [ ] Migration du stockage d'images vers une solution plus adaptée
 - [ ] Ajout de notifications en temps réel
 
 ---
