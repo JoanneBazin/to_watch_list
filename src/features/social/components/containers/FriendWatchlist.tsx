@@ -45,21 +45,23 @@ export const FriendWatchlist = ({ user, entry }: FriendWatchlistProps) => {
           open={open}
           setOpen={setOpen}
         >
-          <MediaModalNav views={VIEWS} activeView={view} setView={setView} />
-          {view === "search" ? (
-            <SearchMediaForm
-              entry={entry}
-              isSuggestedMedia={true}
-              receiverId={user.id}
-            />
-          ) : (
-            <AddEntryForm
-              entry={entry}
-              isSuggestedMedia={true}
-              receiverId={user.id}
-              onSuccess={() => setOpen(false)}
-            />
-          )}
+          <div className="flex flex-col gap-6" data-testid="send-media-modal">
+            <MediaModalNav views={VIEWS} activeView={view} setView={setView} />
+            {view === "search" ? (
+              <SearchMediaForm
+                entry={entry}
+                isSuggestedMedia={true}
+                receiverId={user.id}
+              />
+            ) : (
+              <AddEntryForm
+                entry={entry}
+                isSuggestedMedia={true}
+                receiverId={user.id}
+                onSuccess={() => setOpen(false)}
+              />
+            )}
+          </div>
         </Modal>
       </div>
 

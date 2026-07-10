@@ -41,6 +41,7 @@ export const Avatar = ({
         style={{ width: "100%", height: "100%" }}
         className="rounded-full object-cover object-center"
         onError={() => setImgSource("/avatar.svg")}
+        data-testid="user-avatar"
       />
     </div>
   );

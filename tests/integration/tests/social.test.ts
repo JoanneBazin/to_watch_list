@@ -35,7 +35,7 @@ describe("Social actions", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    await cleanFriendRequestsInDb();
+    await cleanFriendRequestsInDb(userId);
   });
 
   afterAll(async () => {

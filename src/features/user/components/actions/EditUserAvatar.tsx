@@ -75,16 +75,25 @@ export const EditUserAvatar = ({
             onChange={handlePreviewAvatar}
             ref={fileInput}
             className="flex-1"
+            data-testid="avatar-input"
           />
         </div>
-        <Button variant="outline" className="w-1/2 sm:w-fit">
+        <Button
+          variant="outline"
+          className="w-1/2 sm:w-fit"
+          data-testid="avatar-update-btn"
+        >
           {isUpdatingImage ? <Loader size="small" /> : "Valider"}
         </Button>
       </form>
       {updateImageError && (
         <p className="error-message text-end mt-3">{updateImageError}</p>
       )}
-      {fileError && <p className="error-message text-end mt-3">{fileError}</p>}
+      {fileError && (
+        <p className="error-message text-end mt-3" data-testid="file-error">
+          {fileError}
+        </p>
+      )}
     </div>
   );
 };

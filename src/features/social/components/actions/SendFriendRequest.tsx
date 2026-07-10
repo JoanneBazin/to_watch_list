@@ -18,7 +18,12 @@ export const SendFriendRequest = ({ receiverId }: { receiverId: string }) => {
 
   if (added) {
     return (
-      <span className="text-sm italic text-accent">Demande en attente</span>
+      <span
+        className="text-sm italic text-accent"
+        data-testid="pending-request"
+      >
+        Demande en attente
+      </span>
     );
   }
 
@@ -27,7 +32,11 @@ export const SendFriendRequest = ({ receiverId }: { receiverId: string }) => {
   }
 
   return (
-    <Button variant={"outline"} onClick={handleAddContact}>
+    <Button
+      variant={"outline"}
+      onClick={handleAddContact}
+      data-testid="add-contact-btn"
+    >
       {isAddingFriend ? <Loader size="small" /> : "Ajouter"}
     </Button>
   );

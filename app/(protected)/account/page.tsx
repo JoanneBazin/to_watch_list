@@ -30,9 +30,14 @@ const Account = () => {
   return (
     <main className="flex-1 flex flex-col items-center w-full max-w-[768px]">
       <h1 className="sr-only">Profil du compte</h1>
-      <div className="flex gap-6 justify-center items-center my-12">
+      <div
+        className="flex gap-6 justify-center items-center my-12"
+        data-testid="profile-title-container"
+      >
         <Avatar size="large" img={user.image} />
-        <h2 className="text-xl sm:text-3xl">{user.name}</h2>
+        <h2 className="text-xl sm:text-3xl" data-testid="profile-title">
+          {user.name}
+        </h2>
       </div>
 
       <section className="w-full flex-1 flex flex-col justify-between">

@@ -33,7 +33,7 @@ export const SendSuggestion = ({
         className="mt-2"
         onClick={handleSubmit}
         variant="outline"
-        data-testid="send-btn"
+        data-testid="submit-media-btn"
       >
         {isLoading ? (
           <Loader size="small" />

@@ -22,7 +22,10 @@ export const FriendProfileClient = ({ userId }: { userId: string }) => {
                 size="large"
                 alt={`Avatar de ${friendProfile.name}`}
               />
-              <h2 className="text-2xl sm:text-4xl text-center">
+              <h2
+                className="text-2xl sm:text-4xl text-center"
+                data-testid="profile-name-title"
+              >
                 {friendProfile.name}
               </h2>
             </div>

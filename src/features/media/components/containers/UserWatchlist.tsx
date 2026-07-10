@@ -24,7 +24,7 @@ export const UserWatchlist = ({ entry }: { entry: EntryType }) => {
   const [view, setView] = useState("search");
 
   return (
-    <section>
+    <section data-testid="dashboard-section">
       <h2 className="sr-only">Section {entry}</h2>
 
       <Modal
@@ -41,17 +41,19 @@ export const UserWatchlist = ({ entry }: { entry: EntryType }) => {
         open={open}
         setOpen={setOpen}
       >
-        <MediaModalNav views={VIEWS} activeView={view} setView={setView} />
+        <div className="flex flex-col gap-6" data-testid="add-media-modal">
+          <MediaModalNav views={VIEWS} activeView={view} setView={setView} />
 
-        {view === "search" ? (
-          <SearchMediaForm entry={entry} />
-        ) : (
-          <AddEntryForm
-            entry={entry}
-            isSuggestedMedia={false}
-            onSuccess={() => setOpen(false)}
-          />
-        )}
+          {view === "search" ? (
+            <SearchMediaForm entry={entry} />
+          ) : (
+            <AddEntryForm
+              entry={entry}
+              isSuggestedMedia={false}
+              onSuccess={() => setOpen(false)}
+            />
+          )}
+        </div>
       </Modal>
       {isPending && (
         <Skeleton className="h-48 w-full mt-10 border border-r-radius" />

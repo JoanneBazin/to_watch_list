@@ -33,7 +33,11 @@ export const ValidateFriendRequest = ({
   if (added) {
     return (
       <div className="flex gap-2 items-center">
-        <Button variant="ghost" className="text-xs md:text-sm px-2">
+        <Button
+          variant="ghost"
+          className="text-xs md:text-sm px-2"
+          data-testid="view-profile-btn"
+        >
           <Link href={`/user/${senderId}`}>Voir le profil</Link>
         </Button>
       </div>
@@ -55,6 +59,7 @@ export const ValidateFriendRequest = ({
           aria-label="Accepter la demande d'amis"
           variant="ghost"
           className="px-2"
+          data-testid="accept-request-btn"
           onClick={() => {
             handleRespondToFriendRequest("ACCEPTED");
           }}
@@ -65,6 +70,7 @@ export const ValidateFriendRequest = ({
           aria-label="Refuser la demande d'amis"
           variant="ghost"
           className="px-2 text-destructive"
+          data-testid="delete-request-btn"
           onClick={() => {
             handleRespondToFriendRequest("REFUSED");
           }}

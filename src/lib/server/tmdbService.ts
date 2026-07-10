@@ -2,18 +2,19 @@
 
 import {
   MOCK_TMDB_FILM,
-  MOCK_TMDB_MEDIA_RESULTS,
+  MOCK_TMDB_FILM_RESULTS,
   MOCK_TMDB_SERIE,
+  MOCK_TMDB_SERIE_RESULTS,
 } from "@/src/mocks/tmdb";
 import { EntryType, TMDBMedia, TMDBSerie } from "@/src/types";
 import { ApiError } from "@/src/utils/shared";
 
 export const fetchMediaQuery = async (
   query: string,
-  entry: EntryType
+  entry: EntryType,
 ): Promise<TMDBMedia[]> => {
-  if (process.env.NODE_ENV === "test" || process.env.USE_MOCK_TMDB === "true") {
-    return MOCK_TMDB_MEDIA_RESULTS;
+  if (process.env.USE_MOCK_TMDB === "true") {
+    return entry === "FILM" ? MOCK_TMDB_FILM_RESULTS : MOCK_TMDB_SERIE_RESULTS;
   }
 
   const mediaType = entry === "FILM" ? "movie" : "tv";
@@ -51,7 +52,7 @@ export const fetchMediaQuery = async (
 };
 
 export const fetchMediaFromTMDB = async (mediaId: number, entry: EntryType) => {
-  if (process.env.NODE_ENV === "test" || process.env.USE_MOCK_TMDB === "true") {
+  if (process.env.USE_MOCK_TMDB === "true") {
     return entry === "FILM"
       ? MOCK_TMDB_FILM(mediaId)
       : MOCK_TMDB_SERIE(mediaId);

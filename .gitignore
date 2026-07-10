@@ -47,4 +47,4 @@ node_modules/
 /playwright/.auth/
 
 # CI
-test-ci-local.sh
+test-ci.sh

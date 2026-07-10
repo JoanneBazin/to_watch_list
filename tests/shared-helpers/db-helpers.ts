@@ -2,10 +2,47 @@ import { MediaFormData } from "@/src/features/media/media.schema";
 import { auth, prisma } from "@/src/lib/server";
 import { Prisma } from "@prisma/client";
 
+type MediaType = "FILM" | "SERIE";
+
+type CreateMediaOptions = {
+  type?: MediaType;
+  cat?: string;
+};
+
+type CreateSuggestionOptions = {
+  type?: MediaType;
+  senderComment?: string;
+  receiverComment?: string;
+};
+
+type UpdateUserOptions = {
+  name?: string;
+  image?: string | null;
+};
+
 export const cleanDatabase = async () => {
   await prisma.watchList.deleteMany({});
-  await prisma.category.deleteMany({});
   await prisma.user.deleteMany({});
+};
+
+export const createUserInDb = async () => {
+  const uniqueId = Date.now() + Math.random().toString(36).substring(2, 7);
+  const userCredentials = {
+    email: `user-${uniqueId}@test.com`,
+    name: `User ${uniqueId}`,
+    password: "Password1234",
+  };
+  const { user } = await auth.api.signUpEmail({
+    body: userCredentials,
+  });
+  if (!user) throw new Error("User Test creation failed");
+
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    password: userCredentials.password,
+  };
 };
 
 export const cleanUserInDb = async (userId: string) => {
@@ -14,51 +51,29 @@ export const cleanUserInDb = async (userId: string) => {
   });
 };
 
-export const createUserInDb = async () => {
-  const uniqueId = Date.now() + Math.random().toString(36).substring(2, 7);
-  const userData = await auth.api.signUpEmail({
-    body: {
-      email: `user-${uniqueId}@test.com`,
-      name: `User ${uniqueId}`,
-      password: "Password1234",
-    },
-  });
-  if (!userData) throw new Error("User Test creation failed");
-
-  return userData.user;
-};
-
-export const createTestUser = async (overrides = {}) => {
-  const userData = await auth.api.signUpEmail({
-    body: {
-      email: "test@test.com",
-      name: "Test User",
-      password: "password1234",
-      ...overrides,
-    },
-  });
-  if (!userData) throw new Error("User Test creation failed");
-
-  return userData.user.id;
-};
-
 export const createFriendRequest = async (
-  userId: string,
-  contactId: string,
+  receiverId: string,
+  senderId: string,
   status: "ACCEPTED" | "PENDING",
 ) => {
   return prisma.friendRequest.create({
     data: {
-      senderId: contactId,
-      receiverId: userId,
+      senderId,
+      receiverId,
       status,
     },
     select: { id: true },
   });
 };
 
-export const cleanFriendRequestsInDb = async () => {
-  await prisma.friendRequest.deleteMany({});
+export const cleanFriendRequestsInDb = async (userId?: string) => {
+  const where = userId
+    ? {
+        OR: [{ senderId: userId }, { receiverId: userId }],
+      }
+    : undefined;
+
+  await prisma.friendRequest.deleteMany({ where });
 };
 
 export const customMediaTest: MediaFormData = {
@@ -72,35 +87,45 @@ export const customMediaTest: MediaFormData = {
   categories: ["Action"],
 };
 
-export const createTestCategory = async (overrides = {}) => {
-  return prisma.category.create({
-    data: { name: "Action", ...overrides },
-    select: { name: true },
-  });
-};
+export const createTestMedia = async (options: CreateMediaOptions = {}) => {
+  const { type = "FILM", cat = "Cat01" } = options;
+  const uniqueId = Date.now() + Math.random().toString(36).substring(2, 7);
 
-export const createTestMedia = async () => {
   return prisma.watchList.create({
-    data: { title: "Film title", type: "FILM", categories: ["Action"] },
+    data: { title: `Media ${uniqueId}`, type, categories: [cat] },
   });
 };
 
-export const createTestMediaWithUser = async (userId: string) => {
-  const media = await createTestMedia();
+export const createTestMediaWithUser = async (
+  userId: string,
+  options: CreateMediaOptions = {},
+) => {
+  const newMedia = await createTestMedia(options);
   const userMedia = await prisma.usersWatchList.create({
-    data: { userId, mediaId: media.id },
-    include: { media: true },
+    data: { userId, mediaId: newMedia.id },
+    select: {
+      watched: true,
+      mediaId: true,
+      media: true,
+    },
   });
   if (!userMedia) throw new Error("No media available");
   return userMedia;
 };
 
+export const cleanWatchlistInDb = async (userId: string) => {
+  await prisma.usersWatchList.deleteMany({
+    where: { userId },
+  });
+};
+
 export const createTestMediaSuggestion = async (
   senderId: string,
   receiverId: string,
-  comment?: string,
+  options: CreateSuggestionOptions = {},
 ) => {
-  const media = await createTestMedia();
+  const { type = "FILM", senderComment, receiverComment } = options;
+  const media = await createTestMedia({ type });
 
   return await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     await tx.usersWatchList.create({
@@ -115,9 +140,35 @@ export const createTestMediaSuggestion = async (
         senderId,
         receiverId,
         mediaId: media.id,
-        receiverComment: comment,
+        senderComment,
+        receiverComment,
       },
-      include: { media: true, sender: true },
+      select: {
+        id: true,
+        media: {
+          select: { id: true, title: true },
+        },
+      },
     });
+  });
+};
+
+export const cleanSuggestionsInDb = async (userId?: string) => {
+  const where = userId
+    ? {
+        OR: [{ senderId: userId }, { receiverId: userId }],
+      }
+    : undefined;
+
+  await prisma.suggestion.deleteMany({ where });
+};
+
+export const updateUserProfile = async (
+  userId: string,
+  options: UpdateUserOptions = {},
+) => {
+  await prisma.user.update({
+    where: { id: userId },
+    data: options,
   });
 };

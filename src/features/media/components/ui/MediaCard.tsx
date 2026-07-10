@@ -15,7 +15,10 @@ export const MediaCard = ({ media, children }: MediaCardProps) => {
       }
       title={media.title}
     >
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div
+        className="flex flex-col sm:flex-row gap-4"
+        data-testid="media-modal-content"
+      >
         <div className="relative flex flex-col gap-1 min-w-[50%]">
           {!media.tmdbId && (
             <div className="absolute -top-12 right-6">
