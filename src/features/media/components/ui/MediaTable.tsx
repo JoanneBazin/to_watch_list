@@ -27,7 +27,10 @@ type MediaColumnMeta = {
   className?: string;
 };
 
-type MediaColumnDef<TData extends MediaItem> = ColumnDef<TData, any> & {
+type MediaColumnDef<TData extends MediaItem, TValue = unknown> = ColumnDef<
+  TData,
+  TValue
+> & {
   meta?: MediaColumnMeta;
 };
 

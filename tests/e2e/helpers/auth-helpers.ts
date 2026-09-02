@@ -36,7 +36,7 @@ export const signUpUser = async (page: Page, credentials: User) => {
       email: true,
     },
   });
-  return user!!;
+  return user!;
 };
 
 export const fillSignupForm = async (page: Page, credentials: User) => {

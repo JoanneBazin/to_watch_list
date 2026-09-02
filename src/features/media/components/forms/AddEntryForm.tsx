@@ -13,7 +13,6 @@ import {
 } from "@/src/components/ui";
 import { MediaFormData, mediaSchema } from "../../media.schema";
 import { useCreateMedia } from "../../hooks";
-import { useState } from "react";
 import { SendSuggestion } from "@/src/features/suggestions/components";
 
 export const AddEntryForm = ({
@@ -31,7 +30,6 @@ export const AddEntryForm = ({
   } = useForm<MediaFormData>({
     resolver: zodResolver(mediaSchema),
   });
-  const [comment, setComment] = useState("");
   const { createMedia, isCreating, createError } = useCreateMedia(
     isSuggestedMedia,
     receiverId,

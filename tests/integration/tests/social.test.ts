@@ -83,7 +83,7 @@ describe("Social actions", () => {
   });
 
   it("should delete a relation", async () => {
-    const request = await createFriendRequest(userId, contactId, "ACCEPTED");
+    await createFriendRequest(userId, contactId, "ACCEPTED");
 
     const result = await deleteFriend(contactId);
     expect(requireAuth).toHaveBeenCalledTimes(1);

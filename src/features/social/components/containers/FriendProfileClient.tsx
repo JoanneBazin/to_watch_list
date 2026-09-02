@@ -3,7 +3,6 @@
 import { Avatar, Loader } from "@/src/components/ui";
 import { useFetchFriendProfile } from "../../hooks";
 import { FriendWatchlist } from "./FriendWatchlist";
-import { DeleteFriend } from "../actions";
 
 export const FriendProfileClient = ({ userId }: { userId: string }) => {
   const { friendProfile, isLoading, error } = useFetchFriendProfile(userId);

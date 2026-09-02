@@ -1,4 +1,5 @@
 import nextPlugin from "@next/eslint-plugin-next";
+import tsEslint from "typescript-eslint";
 
 export default [
   {
@@ -13,6 +14,7 @@ export default [
       "output/**",
     ],
   },
+  ...tsEslint.configs.recommended,
   {
     files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
     plugins: {
@@ -21,6 +23,10 @@ export default [
     rules: {
       ...nextPlugin.configs.recommended.rules,
       ...nextPlugin.configs["core-web-vitals"].rules,
+      "@typescript-eslint/no-empty-object-type": [
+        "error",
+        { allowInterfaces: "with-single-extends" },
+      ],
     },
   },
 ];
