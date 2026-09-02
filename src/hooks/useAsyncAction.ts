@@ -3,8 +3,11 @@
 import { useState } from "react";
 import { handleError } from "../utils/client";
 
-export const useAsyncAction = <TArgs extends any[], TResult>(
-  action: (...args: TArgs) => Promise<TResult>
+export const useAsyncAction = <
+  TArgs extends unknown[] = unknown[],
+  TResult = unknown,
+>(
+  action: (...args: TArgs) => Promise<TResult>,
 ) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

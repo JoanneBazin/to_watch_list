@@ -22,7 +22,7 @@ export const SendResponseComment = ({
   const { sendComment, isUpdating, updateError } =
     useUpdateSuggestionResponse();
 
-  const handleSendResponse = async (e: React.MouseEvent) => {
+  const handleSendResponse = async () => {
     const result = await sendComment(suggestionId, receiverComment);
     if (result.success) {
       setCommentSent(true);
