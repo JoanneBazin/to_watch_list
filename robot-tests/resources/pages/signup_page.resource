@@ -1,8 +1,6 @@
 *** Settings ***
 Library    Browser
 
-Variables   ../..variables/common.robot
-
 *** Variables ***
 ${TOGGLE_AUTH_FORM}         [data-testid="toggle-auth-form"]
 ${NAME_INPUT}               [data-testid="name-input"]
@@ -10,8 +8,7 @@ ${EMAIL_INPUT}              [data-testid="email-input"]
 ${PASSWORD_INPUT}           [data-testid="password-input"]
 
 *** Keywords ***
-Go To Signup Page
-    Go To           ${BASE_URL}/auth
+Go To Signup Form
     Click           ${TOGGLE_AUTH_FORM}
 
 Fill Signup Form
