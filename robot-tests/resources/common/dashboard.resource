@@ -13,4 +13,5 @@ Dashboard Is Displayed
     Get Element States    ${DASHBOARD_SECTION}  contains    visible
     Get Text              ${OPEN_PROFILE_MENU}  contains    ${name}
 
-
+Open Header Menu
+    Click   ${OPEN_PROFILE_MENU}
