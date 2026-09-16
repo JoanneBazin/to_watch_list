@@ -22,7 +22,7 @@ Signup With Existing Email
     [Tags]      regression
     ${existing_user}=   Create User In Db
     Go to Signup Page
-    Fill Signup Form    ${USER_NAME}    ${existing_user['email']}    ${USER_PASSWORD}
+    Fill Signup Form    ${USER_NAME}    ${existing_user}[email]    ${USER_PASSWORD}
     Submit Auth Form
     Auth Error Message Is Displayed
 

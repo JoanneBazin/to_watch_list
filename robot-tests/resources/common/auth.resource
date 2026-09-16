@@ -6,6 +6,15 @@ ${SUBMIT_BTN}         [data-testid="auth-submit"]
 ${AUTH_ERROR}         [data-testid="auth-error"]
 
 *** Keywords ***
+Create Worker User
+    ${user} =   Create User In Db
+    Set Suite Variable  ${WORKER_USER}  ${user}
+    Log     Worker user created: ${WORKER_USER}[name]
+
+Clean Worker User
+    Clean User In Db    ${WORKER_USER}[email]
+    Log     Worker user deleted: ${WORKER_USER}[name]
+
 Auth Page Is Displayed
     Get Url     contains    /auth
 
