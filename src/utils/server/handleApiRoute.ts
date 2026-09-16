@@ -8,13 +8,13 @@ export const handleApiRoute = async (fn: () => Promise<NextResponse>) => {
     if (err instanceof ApiError) {
       return NextResponse.json(
         { message: err.message },
-        { status: err.status }
+        { status: err.status },
       );
     }
 
     return NextResponse.json(
-      { message: "Erreur inattendue, vueillez réessayer ultérieurement" },
-      { status: 500 }
+      { message: "Erreur inattendue, veuillez réessayer ultérieurement" },
+      { status: 500 },
     );
   }
 };

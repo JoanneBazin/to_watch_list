@@ -47,3 +47,10 @@ node_modules/
 
 # CI
 test-ci.sh
+
+# Robot Framework
+robot-tests/venv/
+robot-tests/results/
+robot-tests/*.html
+robot-tests/*.xml
+robot-tests/playwright-log.txt

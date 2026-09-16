@@ -1,15 +1,13 @@
 *** Settings ***
 Library    RequestsLibrary
-
-Variables   ../..variables/common.robot
+Resource   ../../variables/common.robot
 
 *** Keywords ***
 Clean User In Db
     [Arguments]    ${email}
-    POST    ${API_BASE_URL}/test/clean-user    json={"email": "${email}"}
-    Status Should Be    200    ${response}
+    &{payload} =    Create Dictionary   email=${email}
+    POST    ${API_BASE_URL}/test/clean-user    json=${payload}   expected_status=200
 
 Create User In Db
-    ${response}=    POST    ${API_BASE_URL}/test/create-user
-    Status Should Be    200    ${response}
+    ${response}=    POST    ${API_BASE_URL}/test/create-user    expected_status=200
     RETURN    ${response.json()}
