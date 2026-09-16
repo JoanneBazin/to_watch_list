@@ -1,5 +1,6 @@
 *** Settings ***
 Library    Browser
+Resource    ../../resources/data/db_setup.resource
 
 *** Variables ***
 ${SUBMIT_BTN}         [data-testid="auth-submit"]
@@ -14,6 +15,9 @@ Create Worker User
 Clean Worker User
     Clean User In Db    ${WORKER_USER}[email]
     Log     Worker user deleted: ${WORKER_USER}[name]
+
+Log In As Worker User
+    Add Cookie      ${WORKER_USER}[cookieName]   ${WORKER_USER}[cookieValue]    url=${BASE_URL}
 
 Auth Page Is Displayed
     Get Url     contains    /auth

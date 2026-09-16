@@ -20,16 +20,24 @@ export async function POST() {
       name: `User ${uniqueId}`,
       password: "Password1234",
     };
-    const { user } = await auth.api.signUpEmail({
+    const { headers, response } = await auth.api.signUpEmail({
+      returnHeaders: true,
       body: userCredentials,
     });
-    if (!user) throw new ApiError(500, "User Test creation failed");
+
+    if (!response) throw new ApiError(500, "User Test creation failed");
+
+    const rawCookie = headers.getSetCookie()[0];
+    const [nameValue] = rawCookie.split(";");
+    const [cookieName, cookieValue] = nameValue.split("=");
 
     return NextResponse.json({
-      id: user.id,
-      name: user.name,
-      email: user.email,
+      id: response.user.id,
+      name: userCredentials.name,
+      email: userCredentials.email,
       password: userCredentials.password,
+      cookieName,
+      cookieValue,
     });
   });
 }

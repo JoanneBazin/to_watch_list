@@ -2,7 +2,6 @@
 Resource    ../../resources/common/auth.resource
 Resource    ../../resources/common/browser_setup.resource
 Resource    ../../resources/common/dashboard.resource
-Resource    ../../resources/data/db_setup.resource
 Resource    ../../resources/pages/login_page.resource
 Resource   ../../variables/common.robot
 
